@@ -5,6 +5,8 @@ public class Department extends CustomEntity{
     private String description;
     private String address;
 
+    public Department(){
+    }
     public Department(long id, String name, String description, String address) {
         super(id);
         this.name = name;

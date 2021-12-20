@@ -6,6 +6,7 @@ import java.time.LocalTime;
 public class Equipment extends CustomEntity{
     private String name;
     private String description;
+    private String imageFilePath;
     private long equipmentTypeId;
     private long laboratoryId;
     private boolean isNeedAssistant;
@@ -13,9 +14,12 @@ public class Equipment extends CustomEntity{
     private BigDecimal pricePerHour;
     private LocalTime averageResearchTime;
 
+    public Equipment() {
+    }
+
     public Equipment(long id, String name, String description, long equipmentTypeId,
                      long laboratoryId, boolean isNeedAssistant, EquipmentState state,
-                     BigDecimal pricePerHour, LocalTime averageResearchTime) {
+                     BigDecimal pricePerHour, LocalTime averageResearchTime, String imageFilePath) {
         super(id);
         this.name = name;
         this.description = description;
@@ -25,6 +29,7 @@ public class Equipment extends CustomEntity{
         this.state = state;
         this.pricePerHour = pricePerHour;
         this.averageResearchTime = averageResearchTime;
+        this.imageFilePath = imageFilePath;
     }
 
     public String getName() {
@@ -89,5 +94,13 @@ public class Equipment extends CustomEntity{
 
     public void setAverageResearchTime(LocalTime averageResearchTime) {
         this.averageResearchTime = averageResearchTime;
+    }
+
+    public String getImageFilePath() {
+        return imageFilePath;
+    }
+
+    public void setImageFilePath(String imageFilePath) {
+        this.imageFilePath = imageFilePath;
     }
 }

@@ -7,6 +7,8 @@ public class Laboratory extends CustomEntity{
     private String description;
     private long departmentId;
 
+    public Laboratory(){
+    }
     public Laboratory(long id, String name, String location, String imageFilePath, String description, long departmentId) {
         super(id);
         this.name = name;

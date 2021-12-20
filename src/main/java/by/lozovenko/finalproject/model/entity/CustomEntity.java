@@ -5,6 +5,9 @@ import java.io.Serializable;
 public abstract class CustomEntity implements Serializable, Cloneable {
     private long id;
 
+    public CustomEntity() {
+    }
+
     public CustomEntity(long id) {
         this.id = id;
     }

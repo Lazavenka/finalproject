@@ -18,14 +18,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CustomConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger();
+
     private static CustomConnectionPool INSTANCE;
+
     private static final AtomicBoolean isCreated = new AtomicBoolean(false);
     private static final Lock createPoolLock = new ReentrantLock(true);
-    private BlockingDeque<ProxyConnection> freeConnections;
-    private Queue<ProxyConnection> givenAwayConnections;
-
     private static final int DEFAULT_POOL_SIZE = 8; //TODO read poll size from properties
     private static final int ADDITIONAL_CREATION_ATTEMPTS = 3;
+
+    private final BlockingDeque<ProxyConnection> freeConnections;
+    private final Queue<ProxyConnection> givenAwayConnections;
 
     private CustomConnectionPool() {
         freeConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);
@@ -107,7 +109,7 @@ public class CustomConnectionPool {
             try {
                 freeConnections.take().reallyClose();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.ERROR, e.getMessage());
                 Thread.currentThread().interrupt();
             }
         }
@@ -118,8 +120,8 @@ public class CustomConnectionPool {
         DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
             try {
                 DriverManager.deregisterDriver(driver);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException e) {
+                LOGGER.log(Level.ERROR, e.getMessage());
             }
         });
     }

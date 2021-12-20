@@ -10,6 +10,12 @@ public class User extends CustomEntity{
     private UserRole role;
     private UserState state;
 
+    public User(){
+    }
+    public User(User user){
+        this(user.getId(), user.login, user.password, user.firstName, user.lastName,
+                user.email, user.phone, user.role, user.state);
+    }
     public User(long id, String login, String password, String firstName, String lastName,
                 String email, String phone, UserRole role, UserState state) {
         super(id);
