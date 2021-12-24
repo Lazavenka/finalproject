@@ -51,7 +51,7 @@ public class UserMapper implements CustomRowMapper<User> {
             user.setState(currentUserState);
             UserRole currentUserRole = UserRole.valueOf(resultSet.getString(USER_ROLE).toUpperCase().strip());
             user.setRole(currentUserRole);
-            switch (currentUserRole) {
+            switch (currentUserRole) { //TODO question
                 case ADMIN ->
                     optionalUser = Optional.of(user);
 

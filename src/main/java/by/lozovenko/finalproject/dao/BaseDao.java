@@ -10,13 +10,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseDao<K, T extends CustomEntity> {
     Logger LOGGER = LogManager.getLogger();
 
     List<T> findAll() throws DaoException;
 
-    T findEntityById(K id) throws DaoException;
+    Optional<T> findEntityById(K id) throws DaoException;
 
     boolean delete(T t) throws DaoException;
 
