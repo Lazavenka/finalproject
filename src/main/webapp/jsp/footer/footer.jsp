@@ -3,18 +3,10 @@
 
 
 <html>
-<head>
-    <title>Title</title>
-</head>
 <body>
 <div class="page">
-    <header>
-        <%@include file="header.jsp"%>
-    </header>
-
-    GUEST
-    <div class="text-center">
-        FOOOTER
+    <div class="text-md-start">
+        Research center. Minsk 2022.
     </div>
 </div>
 </body>

@@ -12,6 +12,6 @@ Status - ${pageContext.errorData.statusCode}
 <hr/>
 Servlet name - ${pageContext.errorData.servletName}
 <hr/>
-<a href="${pageContext.request.contextPath}/index.jsp">Hello Servlet</a>
+<a href="${pageContext.request.contextPath}/index.jsp">Home</a>
 </body>
 </html>

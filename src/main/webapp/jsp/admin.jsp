@@ -1,26 +1,26 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:set var="absolutePath">${pageContext.request.contextPath}</c:set>
+<c:if test="${not empty sessionScope.locale}">
+    <fmt:setLocale value="${sessionScope.locale}"/>
+</c:if>
+<fmt:setBundle basename="locale/language"/>
+
 <html>
 <head>
-    <title>Title</title>
+    <title>Admin page. Research center.</title>
 </head>
 <body>
-<div class="page">
-    <header>
-        <jsp:include page="header/header.jsp"/>
-    </header>
-
-    <div class="text-center">GUEST</div>
-</div>
+<header>
+    <jsp:include page="header/header.jsp"/>
+</header>
 <div class="row">
     <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
             <img src="..." alt="...">
             <div class="caption">
-                <h3>Thumbnail label</h3>
+                <h3>I AM ADMIN</h3>
                 <p>...</p>
                 <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
             </div>

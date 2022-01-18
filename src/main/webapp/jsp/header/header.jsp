@@ -1,5 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="absolutePath">${pageContext.request.contextPath}</c:set>
+
 <html>
 <head>
     <meta charset="utf-8">
@@ -23,12 +26,11 @@
             </button>
             <a class="navbar-brand" href="#">Brand</a>
         </div>
-
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
+                <li class="active"><a href="#">Main <span class="sr-only">(current)</span></a></li>
+                <li><a href="${pageContext.request.contextPath}/jsp/about.jsp">About</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -46,27 +48,10 @@
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-default">Search</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <c:choose>
-                    <c:when test="${language eq 'ru_RU'}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="${absolutePath}/controller?command=change_language&language=en_US">${lang}</a>
-                        </li>
-                    </c:when>
-                    <c:when test="${language eq 'en_US'}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="${absolutePath}/controller?command=change_language&language=ru_RU">${lang}</a>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${absolutePath}/controller?command=change_language&language=ru_RU">${lang}</a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-                <li><a href="#">Link</a></li>
+                <li><a href="${pageContext.request.contextPath}/jsp/common/login.jsp">Login</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
                     <ul class="dropdown-menu">

@@ -30,12 +30,21 @@ public class UserMapper implements CustomRowMapper<User> {
     public static final String DESCRIPTION = "description";
     public static final String DEGREE = "degree";
 
+    private static UserMapper instance;
+
+    public static UserMapper getInstance(){
+        if (instance == null){
+            instance = new UserMapper();
+        }
+        return instance;
+    }
 
     @Override
-    public Optional<User> rowMap(ResultSet resultSet) {
+    public Optional<User> rowMap(ResultSet resultSet) { //FIXME not working result set
         User user = new User();
         Optional<User> optionalUser;
         try {
+            resultSet.next();
             user.setId(resultSet.getLong(USER_ID));
             user.setLogin(resultSet.getString(LOGIN));
             user.setPassword(resultSet.getString(PASSWORD));
@@ -43,14 +52,15 @@ public class UserMapper implements CustomRowMapper<User> {
             user.setPhone(resultSet.getString(PHONE_NUMBER));
             user.setFirstName(resultSet.getString(FIRST_NAME));
             user.setLastName(resultSet.getString(LAST_NAME));
-            UserState currentUserState = UserState.valueOf(resultSet.getString(USER_STATE).toUpperCase().strip());
-            user.setState(currentUserState);
             UserRole currentUserRole = UserRole.valueOf(resultSet.getString(USER_ROLE).toUpperCase().strip());
             user.setRole(currentUserRole);
-            switch (currentUserRole) { //TODO question
-                case ADMIN ->
+            //UserState currentUserState = UserState.valueOf(resultSet.getString(USER_STATE).toUpperCase().strip()); //FIXME WHY ARE YOU NOT WORKING?????
+            //user.setState(currentUserState);
+            switch (currentUserRole) {
+                case ADMIN -> {
                     optionalUser = Optional.of(user);
-
+                    return optionalUser;
+                }
                 case CLIENT -> {
                     Client client = new Client(user);
                     client.setBalance(resultSet.getBigDecimal(BALANCE));
@@ -78,7 +88,7 @@ public class UserMapper implements CustomRowMapper<User> {
                 default -> throw new IllegalStateException("Unexpected value: " + currentUserRole);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.ERROR, "Mapping error in user mapping class! {}", e.getMessage());
+            LOGGER.log(Level.ERROR, "Mapping error in user mapping class!", e);
             optionalUser = Optional.empty();
         }
         return optionalUser;
