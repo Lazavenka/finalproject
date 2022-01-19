@@ -10,22 +10,18 @@
 <html>
 <head>
     <title>Admin page. Research center.</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-<header>
-    <jsp:include page="header/header.jsp"/>
-</header>
-<div class="row">
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-            <img src="..." alt="...">
-            <div class="caption">
-                <h3>I AM ADMIN</h3>
-                <p>...</p>
-                <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
-            </div>
-        </div>
+<jsp:include page="header/header.jsp"/>
+<div class="card" style="width: 18rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">ADMIN LOGGED</h5>
+        <p class="card-text">${sessionScope.user.phone}</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
     </div>
 </div>
+
 </body>
 </html>

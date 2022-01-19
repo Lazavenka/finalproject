@@ -66,19 +66,21 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findUserByLogin(String login) throws DaoException {
-        Optional<User> optionalUser;
+        Optional<User> optionalUser = Optional.empty();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_LOGIN)) {
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
-            optionalUser = UserMapper.getInstance().rowMap(resultSet);
-            String loggerResult = optionalUser.isPresent() ? String.format("User with id = %s was found.", optionalUser.get().getId())
-                    : String.format("User with login %s doesn't exist", login);
-            LOGGER.log(Level.INFO, "findUserByLogin completed successfully. {}", loggerResult);
-            return optionalUser;
+            if(resultSet.next()) {
+                optionalUser = UserMapper.getInstance().rowMap(resultSet);
+                String loggerResult = optionalUser.isPresent() ? String.format("User with id = %s was found.", optionalUser.get().getId())
+                        : String.format("User with login %s doesn't exist", login);
+                LOGGER.log(Level.INFO, "findUserByLogin completed successfully. {}", loggerResult);
+            }
         } catch (SQLException e) {
             throw new DaoException("Database access error. Can't find user by login.", e);
         }
+        return optionalUser;
     }
 
     @Override

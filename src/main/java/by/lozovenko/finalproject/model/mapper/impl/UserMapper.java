@@ -44,7 +44,6 @@ public class UserMapper implements CustomRowMapper<User> {
         User user = new User();
         Optional<User> optionalUser;
         try {
-            resultSet.next();
             user.setId(resultSet.getLong(USER_ID));
             user.setLogin(resultSet.getString(LOGIN));
             user.setPassword(resultSet.getString(PASSWORD));

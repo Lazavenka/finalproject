@@ -8,6 +8,12 @@ public class Router {
     }
     private String page = INDEX;
     private DispatchType type = DispatchType.FORWARD;
+
+    public Router(){
+    }
+    public Router(DispatchType type){
+        this.type = type;
+    }
     public Router(String page, DispatchType type){
         this.page = page;
         this.type = type;

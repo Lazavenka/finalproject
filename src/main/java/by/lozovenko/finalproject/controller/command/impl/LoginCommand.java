@@ -19,7 +19,6 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class LoginCommand implements CustomCommand {
-    private static final Logger LOGGER = LogManager.getLogger();
     private final UserServiceImpl userService;
 
     public LoginCommand(){
@@ -49,7 +48,7 @@ public class LoginCommand implements CustomCommand {
                request.setAttribute(INCORRECT_LOGIN_OR_PASSWORD, true);
            }
         } catch (ServiceException e){
-            LOGGER.error("Error at SignInCommand", e);
+            logger.error("Error at SignInCommand", e);
             request.setAttribute("exception", e); //fixme constants and handle on front
             router.setPage(ERROR_404_PAGE); //todo куда пересылается?
         }

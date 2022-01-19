@@ -48,5 +48,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.yaml:snakeyaml:1.21" level="project" />
     <orderEntry type="library" name="mysql-connector-java-8.0.25" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
   </component>
 </module>

@@ -8,7 +8,7 @@ public class RequestParameter {
     public static final String PHONE = "phone";
     public static final String EMAIL = "email";
     public static final String EQUIPMENT_NAME = "equipment_name";
-    public static final String DESCRIPTION = "DESCRIPTION";
+    public static final String DESCRIPTION = "description";
     public static final String COMMAND = "command";
     public static final String LOCALE = "locale";
     private RequestParameter(){
