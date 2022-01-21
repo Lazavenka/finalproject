@@ -53,8 +53,8 @@ public class UserMapper implements CustomRowMapper<User> {
             user.setLastName(resultSet.getString(LAST_NAME));
             UserRole currentUserRole = UserRole.valueOf(resultSet.getString(USER_ROLE).toUpperCase().strip());
             user.setRole(currentUserRole);
-            //UserState currentUserState = UserState.valueOf(resultSet.getString(USER_STATE).toUpperCase().strip()); //FIXME WHY ARE YOU NOT WORKING?????
-            //user.setState(currentUserState);
+            UserState currentUserState = UserState.valueOf(resultSet.getString(USER_STATE).toUpperCase().strip());
+            user.setState(currentUserState);
             switch (currentUserRole) {
                 case ADMIN -> {
                     optionalUser = Optional.of(user);

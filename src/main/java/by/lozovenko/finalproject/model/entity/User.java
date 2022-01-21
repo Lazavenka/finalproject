@@ -92,4 +92,19 @@ public class User extends CustomEntity{
     public void setState(UserState state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("login='").append(login).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", phone='").append(phone).append('\'');
+        sb.append(", role=").append(role);
+        sb.append(", state=").append(state);
+        sb.append('}');
+        return sb.toString();
+    }
 }

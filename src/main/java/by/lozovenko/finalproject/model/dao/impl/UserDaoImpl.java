@@ -18,9 +18,10 @@ import java.util.Optional;
 public class UserDaoImpl implements UserDao {
     private final UserMapper mapper = new UserMapper();
     private static UserDaoImpl instance;
+
     private static final String GET_USER_BY_LOGIN = """
             SELECT user_id, login, password, first_name, last_name, email,
-            phone_number, user_role, first_name FROM Users users WHERE (login = ?)""";
+            phone_number, user_role, user_state, first_name FROM users WHERE (login = ?)""";
 
     public static UserDaoImpl getInstance(){
         if (instance == null){
