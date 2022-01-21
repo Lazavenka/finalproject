@@ -1,5 +1,6 @@
 package by.lozovenko.finalproject.model.mapper.impl;
 
+import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
 import by.lozovenko.finalproject.model.mapper.CustomRowMapper;
 
@@ -13,7 +14,7 @@ public class EquipmentTypeMapper implements CustomRowMapper<EquipmentType> {
     public static final String EQUIPMENT_TYPE_DESCRIPTION = "equipment_type_description";
 
     @Override
-    public Optional<EquipmentType> rowMap(ResultSet resultSet) {
+    public Optional<EquipmentType> rowMap(EquipmentType equipmentType, ResultSet resultSet) throws DaoException {
         return Optional.empty();
     }
 }

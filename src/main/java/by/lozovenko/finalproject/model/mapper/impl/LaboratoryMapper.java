@@ -1,10 +1,9 @@
 package by.lozovenko.finalproject.model.mapper.impl;
 
+import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.mapper.CustomRowMapper;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import java.util.Optional;
 import static by.lozovenko.finalproject.model.mapper.impl.DepartmentMapper.DEPARTMENT_ID;
 
 public class LaboratoryMapper implements CustomRowMapper<Laboratory> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String LABORATORY_ID = "laboratory_id";
     public static final String LABORATORY_NAME = "laboratory_name";
@@ -22,8 +20,7 @@ public class LaboratoryMapper implements CustomRowMapper<Laboratory> {
     public static final String LABORATORY_DESCRIPTION = "laboratory_description";
 
     @Override
-    public Optional<Laboratory> rowMap(ResultSet resultSet) {
-        Laboratory laboratory = new Laboratory();
+    public Optional<Laboratory> rowMap(Laboratory laboratory, ResultSet resultSet) throws DaoException {
         Optional<Laboratory> optionalLaboratory;
         try {
             laboratory.setId(resultSet.getLong(LABORATORY_ID));

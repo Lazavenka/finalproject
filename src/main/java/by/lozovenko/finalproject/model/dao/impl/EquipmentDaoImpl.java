@@ -31,39 +31,33 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public List<Equipment> findAll() throws DaoException {
         List<Equipment> equipmentList = new ArrayList<>();
-        PreparedStatement preparedStatement = null;
-        Connection connection = CustomConnectionPool.getInstance().getConnection();
-        try {
-            preparedStatement = connection.prepareStatement(SELECT_ALL_EQUIPMENT);
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_EQUIPMENT)){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                Optional<Equipment> optionalEquipment = new EquipmentMapper().rowMap(resultSet);
+                Equipment equipment = new Equipment();
+                Optional<Equipment> optionalEquipment = new EquipmentMapper().rowMap(equipment, resultSet);
                 optionalEquipment.ifPresent(equipmentList::add);
             }
         } catch (SQLException e) {
             throw new DaoException(e);
-        }finally {
-            close(connection);
-            close(preparedStatement);
         }
         return equipmentList;
     }
 
     @Override
     public Optional<Equipment> findEntityById(Long id) throws DaoException {
-        Optional<Equipment> optionalEquipment;
-        PreparedStatement preparedStatement = null;
-        Connection connection = CustomConnectionPool.getInstance().getConnection();
-        try {
-            preparedStatement = connection.prepareStatement(SELECT_EQUIPMENT_BY_ID);
+        Optional<Equipment> optionalEquipment = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EQUIPMENT_BY_ID)){
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            optionalEquipment = new EquipmentMapper().rowMap(resultSet);
+            if (resultSet.next()) {
+                Equipment equipment = new Equipment();
+                optionalEquipment = new EquipmentMapper().rowMap(equipment, resultSet);
+            }
         } catch (SQLException e) {
             throw new DaoException(e);
-        }finally {
-            close(connection);
-            close(preparedStatement);
         }
         return optionalEquipment;
     }

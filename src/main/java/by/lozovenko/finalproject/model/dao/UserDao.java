@@ -8,20 +8,24 @@ import java.util.Optional;
 
 public interface UserDao extends BaseDao<Long, User> {
     boolean updatePasswordByLogin(String password, String login) throws DaoException;
-
+    UserRole findUserRoleByLogin(String login) throws  DaoException;
     Optional<User> findUserByLogin(String login) throws DaoException;
 
     Optional<User> findUserByLoginAndPassword(String login, String password) throws DaoException;
 
     List<User> findAllManagers() throws DaoException;
 
-    List<User> findManagersByDepartment(Department department) throws DaoException;
+    List<User> findManagersByDepartmentId(Long departmentId) throws DaoException;
 
     List<User> findManagersByDegree(ManagerDegree managerDegree) throws DaoException;
 
     Optional<User> findManagerByName(String patternName) throws DaoException;
 
+    Optional<User> findManagerById(Long managerId) throws DaoException;
+
     List<User> findAllAssistants() throws DaoException;
+
+    Optional<User> findAssistantById(Long assistantId) throws DaoException;
 
     List<User> findAssistantsByEquipmentType(EquipmentType equipmentType) throws DaoException;
 

@@ -1,11 +1,10 @@
 package by.lozovenko.finalproject.model.mapper.impl;
 
+import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentState;
 import by.lozovenko.finalproject.model.mapper.CustomRowMapper;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 public class EquipmentMapper implements CustomRowMapper<Equipment> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String EQUIPMENT_ID = "equipment_id";
     public static final String EQUIPMENT_NAME = "equipment_name";
@@ -25,8 +23,7 @@ public class EquipmentMapper implements CustomRowMapper<Equipment> {
     public static final String EQUIPMENT_DESCRIPTION = "equipment_description";
 
     @Override
-    public Optional<Equipment> rowMap(ResultSet resultSet) {
-        Equipment equipment = new Equipment();
+    public Optional<Equipment> rowMap(Equipment equipment, ResultSet resultSet) throws DaoException {
         Optional<Equipment> optionalEquipment;
         try {
             equipment.setId(resultSet.getLong(EQUIPMENT_ID));
