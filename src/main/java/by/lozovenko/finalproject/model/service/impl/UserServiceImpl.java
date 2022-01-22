@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
@@ -49,6 +50,15 @@ public class UserServiceImpl implements UserService {
         }else {
             LOGGER.log(Level.INFO, "User login or password is invalid.");
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<User> findAllManagers() throws ServiceException {
+        try {
+            return userDao.findAllManagers();
+        }catch (DaoException e){
+            throw new ServiceException(e);
         }
     }
 }

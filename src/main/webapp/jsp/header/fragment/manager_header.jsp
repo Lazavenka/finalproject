@@ -11,4 +11,4 @@
 
 <fmt:message var="equipment" key="manager.equipment"/>
 
-<li><a class="nav-link active" href="${abs}/controller?command=show_schedule_command">${equipment}</a></li>
+<li><a class="nav-link active" href="${abs}/controller?command=manage_equipment_command">${equipment}</a></li>

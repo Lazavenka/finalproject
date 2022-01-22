@@ -72,4 +72,18 @@ public class Manager extends User{
     public void setManagerId(long managerId) {
         this.managerId = managerId;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Manager{");
+        sb.append(super.toString());
+        sb.append("managerId=").append(managerId);
+        sb.append(", departmentId=").append(departmentId);
+        sb.append(", imageFilePath='").append(imageFilePath).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", laboratoryId=").append(laboratoryId);
+        sb.append(", managerDegree=").append(managerDegree);
+        sb.append('}');
+        return sb.toString();
+    }
 }

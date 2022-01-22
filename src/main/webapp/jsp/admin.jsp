@@ -17,7 +17,7 @@
 <div class="card" style="width: 18rem;">
     <img src="..." class="card-img-top" alt="...">
     <div class="card-body">
-        <h5 class="card-title">ADMIN LOGGED</h5>
+        <h5 class="card-title">${sessionScope.user.role} LOGGED</h5>
         <p class="card-text">${sessionScope.user.phone}</p>
         <a href="#" class="btn btn-primary">Go somewhere</a>
     </div>

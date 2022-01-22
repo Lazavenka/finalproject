@@ -31,7 +31,7 @@ public class ManagerMapper implements CustomRowMapper<User> {
         try {
             Manager manager = new Manager(entity);
             manager.setManagerId(resultSet.getLong(MANAGER_ID));
-            ManagerDegree managerDegree = ManagerDegree.valueOf(resultSet.getString(DEGREE).toUpperCase().strip());
+            ManagerDegree managerDegree = ManagerDegree.getDegreeByString(resultSet.getString(DEGREE));
             manager.setManagerDegree(managerDegree);
             manager.setDescription(resultSet.getString(DESCRIPTION));
             manager.setDepartmentId(resultSet.getLong(DepartmentMapper.DEPARTMENT_ID));
