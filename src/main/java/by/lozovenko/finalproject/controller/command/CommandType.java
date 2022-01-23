@@ -15,7 +15,11 @@ public enum CommandType {
     LOGOUT_COMMAND(new LogoutCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
     REGISTRATION_COMMAND(new RegistrationCommand(), EnumSet.of(GUEST)),
 
-    GO_HOME_COMMAND(new GoHomeCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST));
+    GO_HOME_COMMAND(new GoHomeCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+
+    FIND_ALL_MANAGERS(new FindAllManagersCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+
+    FIND_MANAGER_BY_ID(new FindManagerByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST));
 
     private final CustomCommand command;
     private final EnumSet<UserRole> allowedRoles;

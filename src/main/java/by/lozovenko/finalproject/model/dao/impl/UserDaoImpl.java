@@ -46,6 +46,11 @@ public class UserDaoImpl implements UserDao {
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
             m.description, m.degree FROM users AS u
             JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.department_id = ?""";
+    private static final String GET_MANAGER_BY_ID = """
+            SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
+            u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
+            m.description, m.degree FROM users AS u
+            JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.manager_id = ?""";
     private static final String GET_MANAGERS_BY_DEGREE = """
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
@@ -230,8 +235,22 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findManagerById(Long managerId) throws DaoException {
-        return Optional.empty();
+        Optional<User> optionalUser = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGER_BY_ID)){
+            preparedStatement.setLong(1, managerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                User user = new User();
+                UserMapper.getInstance().rowMap(user, resultSet);
+                optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+            }
+        }catch (SQLException e){
+            throw new DaoException(e); //fixme message
+        }
+        return optionalUser;
     }
+
 
     @Override
     public List<User> findAllAssistants() throws DaoException {

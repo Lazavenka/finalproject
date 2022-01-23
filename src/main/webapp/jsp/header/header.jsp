@@ -16,6 +16,7 @@
 <fmt:message var="locale" key="header.language"/>
 <fmt:message var="brand" key="header.brand"/>
 <fmt:message var="home" key="header.home" />
+<fmt:message var="managers" key="header.managers"/>
 
 <html>
 <head>
@@ -57,7 +58,7 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="#">Departments</a></li>
                         <li><a class="dropdown-item" href="#">Laboratories</a></li>
-                        <li><a class="dropdown-item" href="#">Lab Heads</a></li>
+                        <li><a class="dropdown-item" href="${abs}/controller?command=find_all_managers">${managers}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Separated link</a></li>
                         <li role="separator" class="divider"></li>

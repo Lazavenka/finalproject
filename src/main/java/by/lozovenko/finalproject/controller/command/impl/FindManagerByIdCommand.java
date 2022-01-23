@@ -4,20 +4,20 @@ import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Manager;
-import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.PagePath.ALL_MANAGERS_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
-import static by.lozovenko.finalproject.controller.RequestAttribute.MANAGERS;
+import static by.lozovenko.finalproject.controller.PagePath.*;
+import static by.lozovenko.finalproject.controller.RequestAttribute.*;
+import static by.lozovenko.finalproject.controller.RequestParameter.MANAGER_ID;
 
-public class FindAllManagersCommand implements CustomCommand {
+public class FindManagerByIdCommand implements CustomCommand {
     private final UserServiceImpl userService;
 
-    public FindAllManagersCommand() {
+    public FindManagerByIdCommand() {
         this.userService = UserServiceImpl.getInstance();
     }
 
@@ -25,9 +25,14 @@ public class FindAllManagersCommand implements CustomCommand {
     public Router execute(HttpServletRequest request) {
         Router router = new Router();
         try {
-            List<Manager> managers = userService.findAllManagers();
-            request.setAttribute(MANAGERS, managers);
-            router.setPage(ALL_MANAGERS_PAGE);
+            long managerId = Long.parseLong(request.getParameter(MANAGER_ID));
+            Optional<Manager> manager = userService.findManagerById(managerId);
+            router.setPage(MANAGER_DETAILS_PAGE);
+            if (manager.isPresent()) {
+                request.setAttribute(MANAGER, manager.get());
+            } else {
+                request.setAttribute(NO_MANAGERS_FOUND, true);
+            }
         } catch (ServiceException e){
             logger.error("Error at FindAllManagersInCommand", e);
             request.setAttribute("exception", e); //fixme constants and handle on front

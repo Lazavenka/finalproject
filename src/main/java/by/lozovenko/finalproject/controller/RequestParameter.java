@@ -11,6 +11,7 @@ public class RequestParameter {
     public static final String DESCRIPTION = "description";
     public static final String COMMAND = "command";
     public static final String LOCALE = "locale";
+    public static final String MANAGER_ID = "managerId";
     private RequestParameter(){
     }
 

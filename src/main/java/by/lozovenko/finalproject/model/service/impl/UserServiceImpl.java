@@ -4,6 +4,7 @@ import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.dao.UserDao;
 import by.lozovenko.finalproject.model.dao.impl.UserDaoImpl;
+import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.util.PasswordEncryptor;
@@ -54,11 +55,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllManagers() throws ServiceException {
+    public List<Manager> findAllManagers() throws ServiceException {
         try {
-            return userDao.findAllManagers();
+            return userDao.findAllManagers().stream().map(Manager.class::cast).toList();
         }catch (DaoException e){
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    public Optional<Manager> findManagerById(Long managerId) throws ServiceException {
+        try {
+            Optional<User> optionalUser = userDao.findManagerById(managerId);
+            return optionalUser.isPresent() ? optionalUser.map(Manager.class::cast) : Optional.empty();
+        }catch (DaoException e){
+            throw new ServiceException(e);
+        }
+
     }
 }
