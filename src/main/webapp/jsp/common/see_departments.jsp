@@ -1,19 +1,16 @@
 <%--
   Created by IntelliJ IDEA.
   User: Roger
-  Date: 16.01.2022
-  Time: 21:56
+  Date: 24.01.2022
+  Time: 20:27
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>Error 404</title>
+    <title>Title</title>
 </head>
 <body>
-<h1>PAGE NOT FOUND</h1>
-<br/>
-<hr/>
-<a href="${pageContext.request.contextPath}/controller?command=go_home_command">Home</a>
+
 </body>
 </html>

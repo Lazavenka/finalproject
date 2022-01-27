@@ -8,6 +8,7 @@
 <fmt:setBundle basename="locale/language"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
+<c:set var="user" value="${sessionScope.user}"/>
 
 <fmt:message var="about" key="header.about"/>
 <fmt:message var="sign_in" key="header.sign_in"/>
@@ -43,13 +44,13 @@
                     <a class="nav-link active" href="${abs}/jsp/about.jsp">${about}</a>
                 </li>
                 <c:choose>
-                    <c:when test="${sessionScope.role eq 'ADMIN'}">
+                    <c:when test="${user.role eq 'ADMIN'}">
                         <jsp:include page="fragment/admin_header.jsp"/>
                     </c:when>
-                    <c:when test="${sessionScope.role eq 'MANAGER'}">
+                    <c:when test="${user.role eq'MANAGER'}">
                         <jsp:include page="fragment/manager_header.jsp"/>
                     </c:when>
-                    <c:when test="${sessionScope.role eq 'ASSISTANT'}">
+                    <c:when test="${user.role eq 'ASSISTANT'}">
                         <jsp:include page="fragment/assistant_header.jsp"/>
                     </c:when>
                 </c:choose>
@@ -68,7 +69,7 @@
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
                 <c:choose>
-                    <c:when test="${sessionScope.role eq null or sessionScope.role eq 'GUEST'}">
+                    <c:when test="${user.role eq 'GUEST' or user.role eq null}">
                         <li><a class="nav-link" href="${abs}/jsp/common/login.jsp">${sign_in}</a></li>
                         <li><a class="nav-link" href="${abs}/jsp/common/register.jsp">${register}</a></li>
                     </c:when>

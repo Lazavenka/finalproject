@@ -30,8 +30,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public boolean create(Order order) throws DaoException {
-        return false;
+    public long create(Order order) throws DaoException {
+        return -1;
     }
 
     @Override

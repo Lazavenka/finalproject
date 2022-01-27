@@ -7,6 +7,8 @@ import by.lozovenko.finalproject.model.entity.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Optional;
+
 import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.USER;
 import static by.lozovenko.finalproject.controller.RequestAttribute.USER_ROLE;
@@ -16,9 +18,11 @@ public class GoHomeCommand implements CustomCommand {
     public Router execute(HttpServletRequest request) {
         Router router = new Router(Router.DispatchType.FORWARD);
         HttpSession session = request.getSession();
-        User user = (User)session.getAttribute(USER);
-        UserRole role = user != null ? user.getRole() : UserRole.GUEST;
-        switch (role){
+
+        Optional<Object> optionalSessionUser = Optional.ofNullable(session.getAttribute(USER));
+        UserRole currentUserRole = optionalSessionUser.isPresent() ? ((User)optionalSessionUser.get()).getRole() : UserRole.GUEST;
+
+        switch (currentUserRole){
             case ADMIN -> router.setPage(ADMIN_PAGE);
             case MANAGER -> router.setPage(MANAGER_PAGE);
             case ASSISTANT -> router.setPage(ASSISTANT_PAGE);

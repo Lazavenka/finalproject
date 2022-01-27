@@ -9,7 +9,7 @@ public class PagePath {
     public static final String CLIENT_PAGE = "jsp/client.jsp";
     public static final String ERROR_404_PAGE = "jsp/error/error404.jsp";
     public static final String LOGIN_PAGE = "jsp/common/login.jsp";
-    public static final String REGISTER_PAGE = "jsp/common/register.jsp";
+    public static final String REGISTRATION_PAGE = "jsp/common/register.jsp";
     public static final String GUEST_PAGE = "jsp/guest.jsp";
     public static final String ALL_MANAGERS_PAGE = "jsp/common/see_managers.jsp";
     public static final String MANAGER_DETAILS_PAGE = "jsp/common/manager_details.jsp";

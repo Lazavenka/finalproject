@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface UserDao extends BaseDao<Long, User> {
     boolean updatePasswordByLogin(String password, String login) throws DaoException;
+    long createManager(Long userId, Manager manager) throws DaoException;
+    long createClient(Long userId) throws DaoException;
     UserRole findUserRoleByLogin(String login) throws  DaoException;
     Optional<User> findUserByLogin(String login) throws DaoException;
 
@@ -33,5 +35,5 @@ public interface UserDao extends BaseDao<Long, User> {
 
     List<User> findAssistantsByOrder(Order order) throws DaoException;
 
-
+    Optional<User> findUserByEmail(String email) throws DaoException;
 }

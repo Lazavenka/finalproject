@@ -23,7 +23,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
             equipment_photo_link FROM equipment WHERE equipment_id = (?)""";
-    private static final String SQL_INSERT_NEW_EQUIPMENT_ITEM = """
+    private static final String CREATE_NEW_EQUIPMENT_ITEM = """
             INSERT INTO equipment(equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
             equipment_photo_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""";
@@ -73,12 +73,10 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
     @Override
-    public boolean create(Equipment equipment) throws DaoException {
-        PreparedStatement preparedStatement = null;
-        Connection connection = CustomConnectionPool.getInstance().getConnection();
-        boolean result = false;
-        try {
-            preparedStatement = connection.prepareStatement(SQL_INSERT_NEW_EQUIPMENT_ITEM);
+    public long create(Equipment equipment) throws DaoException {
+        long result = -1;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_NEW_EQUIPMENT_ITEM, Statement.RETURN_GENERATED_KEYS)){
             preparedStatement.setLong(1, equipment.getId());
             preparedStatement.setLong(2, equipment.getEquipmentTypeId());
             preparedStatement.setLong(3, equipment.getLaboratoryId());
@@ -89,12 +87,13 @@ public class EquipmentDaoImpl implements EquipmentDao {
             preparedStatement.setBoolean(8, equipment.isNeedAssistant());
             preparedStatement.setString(9, String.valueOf(equipment.getState()));
             preparedStatement.setString(10, equipment.getImageFilePath());
-            result = preparedStatement.executeUpdate() != 0;
+            preparedStatement.executeUpdate();
+            ResultSet generatedKey = preparedStatement.getGeneratedKeys();
+            if (generatedKey.next()) {
+                result = generatedKey.getLong(1);
+            }
         }catch (SQLException e){
             throw new DaoException(e);
-        }finally {
-            close(connection);
-            close(preparedStatement);
         }
         return result;
     }

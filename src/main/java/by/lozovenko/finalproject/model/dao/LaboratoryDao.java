@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LaboratoryDao extends BaseDao<Long, Laboratory> {
-    List<Laboratory> findAllByDepartment(Department department) throws DaoException;
+    List<Laboratory> findAllByDepartmentId(Long departmentId) throws DaoException;
 
-    Optional<Laboratory> findLaboratoryByManager(Manager manager) throws DaoException;
+    Optional<Laboratory> findLaboratoryByManagerId(Long managerId) throws DaoException;
+
+    Optional<String> findLaboratoryNameById(Long id) throws DaoException;
 }

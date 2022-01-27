@@ -5,6 +5,7 @@ import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
+import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,7 +16,7 @@ import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.MANAGERS;
 
 public class FindAllManagersCommand implements CustomCommand {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     public FindAllManagersCommand() {
         this.userService = UserServiceImpl.getInstance();

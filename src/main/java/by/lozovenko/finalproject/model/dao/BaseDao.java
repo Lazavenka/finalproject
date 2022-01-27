@@ -23,7 +23,7 @@ public interface BaseDao<K, T extends CustomEntity> {
 
     boolean deleteById(K id) throws DaoException;
 
-    boolean create(T t) throws DaoException;
+    long create(T t) throws DaoException;
 
     T update(T t) throws DaoException;
 

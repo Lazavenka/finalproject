@@ -6,6 +6,7 @@ import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.entity.UserRole;
+import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +20,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class LoginCommand implements CustomCommand {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     public LoginCommand(){
         this.userService = UserServiceImpl.getInstance();

@@ -27,7 +27,7 @@ public class AssistantMapper implements CustomRowMapper<User> {
         Optional<User> optionalUser;
         try {
             Assistant assistant = new Assistant(entity);
-            assistant.setEquipmentTypeId(resultSet.getLong(EquipmentTypeMapper.EQUIPMENT_TYPE_ID));
+            assistant.setLaboratoryId(resultSet.getLong(LaboratoryMapper.LABORATORY_ID));
             assistant.setImageFilePath(resultSet.getString(AVATAR_LINK));
             assistant.setAssistantId(resultSet.getLong(ASSISTANT_ID));
             optionalUser = Optional.of(assistant);

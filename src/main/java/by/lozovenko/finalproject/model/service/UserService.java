@@ -5,6 +5,7 @@ import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -13,4 +14,6 @@ public interface UserService {
     List<Manager> findAllManagers() throws ServiceException;
 
     Optional<Manager> findManagerById(Long managerId) throws ServiceException;
+
+    boolean registerUser(Map<String, String> userData) throws ServiceException;
 }

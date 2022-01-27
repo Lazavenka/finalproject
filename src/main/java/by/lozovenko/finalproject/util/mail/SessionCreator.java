@@ -2,7 +2,6 @@ package by.lozovenko.finalproject.util.mail;
 
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.net.ssl.SSLSocketFactory;
 import java.util.Properties;
 
 public class SessionCreator {

@@ -2,7 +2,7 @@ package by.lozovenko.finalproject.model.entity;
 
 public class Assistant extends User{
     private String imageFilePath;
-    private long equipmentTypeId;
+    private long laboratoryId;
     private long assistantId;
     public Assistant(){
     }
@@ -11,10 +11,10 @@ public class Assistant extends User{
     }
     public Assistant(long id, String login, String password, String firstName, String lastName,
                      String email, String phone, UserRole role, UserState state,
-                     String imageFilePath, long equipmentTypeId, long assistantId) {
+                     String imageFilePath, long laboratoryId, long assistantId) {
         super(id, login, password, firstName, lastName, email, phone, role, state);
         this.imageFilePath = imageFilePath;
-        this.equipmentTypeId = equipmentTypeId;
+        this.laboratoryId = laboratoryId;
         this.assistantId = assistantId;
     }
 
@@ -26,12 +26,12 @@ public class Assistant extends User{
         this.imageFilePath = imageFilePath;
     }
 
-    public long getEquipmentTypeId() {
-        return equipmentTypeId;
+    public long getLaboratoryId() {
+        return laboratoryId;
     }
 
-    public void setEquipmentTypeId(long equipmentTypeId) {
-        this.equipmentTypeId = equipmentTypeId;
+    public void setLaboratoryId(long laboratoryId) {
+        this.laboratoryId = laboratoryId;
     }
 
     public long getAssistantId() {
