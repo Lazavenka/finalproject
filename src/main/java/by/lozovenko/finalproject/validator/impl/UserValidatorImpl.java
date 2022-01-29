@@ -16,6 +16,7 @@ public class UserValidatorImpl implements UserValidator {
     private static final String EMAIL_PATTERN = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,6}$";
     private static final String EMAIL_SYMBOL_PATTERN = ".{8,55}";
     private static final String PHONE_PATTERN = "(25|29|33|44)\\d{7}";
+    private static final String BALANCE_PATTERN = "^\\d{1,3}\\.?\\d{0,2}$";
 
     public static UserValidator getInstance() {
         if (instance == null) {
@@ -96,6 +97,11 @@ public class UserValidatorImpl implements UserValidator {
             result = false;
         }
         return result;
+    }
+
+    @Override
+    public boolean isCorrectBalance(String balance) {
+        return notNullOrEmpty(balance) && balance.matches(BALANCE_PATTERN);
     }
 
 

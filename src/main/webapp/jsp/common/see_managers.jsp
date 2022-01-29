@@ -19,12 +19,12 @@
 <jsp:include page="../header/header.jsp"/>
 
 <c:forEach var="manager" items="${requestScope.managers}">
-    <div class="card" style="width: 25rem;">
-        <img src="${manager.imageFilePath}" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">${manager.lastName} ${manager.firstName}</h5>
+    <div class="d-flex position-relative">
+        <img src="${manager.imageFilePath}" class="flex-shrink-0 me-3" alt="...">
+        <div>
+            <h5 class="mt-0">${manager.lastName} ${manager.firstName}</h5>
             <p class="card-text">${manager.description}</p>
-            <a href="${abs}/controller?command=find_manager_details_by_id&managerId=${manager.managerId}" class="btn btn-primary">${details}</a>
+            <a href="${abs}/controller?command=find_manager_details_by_id&managerId=${manager.managerId}" class="stretched-link">${details}</a>
         </div>
     </div>
 </c:forEach>

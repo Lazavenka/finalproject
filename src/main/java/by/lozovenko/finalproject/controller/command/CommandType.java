@@ -15,11 +15,17 @@ public enum CommandType {
     LOGOUT_COMMAND(new LogoutCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
 
     REGISTRATION_COMMAND(new RegistrationCommand(), EnumSet.of(GUEST)),
+    CONFIRM_REGISTRATION_COMMAND(new ConfirmRegistrationCommand(), EnumSet.of(GUEST)),
+    CHECK_BALANCE_COMMAND(new CheckBalanceCommand(), EnumSet.of(CLIENT)),
 
     GO_HOME_COMMAND(new GoHomeCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    GO_REGISTER_PAGE_COMMAND(new GoRegisterPageCommand(), EnumSet.of(GUEST)),
+    GO_ABOUT_PAGE_COMMAND(new GoAboutPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    GO_SIGN_IN_PAGE_COMMAND(new GoSignInPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    GO_BALANCE_PAGE_COMMAND(new GoBalancePageCommand(), EnumSet.of(CLIENT)),
+    ADD_BALANCE_COMMAND(new AddBalanceCommand(), EnumSet.of(CLIENT)),
 
     FIND_ALL_MANAGERS(new FindAllManagersCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
-
     FIND_MANAGER_DETAILS_BY_ID(new FindManagerDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST));
 
     private final CustomCommand command;

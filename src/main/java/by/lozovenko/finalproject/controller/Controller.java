@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,6 +50,7 @@ public class Controller extends HttpServlet {
         }else {
 
             request.getSession().setAttribute("errorReason", "message.nullpage"); //todo make constants
+            LOGGER.log(Level.WARN, "Command = {} not found", commandName);
             response.sendRedirect(PagePath.ERROR_404_PAGE);
 
         }

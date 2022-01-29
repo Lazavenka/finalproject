@@ -3,6 +3,7 @@ package by.lozovenko.finalproject.model.dao;
 import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.entity.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ public interface UserDao extends BaseDao<Long, User> {
     long createClient(Long userId) throws DaoException;
     UserRole findUserRoleByLogin(String login) throws  DaoException;
     Optional<User> findUserByLogin(String login) throws DaoException;
-
+    boolean updateUserStateById(UserState userState, Long userId)throws DaoException;
     Optional<User> findUserByLoginAndPassword(String login, String password) throws DaoException;
 
     List<User> findAllManagers() throws DaoException;
@@ -36,4 +37,9 @@ public interface UserDao extends BaseDao<Long, User> {
     List<User> findAssistantsByOrder(Order order) throws DaoException;
 
     Optional<User> findUserByEmail(String email) throws DaoException;
+    boolean isExistUserWithEmail(String email) throws DaoException;
+
+    Optional<BigDecimal> checkUserBalanceByUserId(Long userId) throws DaoException;
+
+    boolean updateUserBalanceById(Long userId, BigDecimal newBalance) throws DaoException;
 }

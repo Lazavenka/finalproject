@@ -30,6 +30,7 @@ public class CommandPermissionFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        LOGGER.log(Level.INFO, "CommandPermissionFilter");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
@@ -45,9 +46,11 @@ public class CommandPermissionFilter implements Filter {
             }else {
                 sessionUserRole = UserRole.GUEST;
             }
+            LOGGER.log(Level.INFO, "CommandPermissionFilter: command = {}, role = {}", commandType.name(), sessionUserRole.name());
             Set<UserRole> commandTypeAllowedRoles = commandType.getAllowedRoles();
             boolean allowed = commandTypeAllowedRoles.contains(sessionUserRole);
             if (allowed){
+                LOGGER.log(Level.DEBUG, "Allowed");
                 filterChain.doFilter(servletRequest, servletResponse);
             }else {
                 response.sendError(403);

@@ -97,4 +97,13 @@ public class UserValidatorImplTest {
 
         assertTrue(actual);
     }
+
+    @Test
+    public void testIsCorrectBalance() {
+        String balanceStringToAdd = "991.00";
+
+        boolean actual = userValidator.isCorrectBalance(balanceStringToAdd);
+
+        assertTrue(actual);
+    }
 }

@@ -5,7 +5,6 @@
     <title>Index</title>
 </head>
 <body>
-<jsp:forward page="jsp/guest.jsp"/>
-
+    <jsp:forward page="/controller?command=go_about_page_command"/>
 </body>
 </html>

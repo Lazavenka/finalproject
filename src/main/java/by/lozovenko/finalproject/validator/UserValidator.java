@@ -10,4 +10,5 @@ public interface UserValidator {
     boolean isCorrectEmail(String email);
     boolean isCorrectPhone(String phone);
     boolean checkUserData(Map<String, String> userData);
+    boolean isCorrectBalance(String balance);
 }

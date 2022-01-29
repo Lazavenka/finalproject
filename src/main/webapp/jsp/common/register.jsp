@@ -24,8 +24,17 @@
 <fmt:message var="invalid_phone" key="message.invalid_phone"/>
 <fmt:message var="invalid_email" key="message.invalid_email"/>
 <fmt:message var="correct" key="message.correct"/>
+<fmt:message var="sign_up" key="header.sign_up"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
+<c:set var="reg_data" value="${requestScope.user_registration_data}"/>
+<c:set var="f_name_param" value="first_name"/>
+<c:set var="l_name_param" value="last_name"/>
+<c:set var="login_param" value="login"/>
+<c:set var="pass_param" value="password"/>
+<c:set var="c_pass_param" value="confirmed_password"/>
+<c:set var="email_param" value="email"/>
+<c:set var="phone_param" value="phone_number"/>
 <html>
 <head>
     <title>Register page. Research center.</title>
@@ -35,44 +44,54 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 
-<form action="${abs}/controller" method="post" class="row g-3 needs-validation" novalidate>
+<form action="${abs}/controller" method="post" class="needs-validation" novalidate>
     <input type="hidden" name="command" value="registration_command">
-    <div class="col-md-4">
-        <label for="validationCustom01" class="form-label">${first_name}</label>
-        <input type="text" name="first_name" class="form-control" id="validationCustom01"  required pattern="^[A-Za-zА-Яа-я]{2,20}">
-        <c:if test="${requestScope.invalid_first_name}">
-            <div class="invalid-feedback-backend">${invalid_name}</div>
-        </c:if>
-        <div class="valid-feedback">
-            ${correct}
-        </div>
-        <div class="invalid-feedback">
-            ${invalid_name}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label for="validationCustom02" class="form-label">${last_name}</label>
-        <input type="text" name="last_name" class="form-control" id="validationCustom02" required pattern="[A-Za-zА-Яа-я]{2,20}">
-        <c:if test="${requestScope.invalid_last_name}">
-            <div class="invalid-feedback-backend">${invalid_name}</div>
-        </c:if>
-        <div class="valid-feedback">
-            ${correct}
-        </div>
-        <div class="invalid-feedback">
-            ${invalid_name}
+    <div class="row mb-3">
+        <label for="validationFirstName" class="col-sm-2 col-form-label">${first_name}</label>
+        <div class="col-sm-10">
+            <input type="text" name="first_name" class="form-control"
+                value="<c:if test="${!empty reg_data and reg_data.get(f_name_param) != 'invalid_first_name' }">${reg_data.get(f_name_param)}</c:if>"
+                id="validationFirstName"  required pattern="^[A-Za-zА-Яа-я]{2,20}">
+            <c:if test="${requestScope.invalid_first_name}">
+                <div style="color: red">${invalid_name}</div>
+            </c:if>
+            <div class="valid-feedback">
+                ${correct}
+            </div>
+            <div class="invalid-feedback">
+                ${invalid_name}
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <label for="validationCustomUsername" class="form-label">${login}</label>
-        <div class="input-group has-validation">
-            <input type="text" name="login" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required pattern="^[A-Za-zА-Яа-я0-9_.]{4,20}$">
+    <div class="row mb-3">
+        <label for="validationLastName" class="col-sm-2 col-form-label">${last_name}</label>
+        <div class="col-sm-10">
+            <input type="text" name="last_name" class="form-control"
+                   value="<c:if test="${!empty reg_data and reg_data.get(l_name_param) != 'invalid_last_name' }">${reg_data.get(l_name_param)}</c:if>"
+                   id="validationLastName" required pattern="[A-Za-zА-Яа-я]{2,20}">
+            <c:if test="${requestScope.invalid_last_name}">
+                <div style="color: red">${invalid_name}</div>
+            </c:if>
+            <div class="valid-feedback">
+                ${correct}
+            </div>
+            <div class="invalid-feedback">
+                ${invalid_name}
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="validationCustomUsername" class="col-sm-2 col-form-label">${login}</label>
+        <div class="col-sm-10">
+            <input type="text" name="login" class="form-control"
+                   value="<c:if test="${!empty reg_data and reg_data.get(login_param) != 'login_exists' or reg_data.get(login_param) != 'invalid_login'}">${reg_data.get(login_param)}</c:if>"
+                   id="validationCustomUsername" aria-describedby="inputGroupPrepend" required pattern="^[A-Za-zА-Яа-я0-9_.]{4,20}$">
             <c:choose>
                 <c:when test="${requestScope.login_exists}">
-                    <div class="invalid-feedback-backend">${not_unique_login}</div>
+                    <div style="color: red">${not_unique_login}</div>
                 </c:when>
                 <c:when test="${requestScope.invalid_login}">
-                    <div class="invalid-feedback-backend">${invalid_login}</div>
+                    <div style="color: red">${invalid_login}</div>
                 </c:when>
             </c:choose>
             <div class="valid-feedback">
@@ -83,39 +102,50 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <label for="validationCustom03" class="form-label">${password}</label>
-        <input type="password" name="password" class="form-control" id="validationCustom03" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
-        <c:if test="${requestScope.invalid_password}">
-            <div class="invalid-feedback-backend">${invalid_password}</div>
-        </c:if>
-        <div class="valid-feedback">
-            ${correct}
-        </div>
-        <div class="invalid-feedback">
-            ${invalid_password}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label for="validationCustom04" class="form-label">${confirm_pass}</label>
-        <input type="password" name="confirmed_password" class="form-control" id="validationCustom04" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
-        <c:if test="${requestScope.passwords_mismatch}">
-            <div class="invalid-feedback-backend">${password_mismatch}</div>
-        </c:if>
-        <div class="valid-feedback">
-            ${correct}
-        </div>
-        <div class="invalid-feedback">
-            ${invalid_password}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label for="validationCustom05" class="form-label">${email}</label>
-        <div class="input-group has-validation">
-            <input type="text" name="email" class="form-control" id="validationCustom05" aria-describedby="inputGroupPrepend" required pattern="^[\w-.]+@([\w-]+\.)+[\w-]{2,6}$" maxlength="55">
-            <c:if test="${requestScope.invalid_email}">
-                <div class="invalid-feedback-backend">${invalid_email}</div>
+    <div class="row mb-3">
+        <label for="validationPassword" class="col-sm-2 col-form-label">${password}</label>
+        <div class="col-sm-10">
+            <input type="password" name="password" class="form-control"
+                   value="<c:if test="${!empty reg_data and reg_data.get(pass_param) != 'invalid_password' }">${reg_data.get(pass_param)}</c:if>"
+                   id="validationPassword" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
+            <c:if test="${requestScope.invalid_password}">
+                <div style="color: red">${invalid_password}</div>
             </c:if>
+            <div class="valid-feedback">
+                ${correct}
+            </div>
+            <div class="invalid-feedback">
+                ${invalid_password}
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="validationCustom04" class="col-sm-2 col-form-label">${confirm_pass}</label>
+        <div class="col-sm-10">
+            <input type="password" name="confirmed_password" class="form-control"
+                   value="<c:if test="${!empty reg_data and reg_data.get(c_pass_param) != 'passwords_mismatch' }">${reg_data.get(c_pass_param)}</c:if>"
+                   id="validationCustom04" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
+            <c:if test="${requestScope.passwords_mismatch}">
+                <div style="color: red">${password_mismatch}</div>
+            </c:if>
+            <div class="valid-feedback">
+                ${correct}
+            </div>
+            <div class="invalid-feedback">
+                ${invalid_password}
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="validationCustom05" class="col-sm-2 col-form-label">${email}</label>
+        <div class="col-sm-10">
+            <input type="text" name="email" class="form-control"
+                   value="<c:if test="${!empty reg_data and reg_data.get(email_param) != 'invalid_email' or reg_data.get(email_param) != 'not_unique_email'}">${reg_data.get(email_param)}</c:if>"
+                   id="validationCustom05" aria-describedby="inputGroupPrepend" required pattern="^[\w-.]+@([\w-]+\.)+[\w-]{2,6}$" maxlength="55">
+            <c:choose>
+                <c:when test="${requestScope.invalid_email}"><div style="color: red">${invalid_email}</div></c:when>
+                <c:when test="${requestScope.not_unique_email}"><div style="color: red">${not_unique_email}</div></c:when>
+            </c:choose>
             <div class="valid-feedback">
                 ${correct}
             </div>
@@ -124,12 +154,14 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <label for="validationCustom06" class="form-label">${phone}</label>
-        <div class="input-group has-validation">
-            <input type="text" name="phone_number" class="form-control" id="validationCustom06" aria-describedby="inputGroupPrepend" required pattern="(25|29|33|44)\d{7}">
+    <div class="row mb-3">
+        <label for="validationPhone" class="col-sm-2 col-form-label">${phone}</label>
+        <div class="col-sm-10">
+            <input type="text" name="phone_number" class="form-control"
+                   value="<c:if test="${!empty reg_data and reg_data.get(phone_param) != 'invalid_phone' }">${reg_data.get(phone_param)}</c:if>"
+                   id="validationPhone" aria-describedby="inputGroupPrepend" required pattern="(25|29|33|44)\d{7}">
             <c:if test="${requestScope.invalid_phone}">
-                <div class="invalid-feedback-backend">${invalid_phone}</div>
+                <div style="color: red">${invalid_phone}</div>
             </c:if>
             <div class="valid-feedback">
                 ${correct}
@@ -139,9 +171,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12">
-        <button class="btn btn-primary" type="submit">Submit form</button>
-    </div>
+    <button type="submit" class="btn btn-primary">${sign_up}</button>
 </form>
 
 <script>

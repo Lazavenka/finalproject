@@ -103,4 +103,37 @@ public class Equipment extends CustomEntity{
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Equipment equipment = (Equipment) o;
+
+        if (equipmentTypeId != equipment.equipmentTypeId) return false;
+        if (laboratoryId != equipment.laboratoryId) return false;
+        if (isNeedAssistant != equipment.isNeedAssistant) return false;
+        if (!name.equals(equipment.name)) return false;
+        if (!description.equals(equipment.description)) return false;
+        if (imageFilePath != null ? !imageFilePath.equals(equipment.imageFilePath) : equipment.imageFilePath != null)
+            return false;
+        if (state != equipment.state) return false;
+        if (!pricePerHour.equals(equipment.pricePerHour)) return false;
+        return averageResearchTime.equals(equipment.averageResearchTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + (imageFilePath != null ? imageFilePath.hashCode() : 0);
+        result = 31 * result + (int) (equipmentTypeId ^ (equipmentTypeId >>> 32));
+        result = 31 * result + (int) (laboratoryId ^ (laboratoryId >>> 32));
+        result = 31 * result + (isNeedAssistant ? 1 : 0);
+        result = 31 * result + state.hashCode();
+        result = 31 * result + pricePerHour.hashCode();
+        result = 31 * result + averageResearchTime.hashCode();
+        return result;
+    }
 }

@@ -20,6 +20,7 @@ public class GoHomeCommand implements CustomCommand {
         HttpSession session = request.getSession();
 
         Optional<Object> optionalSessionUser = Optional.ofNullable(session.getAttribute(USER));
+
         UserRole currentUserRole = optionalSessionUser.isPresent() ? ((User)optionalSessionUser.get()).getRole() : UserRole.GUEST;
 
         switch (currentUserRole){
@@ -27,7 +28,8 @@ public class GoHomeCommand implements CustomCommand {
             case MANAGER -> router.setPage(MANAGER_PAGE);
             case ASSISTANT -> router.setPage(ASSISTANT_PAGE);
             case CLIENT -> router.setPage(CLIENT_PAGE);
-            default -> router.setPage(GUEST_PAGE);
+            case GUEST -> router.setPage(GUEST_PAGE);
+            default -> router.setPage(ERROR_404_PAGE);
         }
         return router;
     }

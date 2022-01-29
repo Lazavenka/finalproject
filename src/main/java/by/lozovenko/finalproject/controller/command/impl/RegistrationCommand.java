@@ -17,6 +17,7 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class RegistrationCommand implements CustomCommand {
+
     private final UserService userService;
 
     public RegistrationCommand() {
@@ -28,13 +29,13 @@ public class RegistrationCommand implements CustomCommand {
         Router router = new Router();
 
         Map<String, String> userData = new HashMap<>();
-        userData.put(LOGIN, request.getParameter(LOGIN));
-        userData.put(PASSWORD, request.getParameter(PASSWORD));
-        userData.put(CONFIRMED_PASSWORD, request.getParameter(CONFIRMED_PASSWORD));
-        userData.put(FIRST_NAME, request.getParameter(FIRST_NAME));
-        userData.put(LAST_NAME, request.getParameter(LAST_NAME));
-        userData.put(EMAIL, request.getParameter(EMAIL));
-        userData.put(PHONE, request.getParameter(PHONE));
+        userData.put(LOGIN, request.getParameter(LOGIN).trim());
+        userData.put(PASSWORD, request.getParameter(PASSWORD).trim());
+        userData.put(CONFIRMED_PASSWORD, request.getParameter(CONFIRMED_PASSWORD).trim());
+        userData.put(FIRST_NAME, request.getParameter(FIRST_NAME).trim());
+        userData.put(LAST_NAME, request.getParameter(LAST_NAME).trim());
+        userData.put(EMAIL, request.getParameter(EMAIL).trim());
+        userData.put(PHONE, request.getParameter(PHONE).trim());
 
         try {
             if (userService.registerUser(userData)) {
@@ -44,17 +45,46 @@ public class RegistrationCommand implements CustomCommand {
                 for (Map.Entry<String, String> entry : userData.entrySet()) {
                     String value = entry.getValue();
                     switch (value) {
-                        case LOGIN_EXISTS -> request.setAttribute(LOGIN_EXISTS, true);
-                        case INVALID_LOGIN -> request.setAttribute(INVALID_LOGIN, true);
-                        case INVALID_PASSWORD -> request.setAttribute(INVALID_PASSWORD, true);
-                        case PASSWORDS_MISMATCH -> request.setAttribute(PASSWORDS_MISMATCH, true);
-                        case INVALID_FIRST_NAME -> request.setAttribute(INVALID_FIRST_NAME, true);
-                        case INVALID_LAST_NAME -> request.setAttribute(INVALID_LAST_NAME, true);
-                        case INVALID_PHONE -> request.setAttribute(INVALID_PHONE, true);
-                        case INVALID_EMAIL -> request.setAttribute(INVALID_EMAIL, true);
-                        case NOT_UNIQUE_EMAIL -> request.setAttribute(NOT_UNIQUE_EMAIL, true);
+                        case LOGIN_EXISTS -> {
+                            request.setAttribute(LOGIN_EXISTS, true);
+                            userData.put(LOGIN, EMPTY);
+                        }
+                        case INVALID_LOGIN -> {
+                            request.setAttribute(INVALID_LOGIN, true);
+                            userData.put(LOGIN, EMPTY);
+                        }
+                        case INVALID_PASSWORD -> {
+                            request.setAttribute(INVALID_PASSWORD, true);
+                            userData.put(PASSWORD, EMPTY);
+                            userData.put(CONFIRMED_PASSWORD, EMPTY);
+                        }
+                        case PASSWORDS_MISMATCH -> {
+                            request.setAttribute(PASSWORDS_MISMATCH, true);
+                            userData.put(CONFIRMED_PASSWORD, EMPTY);
+                        }
+                        case INVALID_FIRST_NAME -> {
+                            request.setAttribute(INVALID_FIRST_NAME, true);
+                            userData.put(FIRST_NAME, EMPTY);
+                        }
+                        case INVALID_LAST_NAME -> {
+                            request.setAttribute(INVALID_LAST_NAME, true);
+                            userData.put(LAST_NAME, EMPTY);
+                        }
+                        case INVALID_PHONE -> {
+                            request.setAttribute(INVALID_PHONE, true);
+                            userData.put(PHONE, EMPTY);
+                        }
+                        case INVALID_EMAIL -> {
+                            request.setAttribute(INVALID_EMAIL, true);
+                            userData.put(EMAIL, EMPTY);
+                        }
+                        case NOT_UNIQUE_EMAIL -> {
+                            request.setAttribute(NOT_UNIQUE_EMAIL, true);
+                            userData.put(EMAIL, EMPTY);
+                        }
                     }
                 }
+                request.setAttribute(USER_REGISTRATION_DATA, userData);
                 router.setPage(REGISTRATION_PAGE);
             }
         } catch (ServiceException e) {

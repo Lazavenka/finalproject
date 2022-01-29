@@ -18,6 +18,8 @@
 <fmt:message var="locale_password" key="common.password"/>
 <fmt:message var="sign_in" key="common.sign_in"/>
 <fmt:message var="incorrect_message" key="common.incorrect_login_or_password"/>
+<fmt:message var="blocked_message" key="login.blocked_user_message"/>
+<fmt:message var="unconfirmed_message" key="login.unconfirmed_user_message"/>
 
 <html>
 <head>
@@ -28,11 +30,14 @@
 <header>
     <jsp:include page="/jsp/header/header.jsp"/>
 </header>
-<form action="${pageContext.request.contextPath}/controller" method="post" name="LoginForm">
+<div class="justify-content-center">
+<form class="form-floating mb-3" action="${pageContext.request.contextPath}/controller" method="post" name="LoginForm">
     <input type="hidden" name="command" value="login_command">
-    <c:if test="${requestScope.incorrect_login_or_password}">
-        <div class="alert alert-danger">${incorrect_message}</div>
-    </c:if>
+    <c:choose>
+        <c:when test="${requestScope.incorrect_login_or_password}"><div class="alert alert-danger">${incorrect_message}</div></c:when>
+        <c:when test="${requestScope.blocked_user}"><div class="alert alert-danger">${blocked_message}</div></c:when>
+        <c:when test="${requestScope.unconfirmed_user}"><div class="alert alert-danger">${unconfirmed_message}</div></c:when>
+    </c:choose>
     <div class="form-floating mb-3">
         <input type="text" class="form-control" id="floatingInput" name="login" placeholder=${locale_login}>
         <label for="floatingInput">${locale_login}</label>
@@ -43,6 +48,7 @@
     </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit">${sign_in}</button>
 </form>
+</div>
 <jsp:include page="/jsp/footer/footer.jsp"/>
 </body>
 </html>

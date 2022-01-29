@@ -10,11 +10,14 @@ import by.lozovenko.finalproject.model.mapper.impl.UserMapper;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
 import org.apache.logging.log4j.Level;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static by.lozovenko.finalproject.model.mapper.impl.ClientMapper.BALANCE;
 
 public class UserDaoImpl implements UserDao {
     private static UserDao instance;
@@ -29,7 +32,7 @@ public class UserDaoImpl implements UserDao {
             phone_number, user_role, user_state FROM users WHERE (login = ?)""";
     private static final String GET_USER_BY_EMAIL = """
             SELECT user_id, login, password, first_name, last_name, email,
-            phone_number, user_role, user_state FROM users WHERE (login = ?)""";
+            phone_number, user_role, user_state FROM users WHERE (email = ?)""";
     private static final String GET_MANAGER_COLUMNS_BY_USER_ID = """
             SELECT manager_id, user_id, department_id, laboratory_id, avatar_link,
             description, degree FROM managers WHERE (user_id = ?)""";
@@ -37,6 +40,7 @@ public class UserDaoImpl implements UserDao {
             SELECT assistant_id, user_id, avatar_link,
             laboratory_id FROM assistants WHERE (user_id = ?)""";
     private static final String GET_CLIENT_COLUMNS_BY_USER_ID = "SELECT client_id, user_id, balance FROM clients WHERE (user_id = ?)";
+    private static final String GET_CLIENT_BALANCE_BY_USER_ID = "SELECT balance FROM clients WHERE (user_id = ?)";
     private static final String GET_ALL_MANAGERS = """
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
@@ -69,6 +73,9 @@ public class UserDaoImpl implements UserDao {
             VALUES (?, ?, ?, ?, ?, ?)""";
 
     private static final String CREATE_CLIENT = "INSERT INTO clients (user_id) VALUES (?)";
+
+    private static final String UPDATE_USER_STATE_BY_ID = "UPDATE users SET user_state = ? WHERE user_id = ?";
+    private static final String UPDATE_CLIENT_BALANCE_BY_ID = "UPDATE clients SET balance = ? WHERE user_id = ?";
 
     public static UserDao getInstance() {
         if (instance == null) {
@@ -248,6 +255,22 @@ public class UserDaoImpl implements UserDao {
         return optionalUser;
     }
 
+    @Override
+    public boolean updateUserStateById(UserState userState, Long userId) throws DaoException {
+        boolean result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_STATE_BY_ID)) {
+            preparedStatement.setString(1, userState.name());
+            preparedStatement.setLong(2, userId);
+
+            result = preparedStatement.executeUpdate() > 0;
+
+        }catch (SQLException e){
+            throw new DaoException(e);
+        }
+        return result;
+
+    }
     public Optional<User> findUserByEmail(String email) throws DaoException{
         Optional<User> optionalUser = Optional.empty();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
@@ -263,12 +286,60 @@ public class UserDaoImpl implements UserDao {
                 }
                 String loggerResult = optionalUser.isPresent() ? String.format("User with email = %s was found.", user.getId())
                         : String.format("User with email %s doesn't exist", email);
-                LOGGER.log(Level.INFO, "findUserByLogin completed successfully. {}", loggerResult);
+                LOGGER.log(Level.INFO, "findUserByEmail completed successfully. {}", loggerResult);
             }
         }catch (SQLException e){
             throw new DaoException(e);
         }
         return optionalUser;
+    }
+
+    @Override
+    public boolean isExistUserWithEmail(String email) throws DaoException {
+        boolean result = false;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_EMAIL)){
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                result = true;
+            }
+        }catch (SQLException e){
+            throw new DaoException(e);
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<BigDecimal> checkUserBalanceByUserId(Long userId) throws DaoException {
+        Optional<BigDecimal> optionalBalance = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BALANCE_BY_USER_ID)) {
+            preparedStatement.setLong(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                BigDecimal balance = resultSet.getBigDecimal(BALANCE);
+                optionalBalance = Optional.of(balance);
+            }
+        }catch (SQLException e){
+            throw new DaoException(e);
+        }
+        return optionalBalance;
+    }
+
+    @Override
+    public boolean updateUserBalanceById(Long userId, BigDecimal newBalance) throws DaoException {
+        boolean result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_BALANCE_BY_ID)) {
+            preparedStatement.setBigDecimal(1, newBalance);
+            preparedStatement.setLong(2, userId);
+
+            result = preparedStatement.executeUpdate() > 0;
+        }catch (SQLException e){
+            throw new DaoException(e);
+        }
+        return result;
     }
 
     @Override
