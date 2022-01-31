@@ -1,18 +1,18 @@
 package by.lozovenko.finalproject.validator.impl;
 
-import by.lozovenko.finalproject.validator.UserValidator;
+import by.lozovenko.finalproject.validator.Validator;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class UserValidatorImplTest {
-    private final UserValidator userValidator = UserValidatorImpl.getInstance();
+public class ValidatorImplTest {
+    private final Validator validator = ValidatorImpl.getInstance();
 
     @Test
     public void testIsCorrectLogin() {
         final String login = "root";
 
-        boolean actual = userValidator.isCorrectLogin(login);
+        boolean actual = validator.isCorrectLogin(login);
 
         assertTrue(actual);
     }
@@ -21,7 +21,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectLoginThreeSymbols() {
         final String login = "roo";
 
-        boolean actual = userValidator.isCorrectLogin(login);
+        boolean actual = validator.isCorrectLogin(login);
 
         assertFalse(actual);
     }
@@ -29,7 +29,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectPassword() {
         final String password = "P@$s_W0RD";
 
-        boolean actual = userValidator.isCorrectPassword(password);
+        boolean actual = validator.isCorrectPassword(password);
 
         assertTrue(actual);
 
@@ -38,7 +38,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectPasswordSimplePass() {
         final String password = "aaaaaaaaaa";
 
-        boolean actual = userValidator.isCorrectPassword(password);
+        boolean actual = validator.isCorrectPassword(password);
 
         assertFalse(actual);
 
@@ -48,7 +48,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectName() {
         final String name = "Andrey";
 
-        boolean actual = userValidator.isCorrectName(name);
+        boolean actual = validator.isCorrectName(name);
 
         assertTrue(actual);
     }
@@ -58,7 +58,7 @@ public class UserValidatorImplTest {
         final String pass = "P@$s_W0RD";
         final String confirmedPass = "P@$s_W0RD";
 
-        boolean actual = userValidator.isMatchesPasswords(pass, confirmedPass);
+        boolean actual = validator.isMatchesPasswords(pass, confirmedPass);
 
         assertTrue(actual);
     }
@@ -68,7 +68,7 @@ public class UserValidatorImplTest {
         final String pass = "P@$s_W0RD";
         final String confirmedPass = "P@$s_W1RD";
 
-        boolean actual = userValidator.isMatchesPasswords(pass, confirmedPass);
+        boolean actual = validator.isMatchesPasswords(pass, confirmedPass);
 
         assertFalse(actual);
     }
@@ -76,7 +76,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectEmail() {
         final String email = "mail@test.com";
 
-        boolean actual = userValidator.isCorrectEmail(email);
+        boolean actual = validator.isCorrectEmail(email);
 
         assertTrue(actual);
     }
@@ -84,7 +84,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectEmailOver55Characters() {
         final String email = "maijhfiuh984kiehtwoihtoithweoithweoithewwetwtel@test.com"; //56 char
 
-        boolean actual = userValidator.isCorrectEmail(email);
+        boolean actual = validator.isCorrectEmail(email);
 
         assertFalse(actual);
     }
@@ -93,7 +93,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectPhone() {
         final String phone = "291005089";
 
-        boolean actual = userValidator.isCorrectPhone(phone);
+        boolean actual = validator.isCorrectPhone(phone);
 
         assertTrue(actual);
     }
@@ -102,7 +102,7 @@ public class UserValidatorImplTest {
     public void testIsCorrectBalance() {
         String balanceStringToAdd = "991.00";
 
-        boolean actual = userValidator.isCorrectBalance(balanceStringToAdd);
+        boolean actual = validator.isCorrectBalance(balanceStringToAdd);
 
         assertTrue(actual);
     }

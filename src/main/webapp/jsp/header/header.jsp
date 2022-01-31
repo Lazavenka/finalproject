@@ -18,7 +18,12 @@
 <fmt:message var="brand" key="header.brand"/>
 <fmt:message var="home" key="header.home" />
 <fmt:message var="managers" key="header.managers"/>
+<fmt:message var="equipment" key="header.equipment"/>
+<fmt:message var="departments" key="header.departments"/>
+<fmt:message var="laboratories" key="header.laboratories"/>
 <fmt:message var="balance" key="header.balance"/>
+<fmt:message var="add_balance" key="header.add_balance"/>
+<fmt:message var="client_orders" key="header.client_orders"/>
 <fmt:message var="profile" key="header.profile"/>
 
 <html>
@@ -59,9 +64,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Departments</a></li>
-                        <li><a class="dropdown-item" href="#">Laboratories</a></li>
+                        <li><a class="dropdown-item" href="#">${departments}</a></li>
+                        <li><a class="dropdown-item" href="#">${laboratories}</a></li>
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_all_managers">${managers}</a></li>
+                        <li><a class="dropdown-item" href="${abs}/controller?command=go_equipment_page_command">${equipment}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Separated link</a></li>
                         <li role="separator" class="divider"></li>
@@ -72,7 +78,7 @@
             </ul>
             <ul class="navbar-nav d-flex justify-content-end">
                 <c:choose>
-                    <c:when test="${user.role eq 'GUEST'}">
+                    <c:when test="${user == null or user.role eq 'GUEST'}">
                         <li><a class="nav-link" href="${abs}/controller?command=go_sign_in_page_command">${sign_in}</a></li>
                         <li><a class="nav-link" href="${abs}/controller?command=go_register_page_command">${register}</a></li>
                     </c:when>
@@ -82,20 +88,21 @@
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="${abs}/controller?command=go_edit_profile_page_command">${profile}</a></li>
                                 <c:if test="${user.role eq 'CLIENT'}">
-                                    <li><a class="dropdown-item" href="${abs}/controller?command=check_balance_command">${balance}<c:if test="${requestScope.user_balance != null}">: ${requestScope.user_balance.floatValue()}</c:if></a></li>
-                                    <li><a class="dropdown-item" href="${abs}/controller?command=go_balance_page_command">${balance}</a></li>
+                                    <li><a class="dropdown-item" href="${abs}/controller?command=check_balance_command">${balance}<c:if test="${sessionScope.user_balance != null}">: ${sessionScope.user_balance.floatValue()}</c:if></a></li>
+                                    <li><a class="dropdown-item" href="${abs}/controller?command=go_balance_page_command">${add_balance}</a></li>
+                                    <li><a class="dropdown-item" href="${abs}/controller?command=show_client_orders_command&userId=${user.id}">${client_orders}</a></li>
                                 </c:if>
                                 <li role="separator" class="divider"></li>
-                                <li><a class="nav-link" href="${abs}/controller?command=logout_command">${sign_out}</a></li>
+                                <li><a class="dropdown-item" href="${abs}/controller?command=logout_command">${sign_out}</a></li>
                             </ul>
                         </li>
                     </c:otherwise>
                 </c:choose>
                 <li class="nav-item">
-                    <a class="nav-link" href="${abs}/controller?command=change_locale_command&locale=ru_RU">РУ</a>
+                    <a class="nav-link <c:if test="${sessionScope.locale eq 'ru_RU'}">disabled</c:if>" href="${abs}/controller?command=change_locale_command&locale=ru_RU">РУ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${abs}/controller?command=change_locale_command&locale=en_US">EN</a>
+                    <a class="nav-link <c:if test="${sessionScope.locale eq 'en_US'}">disabled</c:if>" href="${abs}/controller?command=change_locale_command&locale=en_US">EN</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->

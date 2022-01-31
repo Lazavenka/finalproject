@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.model.dao.impl;
 
 import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.dao.EquipmentDao;
+import by.lozovenko.finalproject.model.dao.LaboratoryDao;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentState;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
@@ -16,27 +17,50 @@ import java.util.Optional;
 
 public class EquipmentDaoImpl implements EquipmentDao {
 
-    private static final String SELECT_ALL_EQUIPMENT = """
+    private static EquipmentDao instance;
+
+    private static final String GET_ALL_EQUIPMENT = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state, equipment_photo_link FROM equipment""";
-    private static final String SELECT_EQUIPMENT_BY_ID = """
+    private static final String GET_EQUIPMENT_BY_ID = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
             equipment_photo_link FROM equipment WHERE equipment_id = (?)""";
+
+    private static final String GET_EQUIPMENT_BY_TYPE = """
+            SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
+            price_per_hour, average_research_time, is_need_assistant, equipment_state,
+            equipment_photo_link FROM equipment WHERE equipment_type_id = (?)""";
+
+    private static final String GET_EQUIPMENT_BY_LABORATORY_ID = """
+            SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
+            price_per_hour, average_research_time, is_need_assistant, equipment_state,
+            equipment_photo_link FROM equipment WHERE laboratory_id = (?)""";
+
     private static final String CREATE_NEW_EQUIPMENT_ITEM = """
             INSERT INTO equipment(equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
             equipment_photo_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""";
 
+    private EquipmentDaoImpl(){
+    }
+    public static EquipmentDao getInstance(){
+        if (instance == null){
+            instance = new EquipmentDaoImpl();
+        }
+        return instance;
+    }
+
     @Override
     public List<Equipment> findAll() throws DaoException {
         List<Equipment> equipmentList = new ArrayList<>();
+        EquipmentMapper mapper = EquipmentMapper.getInstance();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_EQUIPMENT)){
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_EQUIPMENT)){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Equipment equipment = new Equipment();
-                Optional<Equipment> optionalEquipment = new EquipmentMapper().rowMap(equipment, resultSet);
+                Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
                 optionalEquipment.ifPresent(equipmentList::add);
             }
         } catch (SQLException e) {
@@ -48,13 +72,14 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public Optional<Equipment> findEntityById(Long id) throws DaoException {
         Optional<Equipment> optionalEquipment = Optional.empty();
+        EquipmentMapper mapper = EquipmentMapper.getInstance();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EQUIPMENT_BY_ID)){
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_ID)){
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Equipment equipment = new Equipment();
-                optionalEquipment = new EquipmentMapper().rowMap(equipment, resultSet);
+                optionalEquipment = mapper.rowMap(equipment, resultSet);
             }
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -110,12 +135,41 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public List<Equipment> findEquipmentByType(EquipmentType type) throws DaoException {
-        return null;
+        List<Equipment> equipmentList = new ArrayList<>();
+        EquipmentMapper mapper = EquipmentMapper.getInstance();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_TYPE)){
+            preparedStatement.setLong(1, type.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Equipment equipment = new Equipment();
+                Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
+                optionalEquipment.ifPresent(equipmentList::add);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return equipmentList;
     }
 
     @Override
     public List<Equipment> findEquipmentByLaboratory(Laboratory laboratory) throws DaoException {
-        return null;
+        List<Equipment> equipmentList = new ArrayList<>();
+        EquipmentMapper mapper = EquipmentMapper.getInstance();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_LABORATORY_ID)){
+            long laboratoryId = laboratory.getId();
+            preparedStatement.setLong(1, laboratoryId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Equipment equipment = new Equipment();
+                Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
+                optionalEquipment.ifPresent(equipmentList::add);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return equipmentList;
     }
 
     @Override

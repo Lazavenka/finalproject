@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Level;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class CheckBalanceCommand implements CustomCommand {
@@ -30,10 +31,13 @@ public class CheckBalanceCommand implements CustomCommand {
             try {
                 long userId = ((User)currentUser).getId();
                 Optional<BigDecimal> optionalUserBalance = userService.checkUserBalanceById(userId);
-                optionalUserBalance.ifPresent(bigDecimal -> request.setAttribute(USER_BALANCE, bigDecimal));
+                optionalUserBalance.ifPresent(bigDecimal -> session.setAttribute(USER_BALANCE, bigDecimal));
                 router.setPage(currentPage);
             }catch (ServiceException e){
-                logger.log(Level.WARN, "Error in CheckBalanceCommand", e);
+                logger.log(Level.ERROR, "Error in CheckBalanceCommand", e);
+                request.setAttribute(EXCEPTION, e);
+                router.setPage(ERROR_404_PAGE);
+                router.setRedirect();
             }
 
         }

@@ -23,4 +23,6 @@ public interface UserService {
     Optional<BigDecimal> checkUserBalanceById(long userId)throws ServiceException;
 
     boolean addBalance(Long userId, String balanceString) throws ServiceException;
+
+    List<User> findAllUsers() throws ServiceException;
 }

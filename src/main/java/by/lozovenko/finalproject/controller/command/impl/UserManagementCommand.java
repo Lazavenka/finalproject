@@ -3,33 +3,32 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
+import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
-import static by.lozovenko.finalproject.controller.PagePath.CONFIRM_REGISTRATION_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
-import static by.lozovenko.finalproject.controller.RequestAttribute.CONFIRM_FAILED;
-import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
-import static by.lozovenko.finalproject.controller.RequestParameter.TOKEN;
+import java.util.List;
 
-public class ConfirmRegistrationCommand implements CustomCommand {
-    UserService userService;
-    public ConfirmRegistrationCommand(){
-        userService = UserServiceImpl.getInstance();
+import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
+import static by.lozovenko.finalproject.controller.PagePath.USER_MANAGEMENT_PAGE;
+import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
+import static by.lozovenko.finalproject.controller.RequestAttribute.USERS;
+
+public class UserManagementCommand implements CustomCommand {
+
+    public UserManagementCommand(){
     }
     @Override
     public Router execute(HttpServletRequest request) {
-        Router router = new Router(CONFIRM_REGISTRATION_PAGE, Router.DispatchType.FORWARD);
-        String token = request.getParameter(TOKEN);
+        UserService userService = UserServiceImpl.getInstance();
+        Router router = new Router(USER_MANAGEMENT_PAGE, Router.DispatchType.FORWARD);
         try {
-            boolean result = userService.confirmUserRegistration(token);
-            if (!result) {
-                request.setAttribute(CONFIRM_FAILED, true);
-            }
+            List<User> userList = userService.findAllUsers();
+            request.setAttribute(USERS, userList);
         }catch (ServiceException e){
-            logger.log(Level.WARN, "ERROR in ConfirmRegistrationCommand. ", e);
+            logger.log(Level.ERROR, "Error in UserManagementCommand");
             request.setAttribute(EXCEPTION, e);
             router.setPage(ERROR_404_PAGE);
             router.setRedirect();

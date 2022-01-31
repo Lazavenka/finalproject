@@ -9,7 +9,9 @@ import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.apache.logging.log4j.Level;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
@@ -42,7 +44,11 @@ public class LoginCommand implements CustomCommand {
                     case CLIENT -> {
                         UserState userState = user.getState();
                         switch (userState){
-                            case ACTIVE -> router.setPage(CLIENT_PAGE);
+                            case ACTIVE -> {
+                                router.setPage(CLIENT_PAGE);
+                                BigDecimal balance = ((Client)user).getBalance();
+                                session.setAttribute(USER_BALANCE, balance);
+                            }
                             case BLOCKED -> {
                                 router.setPage(LOGIN_PAGE);
                                 request.setAttribute(BLOCKED_USER, true);
@@ -60,8 +66,9 @@ public class LoginCommand implements CustomCommand {
             }
         } catch (ServiceException e) {
             logger.error("Error at SignInCommand", e);
-            request.setAttribute("exception", e); //fixme constants and handle on front
-            router.setPage(ERROR_404_PAGE); //todo куда пересылается?
+            request.setAttribute(EXCEPTION, e);
+            router.setPage(ERROR_404_PAGE);
+            router.setRedirect();
         }
 
         return router;

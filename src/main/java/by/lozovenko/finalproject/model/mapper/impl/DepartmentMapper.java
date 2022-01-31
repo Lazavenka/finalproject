@@ -15,7 +15,17 @@ public class DepartmentMapper implements CustomRowMapper<Department> {
     public static final String DEPARTMENT_NAME = "department_name";
     public static final String DEPARTMENT_DESCRIPTION = "department_description";
     public static final String DEPARTMENT_ADDRESS = "department_address";
+    private static DepartmentMapper instance;
 
+    private DepartmentMapper() {
+    }
+
+    public static DepartmentMapper getInstance() {
+        if (instance == null) {
+            instance = new DepartmentMapper();
+        }
+        return instance;
+    }
     @Override
     public Optional<Department> rowMap(Department department, ResultSet resultSet) throws DaoException {
         Optional<Department> optionalDepartment;

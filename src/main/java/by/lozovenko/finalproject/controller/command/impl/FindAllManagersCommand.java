@@ -13,6 +13,7 @@ import java.util.List;
 
 import static by.lozovenko.finalproject.controller.PagePath.ALL_MANAGERS_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
+import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
 import static by.lozovenko.finalproject.controller.RequestAttribute.MANAGERS;
 
 public class FindAllManagersCommand implements CustomCommand {
@@ -31,8 +32,9 @@ public class FindAllManagersCommand implements CustomCommand {
             router.setPage(ALL_MANAGERS_PAGE);
         } catch (ServiceException e){
             logger.error("Error at FindAllManagersInCommand", e);
-            request.setAttribute("exception", e); //fixme constants and handle on front
-            router.setPage(ERROR_404_PAGE); //todo куда пересылается?
+            request.setAttribute(EXCEPTION, e);
+            router.setPage(ERROR_404_PAGE);
+            router.setRedirect();
         }
         return router;
     }

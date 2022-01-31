@@ -22,6 +22,18 @@ public class EquipmentMapper implements CustomRowMapper<Equipment> {
     public static final String PHOTO_LINK = "equipment_photo_link";
     public static final String EQUIPMENT_DESCRIPTION = "equipment_description";
 
+    private static EquipmentMapper instance;
+
+    private EquipmentMapper() {
+
+    }
+
+    public static EquipmentMapper getInstance() {
+        if (instance == null) {
+            instance = new EquipmentMapper();
+        }
+        return instance;
+    }
     @Override
     public Optional<Equipment> rowMap(Equipment equipment, ResultSet resultSet) throws DaoException {
         Optional<Equipment> optionalEquipment;

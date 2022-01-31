@@ -14,7 +14,10 @@ public class PagePath {
     public static final String CONFIRM_REGISTRATION_PAGE = "jsp/common/confirm_page.jsp";
     public static final String GUEST_PAGE = "jsp/guest.jsp";
     public static final String ALL_MANAGERS_PAGE = "jsp/common/see_managers.jsp";
+    public static final String EQUIPMENT_PAGE = "jsp/common/equipment_page.jsp";
     public static final String MANAGER_DETAILS_PAGE = "jsp/common/manager_details.jsp";
+    public static final String ASSISTANT_SCHEDULE_PAGE = "jsp/assistant/assistant_schedule.jsp";
+    public static final String USER_MANAGEMENT_PAGE = "jsp/admin/manage_users.jsp";
     private PagePath() {
     }
 }

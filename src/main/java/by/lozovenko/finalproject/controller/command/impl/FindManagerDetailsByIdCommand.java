@@ -11,6 +11,7 @@ import by.lozovenko.finalproject.model.service.impl.DepartmentServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.Level;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,9 +60,10 @@ public class FindManagerDetailsByIdCommand implements CustomCommand {
                 request.setAttribute(NO_MANAGERS_FOUND, true);
             }
         } catch (ServiceException e){
-            logger.error("Error at FindAllManagersInCommand", e);
-            request.setAttribute("exception", e); //fixme constants and handle on front
-            router.setPage(ERROR_404_PAGE); //todo куда пересылается?
+            logger.log(Level.ERROR, "Error in FindAllManagersInCommand", e);
+            request.setAttribute(EXCEPTION, e);
+            router.setPage(ERROR_404_PAGE);
+            router.setRedirect();
         }
         return router;
     }

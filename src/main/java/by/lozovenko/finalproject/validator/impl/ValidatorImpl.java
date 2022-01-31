@@ -1,14 +1,14 @@
 package by.lozovenko.finalproject.validator.impl;
 
-import by.lozovenko.finalproject.validator.UserValidator;
+import by.lozovenko.finalproject.validator.Validator;
 
 import java.util.Map;
 
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
-public class UserValidatorImpl implements UserValidator {
-    private static UserValidator instance;
+public class ValidatorImpl implements Validator {
+    private static Validator instance;
 
     private static final String USER_LOGIN_PATTERN = "^[A-Za-zА-Яа-я0-9_.]{4,20}$";
     private static final String USER_PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!#%*?&_])[A-Za-z\\d@$!#%*?&_]{8,20}$";
@@ -16,11 +16,12 @@ public class UserValidatorImpl implements UserValidator {
     private static final String EMAIL_PATTERN = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,6}$";
     private static final String EMAIL_SYMBOL_PATTERN = ".{8,55}";
     private static final String PHONE_PATTERN = "(25|29|33|44)\\d{7}";
+    private static final String ID_PATTERN = "^\\d+$";
     private static final String BALANCE_PATTERN = "^\\d{1,3}\\.?\\d{0,2}$";
 
-    public static UserValidator getInstance() {
+    public static Validator getInstance() {
         if (instance == null) {
-            instance = new UserValidatorImpl();
+            instance = new ValidatorImpl();
         }
         return instance;
     }
@@ -102,6 +103,11 @@ public class UserValidatorImpl implements UserValidator {
     @Override
     public boolean isCorrectBalance(String balance) {
         return notNullOrEmpty(balance) && balance.matches(BALANCE_PATTERN);
+    }
+
+    @Override
+    public boolean isCorrectEquipmentTypeId(String equipmentTypeId) {
+        return notNullOrEmpty(equipmentTypeId) && equipmentTypeId.matches(ID_PATTERN);
     }
 
 

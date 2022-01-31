@@ -11,8 +11,13 @@
   <title>Error 404</title>
 </head>
 <body>
-<h1>PAGE NOT FOUND</h1>
-<br/>
+Request from ${pageContext.errorData.requestURI} failed!
+<hr/>
+Exception - ${pageContext.exception}
+<hr/>
+Status - ${pageContext.errorData.statusCode}
+<hr/>
+Servlet name - ${pageContext.errorData.servletName}
 <hr/>
 <a href="${pageContext.request.contextPath}/controller?command=go_home_command">Home</a>
 </body>

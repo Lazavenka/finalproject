@@ -11,7 +11,7 @@
 <fmt:message var="phone" key="common.manager_details.phone"/>
 <fmt:message var="email" key="common.manager_details.email"/>
 <fmt:message var="degree" key="common.manager_details.degree"/>
-<fmt:message var="description" key="common.manager_details.description"/>
+<fmt:message var="description" key="common.description"/>
 <fmt:message var="laboratory" key="common.manager_details.laboratory"/>
 <fmt:message var="department" key="common.manager_details.department"/>
 <fmt:message var="contacts" key="common.manager_details.contacts"/>

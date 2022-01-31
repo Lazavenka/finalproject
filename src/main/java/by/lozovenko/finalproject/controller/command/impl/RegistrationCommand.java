@@ -11,8 +11,7 @@ import org.apache.logging.log4j.Level;
 import java.util.HashMap;
 import java.util.Map;
 
-import static by.lozovenko.finalproject.controller.PagePath.LOGIN_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.REGISTRATION_PAGE;
+import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
@@ -88,7 +87,10 @@ public class RegistrationCommand implements CustomCommand {
                 router.setPage(REGISTRATION_PAGE);
             }
         } catch (ServiceException e) {
-            logger.log(Level.WARN, "Error in RegistrationCommand", e);
+            logger.log(Level.ERROR, "Error in RegistrationCommand", e);
+            request.setAttribute(EXCEPTION, e);
+            router.setPage(ERROR_404_PAGE);
+            router.setRedirect();
         }
         return router;
     }

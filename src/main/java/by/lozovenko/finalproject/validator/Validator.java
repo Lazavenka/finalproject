@@ -2,7 +2,7 @@ package by.lozovenko.finalproject.validator;
 
 import java.util.Map;
 
-public interface UserValidator {
+public interface Validator {
     boolean isCorrectLogin(String login);
     boolean isCorrectPassword(String password);
     boolean isMatchesPasswords(String password, String confirmedPassword);
@@ -11,4 +11,5 @@ public interface UserValidator {
     boolean isCorrectPhone(String phone);
     boolean checkUserData(Map<String, String> userData);
     boolean isCorrectBalance(String balance);
+    boolean isCorrectEquipmentTypeId(String equipmentTypeId);
 }

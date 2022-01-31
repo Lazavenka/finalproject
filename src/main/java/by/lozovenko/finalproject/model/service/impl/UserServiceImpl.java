@@ -12,8 +12,8 @@ import by.lozovenko.finalproject.util.PasswordEncryptor;
 import by.lozovenko.finalproject.util.UserTokenGenerator;
 import by.lozovenko.finalproject.util.mail.Mail;
 import by.lozovenko.finalproject.util.mail.MailMessageBuilder;
-import by.lozovenko.finalproject.validator.UserValidator;
-import by.lozovenko.finalproject.validator.impl.UserValidatorImpl;
+import by.lozovenko.finalproject.validator.Validator;
+import by.lozovenko.finalproject.validator.impl.ValidatorImpl;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,8 @@ public class UserServiceImpl implements UserService {
     private static UserService instance;
 
     private final UserDao userDao = UserDaoImpl.getInstance();
-    private final UserValidator userValidator = UserValidatorImpl.getInstance();
+
+    private final Validator validator = ValidatorImpl.getInstance();
 
     private UserServiceImpl() {
     }
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> signIn(String login, String password) throws ServiceException {
         Optional<User> optionalUser;
-        if (userValidator.isCorrectLogin(login) && userValidator.isCorrectPassword(password)) {
+        if (validator.isCorrectLogin(login) && validator.isCorrectPassword(password)) {
             try {
                 optionalUser = userDao.findUserByLogin(login);
                 if (optionalUser.isPresent()) {
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean registerUser(Map<String, String> userData) throws ServiceException {
         try {
-            boolean isValidData = userValidator.checkUserData(userData);
+            boolean isValidData = validator.checkUserData(userData);
             if (!isValidData) {
                 return false;
             }
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean addBalance(Long userId, String balanceToAdd) throws ServiceException {
-        if (!userValidator.isCorrectBalance(balanceToAdd)){
+        if (!validator.isCorrectBalance(balanceToAdd)){
             LOGGER.log(Level.DEBUG, "InvalidBalance - {}", balanceToAdd);
             return false;
         }
@@ -181,6 +182,15 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(e);
         }
         return result;
+    }
+
+    @Override
+    public List<User> findAllUsers() throws ServiceException {
+        try {
+            return userDao.findAll();
+        }catch (DaoException e){
+            throw new ServiceException(e);
+        }
     }
 
     private boolean createClient(long createdUserId) throws DaoException {

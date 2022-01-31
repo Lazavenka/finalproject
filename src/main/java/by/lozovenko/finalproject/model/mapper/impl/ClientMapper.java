@@ -16,8 +16,12 @@ public class ClientMapper implements CustomRowMapper<User> {
 
     private static ClientMapper instance;
 
-    public static ClientMapper getInstance(){
-        if (instance == null){
+    private ClientMapper() {
+
+    }
+
+    public static ClientMapper getInstance() {
+        if (instance == null) {
             instance = new ClientMapper();
         }
         return instance;
@@ -31,7 +35,7 @@ public class ClientMapper implements CustomRowMapper<User> {
             client.setBalance(resultSet.getBigDecimal(BALANCE));
             client.setClientId(resultSet.getLong(CLIENT_ID));
             optionalUser = Optional.of(client);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.log(Level.ERROR, "Mapping error in ClientMapper class!", e);
             optionalUser = Optional.empty();
         }

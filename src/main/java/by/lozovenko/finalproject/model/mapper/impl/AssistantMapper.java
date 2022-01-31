@@ -16,12 +16,16 @@ public class AssistantMapper implements CustomRowMapper<User> {
 
     private static AssistantMapper instance;
 
-    public static AssistantMapper getInstance(){
-        if (instance == null){
+    private AssistantMapper() {
+    }
+
+    public static AssistantMapper getInstance() {
+        if (instance == null) {
             instance = new AssistantMapper();
         }
         return instance;
     }
+
     @Override
     public Optional<User> rowMap(User entity, ResultSet resultSet) throws DaoException {
         Optional<User> optionalUser;
@@ -31,7 +35,7 @@ public class AssistantMapper implements CustomRowMapper<User> {
             assistant.setImageFilePath(resultSet.getString(AVATAR_LINK));
             assistant.setAssistantId(resultSet.getLong(ASSISTANT_ID));
             optionalUser = Optional.of(assistant);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.log(Level.ERROR, "Mapping error in AssistantMapper class!", e);
             optionalUser = Optional.empty();
         }

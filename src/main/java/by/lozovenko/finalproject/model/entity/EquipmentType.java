@@ -9,6 +9,8 @@ public class EquipmentType extends CustomEntity{
         this.name = name;
         this.description = description;
     }
+    public EquipmentType() {
+    }
 
     public String getName() {
         return name;
