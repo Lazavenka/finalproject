@@ -21,6 +21,9 @@ public class UserMapper implements CustomRowMapper<User> {
     public static final String USER_ROLE = "user_role";
     public static final String USER_STATE = "user_state";
 
+    public static final String USER_ID_COLUMN_NAME = "user_id";
+    public static final String USER_TOKEN_COLUMN_NAME = "user_token";
+    public static final String REGISTER_TIMESTAMP_COLUMN_NAME = "register_timestamp";
 
 
     private static UserMapper instance;

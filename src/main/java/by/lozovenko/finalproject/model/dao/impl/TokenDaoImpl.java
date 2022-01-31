@@ -20,7 +20,6 @@ public class TokenDaoImpl implements TokenDao {
     private static final String REGISTER_TIMESTAMP_COLUMN_NAME = "register_timestamp";
 
     private static final String CREATE_TOKEN = "INSERT INTO user_tokens (user_id, user_token, register_timestamp) values (?, ?, ?)";
-    private static final String FIND_TOKEN_BY_VALUE = "SELECT user_id, user_token, register_timestamp FROM user_tokens WHERE user_token = ?";
     private static final String DELETE_TOKEN_BY_ID = "DELETE FROM user_tokens WHERE user_id = ?";
 
     private TokenDaoImpl(){
@@ -81,24 +80,5 @@ public class TokenDaoImpl implements TokenDao {
         throw new UnsupportedOperationException("update(Token token) method is not supported");
     }
 
-    @Override
-    public Optional<Token> findTokenByValue(String tokenValue) throws DaoException{
-        Optional<Token> optionalToken = Optional.empty();
-        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_TOKEN_BY_VALUE)) {
-            preparedStatement.setString(1, tokenValue);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long userId = resultSet.getLong(USER_ID_COLUMN_NAME);
-                String userToken = resultSet.getString(USER_TOKEN_COLUMN_NAME);
-                LocalDateTime registerDateTime = resultSet.getTimestamp(REGISTER_TIMESTAMP_COLUMN_NAME).toLocalDateTime();
-                Token token = new Token(userId, userToken, registerDateTime);
-                optionalToken = Optional.of(token);
-            }
-        }
-        catch (SQLException e){
-            throw new DaoException(e);
-        }
-        return optionalToken;
-    }
+
 }

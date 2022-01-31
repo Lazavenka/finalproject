@@ -2,9 +2,7 @@ package by.lozovenko.finalproject.model.service.impl;
 
 import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.dao.TokenDao;
 import by.lozovenko.finalproject.model.dao.UserDao;
-import by.lozovenko.finalproject.model.dao.impl.TokenDaoImpl;
 import by.lozovenko.finalproject.model.dao.impl.UserDaoImpl;
 import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.UserService;
@@ -12,8 +10,10 @@ import by.lozovenko.finalproject.util.PasswordEncryptor;
 import by.lozovenko.finalproject.util.UserTokenGenerator;
 import by.lozovenko.finalproject.util.mail.Mail;
 import by.lozovenko.finalproject.util.mail.MailMessageBuilder;
-import by.lozovenko.finalproject.validator.Validator;
-import by.lozovenko.finalproject.validator.impl.ValidatorImpl;
+import by.lozovenko.finalproject.validator.CustomFieldValidator;
+import by.lozovenko.finalproject.validator.CustomMapDataValidator;
+import by.lozovenko.finalproject.validator.impl.CustomFieldValidatorImpl;
+import by.lozovenko.finalproject.validator.impl.UserMapDataValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +36,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao = UserDaoImpl.getInstance();
 
-    private final Validator validator = ValidatorImpl.getInstance();
+    private CustomMapDataValidator dataValidator;
+
+    private final CustomFieldValidator inputFieldValidator = CustomFieldValidatorImpl.getInstance();
 
     private UserServiceImpl() {
     }
@@ -51,12 +53,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> signIn(String login, String password) throws ServiceException {
         Optional<User> optionalUser;
-        if (validator.isCorrectLogin(login) && validator.isCorrectPassword(password)) {
+        if (inputFieldValidator.isCorrectLogin(login) && inputFieldValidator.isCorrectPassword(password)) {
             try {
                 optionalUser = userDao.findUserByLogin(login);
                 if (optionalUser.isPresent()) {
+                    User user = optionalUser.get();
+                    String userPassword = user.getPassword();
                     String hashedPassword = PasswordEncryptor.encryptMd5Apache(password);
-                    if (!optionalUser.get().getPassword().equals(hashedPassword)) {
+                    if (!userPassword.equals(hashedPassword)) {
                         LOGGER.log(Level.INFO, "User login or password is incorrect");
                         return Optional.empty();
                     }
@@ -94,7 +98,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean registerUser(Map<String, String> userData) throws ServiceException {
         try {
-            boolean isValidData = validator.checkUserData(userData);
+            dataValidator = UserMapDataValidator.getInstance();
+            boolean isValidData = dataValidator.validateMapData(userData);
             if (!isValidData) {
                 return false;
             }
@@ -111,13 +116,12 @@ public class UserServiceImpl implements UserService {
                 userData.put(EMAIL, NOT_UNIQUE_EMAIL);
                 return false;
             }
-            long createdUserId = createUser(userData);
-            if (createdUserId > 0 && createClient(createdUserId)) {
-                String tokenValue = UserTokenGenerator.generateToken();
-                LocalDateTime registerDateTime = LocalDateTime.now();
-                Token token = new Token(createdUserId, tokenValue, registerDateTime);
-                TokenDao tokenDao = TokenDaoImpl.getInstance();
-                tokenDao.create(token);
+            Client client = createClientFromUserData(userData);
+            String tokenValue = UserTokenGenerator.generateToken();
+            LocalDateTime registerDateTime = LocalDateTime.now();
+            Token token = new Token(tokenValue, registerDateTime);
+            long createdClientId = userDao.createClient(client, token);
+            if (createdClientId > 0) {
                 String mailBody = MailMessageBuilder.buildMessage(tokenValue);
                 Mail.sendMail(userData.get(EMAIL), "You registered new account!", mailBody);
                 return true;
@@ -131,19 +135,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean confirmUserRegistration(String tokenValue) throws ServiceException {
-        TokenDao tokenDao = TokenDaoImpl.getInstance();
         boolean result = false;
         try {
-            Optional<Token> token = tokenDao.findTokenByValue(tokenValue);
+            Optional<Token> token = userDao.findUserTokenByValue(tokenValue);
             if (token.isPresent()){
                 long userId = token.get().getId();
-                UserState userState = UserState.ACTIVE;
-                result = userDao.updateUserStateById(userState, userId);
-                if (result){
-                    tokenDao.deleteById(userId);
-                }
+                result = userDao.confirmUserRegistration(userId);
             }
-
         }catch (DaoException e){
             throw new ServiceException(e);
         }
@@ -163,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean addBalance(Long userId, String balanceToAdd) throws ServiceException {
-        if (!validator.isCorrectBalance(balanceToAdd)){
+        if (!inputFieldValidator.isCorrectBalance(balanceToAdd)){
             LOGGER.log(Level.DEBUG, "InvalidBalance - {}", balanceToAdd);
             return false;
         }
@@ -193,23 +191,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean createClient(long createdUserId) throws DaoException {
-        return userDao.createClient(createdUserId) > 0;
-    }
-
-    private long createUser(Map<String, String> userData) throws DaoException {
-        User user = new User();
-        String password = userData.get(PASSWORD);
-        String email = userData.get(EMAIL);
-        String hashedPassword = PasswordEncryptor.encryptMd5Apache(password);
+    private Client createClientFromUserData(Map<String, String> userData){
+        Client user = new Client();
+        String hashedPassword = PasswordEncryptor.encryptMd5Apache(userData.get(PASSWORD));
         user.setLogin(userData.get(LOGIN));
         user.setPassword(hashedPassword);
         user.setFirstName(userData.get(FIRST_NAME));
         user.setLastName(userData.get(LAST_NAME));
-        user.setEmail(email);
+        user.setEmail(userData.get(EMAIL));
         user.setPhone(userData.get(PHONE));
         user.setRole(UserRole.CLIENT);
         user.setState(UserState.REGISTRATION);
-        return userDao.create(user);
+        return user;
     }
 }

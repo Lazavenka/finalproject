@@ -1,12 +1,13 @@
 package by.lozovenko.finalproject.validator.impl;
 
-import by.lozovenko.finalproject.validator.Validator;
+import by.lozovenko.finalproject.validator.CustomFieldValidator;
+import by.lozovenko.finalproject.validator.CustomMapDataValidator;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class ValidatorImplTest {
-    private final Validator validator = ValidatorImpl.getInstance();
+public class CustomFieldValidatorTest {
+    private final CustomFieldValidator validator = CustomFieldValidatorImpl.getInstance();
 
     @Test
     public void testIsCorrectLogin() {

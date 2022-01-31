@@ -2,16 +2,14 @@ package by.lozovenko.finalproject.model.service.impl;
 
 import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.dao.EquipmentDao;
 import by.lozovenko.finalproject.model.dao.EquipmentTypeDao;
-import by.lozovenko.finalproject.model.dao.impl.EquipmentDaoImpl;
 import by.lozovenko.finalproject.model.dao.impl.EquipmentTypeDaoImpl;
-import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
-import by.lozovenko.finalproject.model.service.EquipmentService;
 import by.lozovenko.finalproject.model.service.EquipmentTypeService;
-import by.lozovenko.finalproject.validator.Validator;
-import by.lozovenko.finalproject.validator.impl.ValidatorImpl;
+import by.lozovenko.finalproject.validator.CustomFieldValidator;
+import by.lozovenko.finalproject.validator.CustomMapDataValidator;
+import by.lozovenko.finalproject.validator.impl.CustomFieldValidatorImpl;
+import by.lozovenko.finalproject.validator.impl.UserMapDataValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +19,7 @@ public class EquipmentTypeServiceImpl implements EquipmentTypeService{
 
     private final EquipmentTypeDao equipmentTypeDao = EquipmentTypeDaoImpl.getInstance();
 
-    private final Validator validator = ValidatorImpl.getInstance();
+    private final CustomFieldValidator inputFieldValidator = CustomFieldValidatorImpl.getInstance();
 
     private EquipmentTypeServiceImpl(){
     }
@@ -43,7 +41,7 @@ public class EquipmentTypeServiceImpl implements EquipmentTypeService{
 
     @Override
     public Optional<EquipmentType> findById(String equipmentTypeId) throws ServiceException {
-        if (!validator.isCorrectEquipmentTypeId(equipmentTypeId)){
+        if (!inputFieldValidator.isCorrectEquipmentTypeId(equipmentTypeId)){
             throw new ServiceException("EquipmentTypeId didn't pass validation.");
         }
         Optional<EquipmentType> optionalEquipmentType;

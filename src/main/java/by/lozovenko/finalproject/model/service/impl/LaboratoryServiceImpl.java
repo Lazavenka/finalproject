@@ -4,7 +4,6 @@ import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.dao.LaboratoryDao;
 import by.lozovenko.finalproject.model.dao.impl.LaboratoryDaoImpl;
-import by.lozovenko.finalproject.model.service.DepartmentService;
 import by.lozovenko.finalproject.model.service.LaboratoryService;
 
 import java.util.Optional;

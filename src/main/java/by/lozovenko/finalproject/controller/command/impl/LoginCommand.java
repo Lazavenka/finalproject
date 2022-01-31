@@ -35,31 +35,31 @@ public class LoginCommand implements CustomCommand {
             Optional<User> optionalUser = userService.signIn(loginValue, passValue);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
-                UserRole role = user.getRole();
-                session.setAttribute(USER, user);
-                switch (role) {
-                    case ADMIN -> router.setPage(ADMIN_PAGE);
-                    case MANAGER -> router.setPage(MANAGER_PAGE);
-                    case ASSISTANT -> router.setPage(ASSISTANT_PAGE);
-                    case CLIENT -> {
-                        UserState userState = user.getState();
-                        switch (userState){
-                            case ACTIVE -> {
+                UserState userState = user.getState();
+                switch (userState){
+                    case ACTIVE -> {
+                        UserRole role = user.getRole();
+                        session.setAttribute(USER, user);
+                        switch (role) {
+                            case ADMIN -> router.setPage(ADMIN_PAGE);
+                            case MANAGER -> router.setPage(MANAGER_PAGE);
+                            case ASSISTANT -> router.setPage(ASSISTANT_PAGE);
+                            case CLIENT -> {
                                 router.setPage(CLIENT_PAGE);
-                                BigDecimal balance = ((Client)user).getBalance();
+                                BigDecimal balance = ((Client) user).getBalance();
                                 session.setAttribute(USER_BALANCE, balance);
                             }
-                            case BLOCKED -> {
-                                router.setPage(LOGIN_PAGE);
-                                request.setAttribute(BLOCKED_USER, true);
-                            }
-                            case REGISTRATION -> {
-                                router.setPage(LOGIN_PAGE);
-                                request.setAttribute(UNCONFIRMED_USER, true);
-                            }
+                            default -> router.setPage(GUEST_PAGE);
                         }
                     }
-                    default -> router.setPage(GUEST_PAGE);
+                    case BLOCKED -> {
+                        router.setPage(LOGIN_PAGE);
+                        request.setAttribute(BLOCKED_USER, true);
+                    }
+                    case REGISTRATION -> {
+                        router.setPage(LOGIN_PAGE);
+                        request.setAttribute(UNCONFIRMED_USER, true);
+                    }
                 }
             } else {
                 request.setAttribute(INCORRECT_LOGIN_OR_PASSWORD, true);
@@ -70,7 +70,6 @@ public class LoginCommand implements CustomCommand {
             router.setPage(ERROR_404_PAGE);
             router.setRedirect();
         }
-
         return router;
     }
 }

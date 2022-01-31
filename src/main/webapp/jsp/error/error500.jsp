@@ -12,6 +12,6 @@ Status - ${pageContext.errorData.statusCode}
 <hr/>
 Servlet name - ${pageContext.errorData.servletName}
 <hr/>
-<a href="${pageContext.request.contextPath}/controller?command=command=go_home_command">Home</a>
+<a href="${pageContext.request.contextPath}/controller?command=go_home_command">Home</a>
 </body>
 </html>

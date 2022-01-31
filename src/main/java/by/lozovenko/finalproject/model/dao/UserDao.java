@@ -9,13 +9,14 @@ import java.util.Optional;
 
 public interface UserDao extends BaseDao<Long, User> {
     boolean updatePasswordByLogin(String password, String login) throws DaoException;
-    long createManager(Long userId, Manager manager) throws DaoException;
-    long createClient(Long userId) throws DaoException;
+    long createManager(Manager manager) throws DaoException;
+    long createClient(Client client, Token token) throws DaoException;
     UserRole findUserRoleByLogin(String login) throws  DaoException;
     Optional<User> findUserByLogin(String login) throws DaoException;
     boolean updateUserStateById(UserState userState, Long userId)throws DaoException;
     Optional<User> findUserByLoginAndPassword(String login, String password) throws DaoException;
-
+    Optional<Token> findUserTokenByValue(String tokenValue) throws DaoException;
+    boolean confirmUserRegistration(Long userId) throws DaoException;
     List<User> findAllManagers() throws DaoException;
 
     List<User> findManagersByDepartmentId(Long departmentId) throws DaoException;

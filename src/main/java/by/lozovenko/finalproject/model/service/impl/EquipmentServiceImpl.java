@@ -7,8 +7,8 @@ import by.lozovenko.finalproject.model.dao.impl.EquipmentDaoImpl;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
 import by.lozovenko.finalproject.model.service.EquipmentService;
-import by.lozovenko.finalproject.validator.Validator;
-import by.lozovenko.finalproject.validator.impl.ValidatorImpl;
+import by.lozovenko.finalproject.validator.CustomMapDataValidator;
+import by.lozovenko.finalproject.validator.impl.UserMapDataValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +17,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     private static EquipmentService instance;
 
     private final EquipmentDao equipmentDao = EquipmentDaoImpl.getInstance();
-    private final Validator validator = ValidatorImpl.getInstance();
+    private final CustomMapDataValidator validator = UserMapDataValidator.getInstance();
 
     private EquipmentServiceImpl(){
     }

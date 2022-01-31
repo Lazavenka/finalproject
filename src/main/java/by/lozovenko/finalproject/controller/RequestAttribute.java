@@ -29,6 +29,16 @@ public class RequestAttribute {
     public static final String INVALID_BALANCE ="invalid_balance";
     public static final String LOGIN_EXISTS = "login_exists";
     public static final String NOT_UNIQUE_EMAIL = "not_unique_email";
+    public static final String INVALID_DESCRIPTION = "invalid_description";
+    public static final String INVALID_LOCATION = "invalid_location";
+    public static final String INVALID_LABORATORY_NAME = "invalid_laboratory_name";
+    public static final String INVALID_EQUIPMENT_TYPE_NAME = "invalid_equipment_type_name";
+    public static final String INVALID_DEGREE = "invalid_degree";
+    public static final String INVALID_ENUM = "invalid_enum";
+    public static final String INVALID_DEPARTMENT_NAME = "invalid_department_name";
+    public static final String INVALID_DEPARTMENT_ADDRESS = "invalid_department_address";
+    public static final String INVALID_RESEARCH_TIME = "invalid_research_time";
+    public static final String INVALID_PRICE = "invalid_price";
     public static final String EMPTY = "";
     public static final String INVALID_EMAIL = "invalid_email";
     public static final String PASSWORDS_MISMATCH = "passwords_mismatch";

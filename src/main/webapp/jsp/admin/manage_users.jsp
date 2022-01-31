@@ -8,14 +8,14 @@
 <fmt:setBundle basename="locale/language"/>
 
 <fmt:message var="user_id" key="common.manager_details.no_managers_found"/>
-<fmt:message var="first_name" key="common.manager_details.phone"/>
-<fmt:message var="last_name" key="common.manager_details.email"/>
-<fmt:message var="login" key="common.manager_details.degree"/>
- <fmt:message var="phone" key="common.manager_details.contacts"/>
- <fmt:message var="email" key="common.details.field_not_found"/>
-<fmt:message var="user_role" key="common.description"/>
-<fmt:message var="user_state" key="common.manager_details.laboratory"/>
-<fmt:message var="edit" key="common.manager_details.department"/>
+<fmt:message var="first_name" key="registration.first_name"/>
+<fmt:message var="last_name" key="registration.last_name"/>
+<fmt:message var="login" key="registration.login"/>
+ <fmt:message var="phone" key="registration.phone"/>
+ <fmt:message var="email" key="registration.email"/>
+<fmt:message var="user_role" key="admin.role"/>
+<fmt:message var="user_state" key="admin.state"/>
+<fmt:message var="edit" key="common.edit"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
@@ -29,7 +29,7 @@
 <table class="table-light">
     <thead>
     <tr>
-        <th scope="col">${user_id}</th>
+        <th scope="col">ID</th>
         <th scope="col">${first_name}</th>
         <th scope="col">${last_name}</th>
         <th scope="col">${login}</th>
@@ -51,7 +51,7 @@
             <td>${user.login}</td>
             <td>${user.role}</td>
             <td>${user.state}</td>
-            <td><a role="button" class="btn btn-primary" href="${abs}/controller?command=edit_user_command&userId=${user.id}">${edit}</a></td>
+            <td><a role="button" class="btn btn-primary" href="${abs}/controller?command=go_edit_user_page_command&userId=${user.id}">${edit}</a></td>
         </tr>
     </c:forEach>
     </tbody>

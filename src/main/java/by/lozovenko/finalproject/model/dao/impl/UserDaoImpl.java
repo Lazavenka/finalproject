@@ -12,12 +12,14 @@ import org.apache.logging.log4j.Level;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.model.mapper.impl.ClientMapper.BALANCE;
+import static by.lozovenko.finalproject.model.mapper.impl.UserMapper.*;
 
 public class UserDaoImpl implements UserDao {
     private static UserDao instance;
@@ -73,6 +75,9 @@ public class UserDaoImpl implements UserDao {
             VALUES (?, ?, ?, ?, ?, ?)""";
 
     private static final String CREATE_CLIENT = "INSERT INTO clients (user_id) VALUES (?)";
+    private static final String CREATE_TOKEN = "INSERT INTO user_tokens (user_id, user_token, register_timestamp) values (?, ?, ?)";
+    private static final String FIND_TOKEN_BY_VALUE = "SELECT user_id, user_token, register_timestamp FROM user_tokens WHERE user_token = ?";
+    private static final String DELETE_TOKEN_BY_ID = "DELETE FROM user_tokens WHERE user_id = ?";
 
     private static final String UPDATE_USER_STATE_BY_ID = "UPDATE users SET user_state = ? WHERE user_id = ?";
     private static final String UPDATE_CLIENT_BALANCE_BY_ID = "UPDATE clients SET balance = ? WHERE user_id = ?";
@@ -140,14 +145,7 @@ public class UserDaoImpl implements UserDao {
         long result = -1;
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, user.getLogin());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setString(3, user.getFirstName());
-            preparedStatement.setString(4, user.getLastName());
-            preparedStatement.setString(5, user.getEmail());
-            preparedStatement.setString(6, user.getPhone());
-            preparedStatement.setString(7, user.getRole().name());
-            preparedStatement.setString(8, user.getState().name());
+            setUserColumnsInStatement(user, preparedStatement);
             preparedStatement.executeUpdate();
             ResultSet generatedKey = preparedStatement.getGeneratedKeys();
             if (generatedKey.next()) {
@@ -157,6 +155,17 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException(e);
         }
         return result;
+    }
+
+    private void setUserColumnsInStatement(User user, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, user.getLogin());
+        preparedStatement.setString(2, user.getPassword());
+        preparedStatement.setString(3, user.getFirstName());
+        preparedStatement.setString(4, user.getLastName());
+        preparedStatement.setString(5, user.getEmail());
+        preparedStatement.setString(6, user.getPhone());
+        preparedStatement.setString(7, user.getRole().name());
+        preparedStatement.setString(8, user.getState().name());
     }
 
     @Override
@@ -170,47 +179,166 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public long createManager(Long userId, Manager manager) throws DaoException {  //fixme
-        long generatedUserId = -1;
-        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_MANAGER, Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, manager.getDepartmentId());
-            preparedStatement.setLong(3, manager.getLaboratoryId());
-            preparedStatement.setString(4, manager.getImageFilePath());
-            preparedStatement.setString(5, manager.getDescription());
-            preparedStatement.setString(6, manager.getManagerDegree().getValue());
-            preparedStatement.executeUpdate();
-
-            ResultSet generatedKey = preparedStatement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                return generatedKey.getLong(1);
+    public long createManager(Manager manager) throws DaoException {
+        long generatedManagerId = 0;
+        Connection connection = null;
+        try {
+            connection = CustomConnectionPool.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement createUserStatement = connection.prepareStatement(CREATE_USER, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement createManagerStatement = connection.prepareStatement(CREATE_MANAGER, Statement.RETURN_GENERATED_KEYS)) {
+                setUserColumnsInStatement(manager, createUserStatement);
+                createUserStatement.executeUpdate();
+                ResultSet userResultSet = createUserStatement.getGeneratedKeys();
+                long userId = 0;
+                if (userResultSet.next()) {
+                    userId = userResultSet.getLong(1);
+                    createManagerStatement.setLong(1, userId);
+                    createManagerStatement.setLong(2, manager.getDepartmentId());
+                    createManagerStatement.setLong(3, manager.getLaboratoryId());
+                    createManagerStatement.setString(4, manager.getImageFilePath());
+                    createManagerStatement.setString(5, manager.getDescription());
+                    createManagerStatement.setString(6, manager.getManagerDegree().getValue());
+                    createManagerStatement.executeUpdate();
+                    ResultSet managerResultSet = createManagerStatement.getResultSet();
+                    if (managerResultSet.next()) {
+                        generatedManagerId = managerResultSet.getLong(1);
+                    }
+                }
+                connection.commit();
+                LOGGER.log(Level.INFO, "createManager method complete successfully. Generated userId = {}, managerId = {}. Returned managerId", userId, generatedManagerId);
             }
-
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Change cancellation error in createManager transaction:", throwables);
+            }
             throw new DaoException(e);
+        }finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Database access error occurs:", throwables);
+            }
         }
-        return generatedUserId;
+        return generatedManagerId;
     }
 
     @Override
-    public long createClient(Long userId) throws DaoException {
+    public long createClient(Client client, Token token) throws DaoException {
         long generatedClientId = -1;
-        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_CLIENT, Statement.RETURN_GENERATED_KEYS)) {
+        Connection connection = null;
+        try {
+            connection = CustomConnectionPool.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement createUserStatement = connection.prepareStatement(CREATE_USER, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement createClientStatement = connection.prepareStatement(CREATE_CLIENT, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement createTokenStatement = connection.prepareStatement(CREATE_TOKEN, Statement.RETURN_GENERATED_KEYS)) {
+                setUserColumnsInStatement(client, createUserStatement);
+                createUserStatement.executeUpdate();
+                ResultSet resultSet = createUserStatement.getGeneratedKeys();
+                long userId = 0;
+                long tokenId = 0;
+                if (resultSet.next()) {
+                    userId = resultSet.getLong(1);
+                    createClientStatement.setLong(1, userId);
+                    createClientStatement.executeUpdate();
+                    ResultSet clientResultSet = createClientStatement.getGeneratedKeys();
+                    if (clientResultSet.next()) {
+                        generatedClientId = clientResultSet.getLong(1);
+                    }
+                    createTokenStatement.setLong(1, userId);
+                    createTokenStatement.setString(2, token.getValue());
+                    createTokenStatement.setTimestamp(3, Timestamp.valueOf(token.getRegisterDateTime()));
+                    createTokenStatement.executeUpdate();
 
-            preparedStatement.setLong(1, userId);
-            preparedStatement.executeUpdate();
-
-            ResultSet generatedKey = preparedStatement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                generatedClientId = generatedKey.getLong(1);
+                    ResultSet tokenResultSet = createTokenStatement.getGeneratedKeys();
+                    if (tokenResultSet.next()) {
+                        tokenId = clientResultSet.getLong(1);
+                    }
+                }
+                connection.commit();
+                LOGGER.log(Level.INFO, "createClient method complete successfully. Generated userId = {}, clientId = {}, tokenId = {}. Returned clientId", userId, generatedClientId, tokenId);
             }
-        }catch (SQLException e){
-            throw new DaoException(e);
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Change cancellation error in createClient transaction:", throwables);
+            }
+            throw new DaoException("Error in createClient method. Impossible to insert client into database.", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Database access error occurs:", throwables);
+            }
         }
         return generatedClientId;
+    }
+
+    @Override
+    public Optional<Token> findUserTokenByValue(String tokenValue) throws DaoException {
+        Optional<Token> optionalToken = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_TOKEN_BY_VALUE)) {
+            preparedStatement.setString(1, tokenValue);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                long userId = resultSet.getLong(USER_ID_COLUMN_NAME);
+                String userToken = resultSet.getString(USER_TOKEN_COLUMN_NAME);
+                LocalDateTime registerDateTime = resultSet.getTimestamp(REGISTER_TIMESTAMP_COLUMN_NAME).toLocalDateTime();
+                Token token = new Token(userId, userToken, registerDateTime);
+                optionalToken = Optional.of(token);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return optionalToken;
+    }
+
+    @Override
+    public boolean confirmUserRegistration(Long userId) throws DaoException {
+        boolean result;
+        Connection connection = null;
+        try {
+            connection = CustomConnectionPool.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement updateUserStatement = connection.prepareStatement(UPDATE_USER_STATE_BY_ID);
+                 PreparedStatement deleteTokenStatement = connection.prepareStatement(DELETE_TOKEN_BY_ID)) {
+                updateUserStatement.setString(1, UserState.ACTIVE.name());
+                updateUserStatement.setLong(2, userId);
+                boolean userUpdate = updateUserStatement.executeUpdate() != 0;
+                deleteTokenStatement.setLong(1, userId);
+                boolean tokenDelete = deleteTokenStatement.executeUpdate() != 0;
+                connection.commit();
+                result = userUpdate && tokenDelete;
+            }
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Change cancellation error in confirmUserRegistration transaction:", throwables);
+            }
+            throw new DaoException("Error in confirmUserRegistration method. Impossible to update userState and delete user token from database.", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Database access error occurs:", throwables);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -226,7 +354,7 @@ public class UserDaoImpl implements UserDao {
                 role = UserRole.GUEST;
             }
         } catch (SQLException e) {
-            throw new DaoException("Database access error. Can't find user by login.", e);
+            throw new DaoException("Error in findUserRoleByLogin method. Can't find userRole by login.", e);
         }
         return role;
     }
@@ -250,7 +378,7 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.log(Level.INFO, "findUserByLogin completed successfully. {}", loggerResult);
             }
         } catch (SQLException e) {
-            throw new DaoException("Database access error. Can't find user by login.", e);
+            throw new DaoException("Error in findUserByLogin method. Can't find user by login.", e);
         }
         return optionalUser;
     }
@@ -265,13 +393,14 @@ public class UserDaoImpl implements UserDao {
 
             result = preparedStatement.executeUpdate() > 0;
 
-        }catch (SQLException e){
-            throw new DaoException(e);
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateUserStateById method. Can't update user. Database access error.", e);
         }
         return result;
 
     }
-    public Optional<User> findUserByEmail(String email) throws DaoException{
+
+    public Optional<User> findUserByEmail(String email) throws DaoException {
         Optional<User> optionalUser = Optional.empty();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_EMAIL)) {
@@ -288,8 +417,8 @@ public class UserDaoImpl implements UserDao {
                         : String.format("User with email %s doesn't exist", email);
                 LOGGER.log(Level.INFO, "findUserByEmail completed successfully. {}", loggerResult);
             }
-        }catch (SQLException e){
-            throw new DaoException(e);
+        } catch (SQLException e) {
+            throw new DaoException("Error in findUserByEmail method. Can't find user by email. Database access error.", e);
         }
         return optionalUser;
     }
@@ -298,13 +427,13 @@ public class UserDaoImpl implements UserDao {
     public boolean isExistUserWithEmail(String email) throws DaoException {
         boolean result = false;
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_EMAIL)){
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_EMAIL)) {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 result = true;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException(e);
         }
         return result;
@@ -317,12 +446,12 @@ public class UserDaoImpl implements UserDao {
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BALANCE_BY_USER_ID)) {
             preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 BigDecimal balance = resultSet.getBigDecimal(BALANCE);
                 optionalBalance = Optional.of(balance);
             }
-        }catch (SQLException e){
-            throw new DaoException(e);
+        } catch (SQLException e) {
+            throw new DaoException("Error in checkUserBalanceByUserId method. Can't find clientBalance by id. Database access error.", e);
         }
         return optionalBalance;
     }
@@ -336,8 +465,8 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setLong(2, userId);
 
             result = preparedStatement.executeUpdate() > 0;
-        }catch (SQLException e){
-            throw new DaoException(e);
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateUserBalanceById method. Can't update clientBalance by id. Database access error.", e);
         }
         return result;
     }
@@ -356,7 +485,7 @@ public class UserDaoImpl implements UserDao {
             getManagersFromResultSet(managers, resultSet);
             LOGGER.log(Level.INFO, "findAllManagers found {} managers in database", managers.size());
         } catch (SQLException e) {
-            throw new DaoException(e); //fixme message
+            throw new DaoException("Error in findAllManagers method. Can't find Managers in database. Database access error.", e);
         }
         return managers;
     }
@@ -371,7 +500,7 @@ public class UserDaoImpl implements UserDao {
             getManagersFromResultSet(managers, resultSet);
             LOGGER.log(Level.INFO, "findManagersById (id = {}) found {} managers in database", departmentId, managers.size());
         } catch (SQLException e) {
-            throw new DaoException(e); //fixme message
+            throw new DaoException("Error in findManagersByDepartmentId method. Can't find Managers by departmentId. Database access error.", e);
         }
         return managers;
     }
@@ -386,7 +515,7 @@ public class UserDaoImpl implements UserDao {
             getManagersFromResultSet(managers, resultSet);
             LOGGER.log(Level.INFO, "findManagersByDegree (degree = {}) found {} managers in database", managerDegree.getValue(), managers.size());
         } catch (SQLException e) {
-            throw new DaoException(e); //fixme message
+            throw new DaoException("Error in findManagersByDegree method. Can't find Managers by degree. Database access error.", e);
         }
         return managers;
     }
@@ -418,7 +547,7 @@ public class UserDaoImpl implements UserDao {
                 optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
             }
         } catch (SQLException e) {
-            throw new DaoException(e); //fixme message
+            throw new DaoException("Error in findManagerById method. Can't find Manager by managerId. Database access error.", e);
         }
         return optionalUser;
     }
@@ -477,7 +606,7 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.log(Level.INFO, "No columns for Client with user id = {} found", userId);
             }
         } catch (SQLException e) {
-            throw new DaoException("Database access error. Can't find user by login.", e);
+            throw new DaoException("Database access error. Can't handle with addClientColumns method.", e);
         }
         return optionalUser;
     }
@@ -494,7 +623,7 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.log(Level.INFO, "No columns for Manager with user id = {} found", userId);
             }
         } catch (SQLException e) {
-            throw new DaoException("Database access error. Can't find user by login.", e);
+            throw new DaoException("Database access error. Can't handle with addManagersColumns method.", e);
         }
         return optionalUser;
     }
@@ -511,7 +640,7 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.log(Level.INFO, "No columns for Assistant with user id = {} found", userId);
             }
         } catch (SQLException e) {
-            throw new DaoException("Database access error. Can't find user by login.", e);
+            throw new DaoException("Database access error. Can't handle with addAssistantColumns method.", e);
         }
         return optionalUser;
     }
