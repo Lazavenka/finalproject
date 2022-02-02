@@ -16,10 +16,8 @@ import static by.lozovenko.finalproject.controller.PagePath.USER_MANAGEMENT_PAGE
 import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
 import static by.lozovenko.finalproject.controller.RequestAttribute.USERS;
 
-public class UserManagementCommand implements CustomCommand {
+public class GoUserManagementPageCommand implements CustomCommand {
 
-    public UserManagementCommand(){
-    }
     @Override
     public Router execute(HttpServletRequest request) {
         UserService userService = UserServiceImpl.getInstance();

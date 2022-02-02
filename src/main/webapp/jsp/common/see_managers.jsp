@@ -24,7 +24,7 @@
         <div>
             <h5 class="mt-0">${manager.lastName} ${manager.firstName}</h5>
             <p class="card-text">${manager.description}</p>
-            <a href="${abs}/controller?command=find_manager_details_by_id&managerId=${manager.managerId}" class="stretched-link">${details}</a>
+            <a href="${abs}/controller?command=find_manager_details_by_id_command&manager_id=${manager.managerId}" class="stretched-link">${details}</a>
         </div>
     </div>
 </c:forEach>

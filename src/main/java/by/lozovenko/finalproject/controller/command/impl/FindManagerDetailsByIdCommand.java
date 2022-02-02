@@ -21,21 +21,15 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.MANAGER_ID;
 
 public class FindManagerDetailsByIdCommand implements CustomCommand {
-    private final UserService userService;
-    private final DepartmentService departmentService;
-    private final LaboratoryService laboratoryService;
-
-    public FindManagerDetailsByIdCommand() {
-        this.userService = UserServiceImpl.getInstance();
-        this.departmentService = DepartmentServiceImpl.getInstance();
-        this.laboratoryService = LaboratoryServiceImpl.getInstance();
-    }
 
     @Override
     public Router execute(HttpServletRequest request) {
+        UserService userService = UserServiceImpl.getInstance();
+        DepartmentService departmentService = DepartmentServiceImpl.getInstance();
+        LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
         Router router = new Router();
         try {
-            long managerId = Long.parseLong(request.getParameter(MANAGER_ID));
+            String managerId = request.getParameter(MANAGER_ID);
             Optional<Manager> optionalManager = userService.findManagerById(managerId);
             router.setPage(MANAGER_DETAILS_PAGE);
             if (optionalManager.isPresent()) {

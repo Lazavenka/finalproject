@@ -43,4 +43,6 @@ public interface UserDao extends BaseDao<Long, User> {
     Optional<BigDecimal> checkUserBalanceByUserId(Long userId) throws DaoException;
 
     boolean updateUserBalanceById(Long userId, BigDecimal newBalance) throws DaoException;
+
+    Optional<User> findManagerByLaboratoryId(long laboratoryId)  throws DaoException;
 }

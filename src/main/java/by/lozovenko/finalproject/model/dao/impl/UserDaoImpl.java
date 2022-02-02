@@ -53,6 +53,11 @@ public class UserDaoImpl implements UserDao {
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
             m.description, m.degree FROM users AS u
             JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.department_id = ?""";
+    private static final String GET_MANAGER_BY_LABORATORY_ID = """
+            SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
+            u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
+            m.description, m.degree FROM users AS u
+            JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.laboratory_id = ?""";
     private static final String GET_MANAGER_BY_ID = """
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
@@ -101,7 +106,7 @@ public class UserDaoImpl implements UserDao {
                 optionalUser.ifPresent(users::add);
             }
         } catch (SQLException e) {
-            throw new DaoException(e); //fixme message
+            throw new DaoException("Error in findAll method UserDao class. Unable to get access to database.", e);
         }
         return users;
     }
@@ -125,7 +130,7 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.log(Level.INFO, "findUserById completed successfully. {}", loggerResult);
             }
         } catch (SQLException e) {
-            throw new DaoException(e); //fixme message
+            throw new DaoException("Error in findEntityById method UserDao class. Unable to get access to database.", e);
         }
         return optionalUser;
     }
@@ -152,7 +157,7 @@ public class UserDaoImpl implements UserDao {
                 return generatedKey.getLong(1);
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in create method UserDao class. Unable to get access to database.", e);
         }
         return result;
     }
@@ -299,7 +304,7 @@ public class UserDaoImpl implements UserDao {
                 optionalToken = Optional.of(token);
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findUserTokenByValue method UserDao class. Unable to get access to database.", e);
         }
         return optionalToken;
     }
@@ -434,7 +439,7 @@ public class UserDaoImpl implements UserDao {
                 result = true;
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in isExistUserWithEmail method UserDao class. Unable to get access to database.", e);
         }
         return result;
     }
@@ -469,6 +474,24 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("Error in updateUserBalanceById method. Can't update clientBalance by id. Database access error.", e);
         }
         return result;
+    }
+
+    @Override
+    public Optional<User> findManagerByLaboratoryId(long laboratoryId) throws DaoException {
+        Optional<User> optionalUser = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGER_BY_LABORATORY_ID)) {
+            preparedStatement.setLong(1, laboratoryId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                User user = new User();
+                UserMapper.getInstance().rowMap(user, resultSet);
+                optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in findManagerByLaboratoryId method. Can't find Manager by managerId. Database access error.", e);
+        }
+        return optionalUser;
     }
 
     @Override

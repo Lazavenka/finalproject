@@ -65,9 +65,9 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">${departments}</a></li>
-                        <li><a class="dropdown-item" href="#">${laboratories}</a></li>
-                        <li><a class="dropdown-item" href="${abs}/controller?command=find_all_managers">${managers}</a></li>
+                        <li><a class="dropdown-item" href="${abs}/controller?command=find_all_departments_command">${departments}</a></li>
+                        <li><a class="dropdown-item" href="${abs}/controller?command=find_department_details_by_id_command&department_id=0">${laboratories}</a></li>
+                        <li><a class="dropdown-item" href="${abs}/controller?command=find_all_managers_command">${managers}</a></li>
                         <li><a class="dropdown-item" href="${abs}/controller?command=go_equipment_page_command">${equipment}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Separated link</a></li>

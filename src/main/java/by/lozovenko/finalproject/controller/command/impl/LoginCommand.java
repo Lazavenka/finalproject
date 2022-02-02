@@ -19,14 +19,10 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class LoginCommand implements CustomCommand {
-    private final UserService userService;
-
-    public LoginCommand() {
-        this.userService = UserServiceImpl.getInstance();
-    }
 
     @Override
     public Router execute(HttpServletRequest request) {
+        UserService userService = UserServiceImpl.getInstance();
         HttpSession session = request.getSession();
         Router router = new Router(PagePath.LOGIN_PAGE, Router.DispatchType.FORWARD);
         String loginValue = request.getParameter(LOGIN);

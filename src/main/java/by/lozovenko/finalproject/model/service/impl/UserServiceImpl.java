@@ -85,14 +85,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<Manager> findManagerById(String managerId) throws ServiceException {
+        Optional<Manager> optionalUser;
+        if (inputFieldValidator.isCorrectId(managerId)){
+            Long id = Long.parseLong(managerId);
+            optionalUser = findManagerById(id);
+        }else {
+            optionalUser = Optional.empty();
+        }
+        return optionalUser;
+    }
+
+    @Override
     public Optional<Manager> findManagerById(Long managerId) throws ServiceException {
         try {
             Optional<User> optionalUser = userDao.findManagerById(managerId);
             return optionalUser.isPresent() ? optionalUser.map(Manager.class::cast) : Optional.empty();
         } catch (DaoException e) {
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle findManagerById method in UserService. ", e);
         }
-
     }
 
     @Override
@@ -129,7 +140,7 @@ public class UserServiceImpl implements UserService {
                 return false;
             }
         } catch (DaoException | IOException e) {
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle registerUser method in UserService. ", e);
         }
     }
 
@@ -143,7 +154,7 @@ public class UserServiceImpl implements UserService {
                 result = userDao.confirmUserRegistration(userId);
             }
         }catch (DaoException e){
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle confirmUserRegistration method in UserService. ", e);
         }
         return result;
     }
@@ -154,7 +165,7 @@ public class UserServiceImpl implements UserService {
         try {
             optionalBalance = userDao.checkUserBalanceByUserId(userId);
         }catch (DaoException e){
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle checkUserBalanceById method in UserService. ", e);
         }
         return optionalBalance;
     }
@@ -177,7 +188,7 @@ public class UserServiceImpl implements UserService {
                 LOGGER.log(Level.INFO, "UserService - user:{} balance not found", userId);
             }
         }catch (DaoException e){
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle addBalance method in UserService. ", e);
         }
         return result;
     }
@@ -187,7 +198,17 @@ public class UserServiceImpl implements UserService {
         try {
             return userDao.findAll();
         }catch (DaoException e){
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle findAllUsers method in UserService. ", e);
+        }
+    }
+
+    @Override
+    public Optional<Manager> findManagerByLaboratoryId(long laboratoryId) throws ServiceException {
+        try {
+            Optional<User> optionalUser = userDao.findManagerByLaboratoryId(laboratoryId);
+            return optionalUser.isPresent() ? optionalUser.map(Manager.class::cast) : Optional.empty();
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle findManagerByLaboratoryId method in UserService. ", e);
         }
     }
 

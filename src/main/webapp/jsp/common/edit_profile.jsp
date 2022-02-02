@@ -8,12 +8,12 @@
 <fmt:setBundle basename="locale/language"/>
 <html>
 <head>
-    <title>Manager details page. Research center.</title>
+    <title>Edit profile page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="vstack gap-2 col-md-5 mx-auto">
+<div class="stack gap-2 col-md-5 mx-auto">
   <button type="button" class="btn btn-secondary">Save changes</button>
   <button type="button" class="btn btn-outline-secondary">Cancel</button>
 </div>

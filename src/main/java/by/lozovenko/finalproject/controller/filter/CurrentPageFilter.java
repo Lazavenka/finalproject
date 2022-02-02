@@ -16,8 +16,10 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.CURRENT_PAGE
 public class CurrentPageFilter implements Filter {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CONTROLLER_PATTERN = "/controller?";
-    private static final String ROOT_PAGES_DIRECTORY = "/jsp";
+    private static final String ROOT_PAGES_DIRECTORY = "jsp";
     private static final String INDEX_PAGE = "/index.jsp";
+    private static final String LOCALE_COMMAND = "command=change_locale";
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -35,7 +37,7 @@ public class CurrentPageFilter implements Filter {
             currentPage = requestURI.substring(rootIndex);
         }
         String query = request.getQueryString();
-        if (query != null){
+        if (query != null && !query.contains(LOCALE_COMMAND)){
             currentPage = CONTROLLER_PATTERN.concat(query);
 
         }

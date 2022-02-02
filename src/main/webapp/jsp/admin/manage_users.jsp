@@ -1,4 +1,4 @@
- page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -15,7 +15,7 @@
  <fmt:message var="email" key="registration.email"/>
 <fmt:message var="user_role" key="admin.role"/>
 <fmt:message var="user_state" key="admin.state"/>
-<fmt:message var="edit" key="common.edit"/>
+<fmt:message var="edit" key="button.edit"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
@@ -32,9 +32,9 @@
         <th scope="col">ID</th>
         <th scope="col">${first_name}</th>
         <th scope="col">${last_name}</th>
-        <th scope="col">${login}</th>
         <th scope="col">${phone}</th>
         <th scope="col">${email}</th>
+        <th scope="col">${login}</th>
         <th scope="col">${user_role}</th>
         <th scope="col">${user_state}</th>
         <th scope="col">${edit}</th>
@@ -51,7 +51,7 @@
             <td>${user.login}</td>
             <td>${user.role}</td>
             <td>${user.state}</td>
-            <td><a role="button" class="btn btn-primary" href="${abs}/controller?command=go_edit_user_page_command&userId=${user.id}">${edit}</a></td>
+            <td><a role="button" class="btn btn-primary" href="${abs}/controller?command=go_edit_user_page_command&user_id=${user.id}">${edit}</a></td>
         </tr>
     </c:forEach>
     </tbody>

@@ -76,6 +76,7 @@ public class OrderDaoImpl implements OrderDao {
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDER_EQUIPMENT_BY_STATE_AND_ASSISTANT_ID)){
             preparedStatement.setLong(1, assistantId);
             preparedStatement.setString(2, orderState.name());
+            //todo implement!
         }catch (SQLException e){
             throw new DaoException(e);
         }

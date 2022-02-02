@@ -45,7 +45,7 @@
                             <dd class="col-sm-9">${field_not_found}</dd>
                         </c:when>
                         <c:otherwise>
-                            <dd class="col-sm-9"><a href="${abs}/controller?command=find_department_details_by_id&departmentId=${manager.departmentId}">${requestScope.department_name}</a></dd>
+                            <dd class="col-sm-9"><a href="${abs}/controller?command=find_department_details_by_id_command&department_id=${manager.departmentId}">${requestScope.department_name}</a></dd>
                         </c:otherwise>
                     </c:choose>
 
@@ -55,7 +55,7 @@
                             <dd class="col-sm-9">${field_not_found}</dd>
                         </c:when>
                         <c:otherwise>
-                            <dd class="col-sm-9"><a href="${abs}/controller?command=find_laboratory_details_by_id&laboratoryId=${manager.laboratoryId}">${requestScope.laboratory_name}</a></dd>
+                            <dd class="col-sm-9"><a href="${abs}/controller?command=find_laboratory_details_by_id_command&laboratory_id=${manager.laboratoryId}">${requestScope.laboratory_name}</a></dd>
                         </c:otherwise>
                     </c:choose>
 

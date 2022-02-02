@@ -7,17 +7,20 @@ page contentType="text/html;charset=UTF-8" language="java" %>
 </c:if>
 <fmt:setBundle basename="locale/language"/>
 
-<fmt:message var="user_id" key="common.manager_details.no_managers_found"/>
-<fmt:message var="first_name" key="registration.first_name"/>
-<fmt:message var="last_name" key="registration.last_name"/>
-<fmt:message var="login" key="registration.login"/>
-<fmt:message var="phone" key="registration.phone"/>
-<fmt:message var="email" key="registration.email"/>
-<fmt:message var="user_role" key="admin.role"/>
-<fmt:message var="user_state" key="admin.state"/>
-<fmt:message var="edit" key="common.edit"/>
+<fmt:message var="department_name" key="department.department_name"/>
+<fmt:message var="description" key="common.description"/>
+<fmt:message var="department_address" key="department.department_address"/>
+<fmt:message var="invalid_description" key="message.invalid_description"/>
+<fmt:message var="invalid_department_address" key="message.invalid_department_address"/>
+<fmt:message var="invalid_department_name" key="message.invalid_department_name"/>
+<fmt:message var="correct" key="message.correct"/>
+<fmt:message var="add" key="buttons.add"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
+<c:set var="department_data" value="${requestScope.department_data}"/>
+<c:set var="name_param" value="department_name"/>
+<c:set var="description_param" value="description"/>
+<c:set var="address_param" value="department_address"/>
 
 <html>
 <head>
@@ -30,10 +33,10 @@ page contentType="text/html;charset=UTF-8" language="java" %>
 <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
     <input type="hidden" name="command" value="add_department_command">
     <div class="row mb-3">
-        <label for="validationDepartmentName" class="col-sm-2 col-form-label">${dep_name}</label>
+        <label for="validationDepartmentName" class="col-sm-2 col-form-label">${department_name}</label>
         <div class="col-sm-10">
             <input type="text" name="department_name" class="form-control"
-                   value="<c:if test="${!empty reg_data and reg_data.get(f_name_param) != 'invalid_first_name' }">${reg_data.get(f_name_param)}</c:if>"
+                   value="<c:if test="${!empty department_data and department_data.get(name_param) != 'invalid_department_name' }">${department_data.get(name_param)}</c:if>"
                    id="validationDepartmentName"  required pattern="[A-Za-zА-Яа-я0-9]{2,200}">
             <c:if test="${requestScope.invalid_department_name}">
                 <div class="alert alert-danger">${invalid_department_name}</div>
@@ -47,29 +50,12 @@ page contentType="text/html;charset=UTF-8" language="java" %>
         </div>
     </div>
     <div class="row mb-3">
-        <label for="validationDepartDescription" class="col-sm-2 col-form-label">${dep_description}</label>
+        <label for="validationDepartAddress" class="col-sm-2 col-form-label">${department_address}</label>
         <div class="col-sm-10">
-            <input type="text" name="department_description" class="form-control"
-                   value="<c:if test="${!empty reg_data and reg_data.get(l_name_param) != 'invalid_last_name' }">${reg_data.get(l_name_param)}</c:if>"
-                   id="validationDepartDescription" required>
-            <c:if test="${requestScope.invalid_last_name}">
-                <div class="alert alert-danger">${invalid_name}</div>
-            </c:if>
-            <div class="valid-feedback">
-                ${correct}
-            </div>
-            <div class="invalid-feedback">
-                ${invalid_name}
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <label for="validationDepartAddress" class="col-sm-2 col-form-label">${dep_address}</label>
-        <div class="col-sm-10">
-            <input type="text" name="department_description" class="form-control"
-                   value="<c:if test="${!empty reg_data and reg_data.get(l_name_param) != 'invalid_last_name' }">${reg_data.get(l_name_param)}</c:if>"
+            <input type="text" name="department_address" class="form-control"
+                   value="<c:if test="${!empty department_data and department_data.get(address_param) != 'invalid_department_address' }">${department_data.get(address_param)}</c:if>"
                    id="validationDepartAddress" required pattern="^.{2,255}$">
-            <c:if test="${requestScope.invalid_department_address}">
+            <c:if test="${requestScope.invalid_last_name}">
                 <div class="alert alert-danger">${invalid_department_address}</div>
             </c:if>
             <div class="valid-feedback">
@@ -77,6 +63,23 @@ page contentType="text/html;charset=UTF-8" language="java" %>
             </div>
             <div class="invalid-feedback">
                 ${invalid_department_address}
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="validationDepartDescription" class="col-sm-2 col-form-label">${description}</label>
+        <div class="col-sm-10">
+            <input type="text" name="description" class="form-control"
+                   value="<c:if test="${!empty department_data and department_data.get(description_param) != 'invalid_description' }">${department_data.get(description_param)}</c:if>"
+                   id="validationDepartDescription" required>
+            <c:if test="${requestScope.invalid_department_address}">
+                <div class="alert alert-danger">${invalid_description}</div>
+            </c:if>
+            <div class="valid-feedback">
+                ${correct}
+            </div>
+            <div class="invalid-feedback">
+                ${invalid_description}
             </div>
         </div>
     </div>

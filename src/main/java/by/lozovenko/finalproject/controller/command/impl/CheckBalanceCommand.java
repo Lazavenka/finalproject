@@ -17,12 +17,10 @@ import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class CheckBalanceCommand implements CustomCommand {
-    private final UserService userService;
-    public CheckBalanceCommand() {
-        this.userService = UserServiceImpl.getInstance();
-    }
+
     @Override
     public Router execute(HttpServletRequest request) {
+        UserService userService = UserServiceImpl.getInstance();
         Router router = new Router();
         HttpSession session = request.getSession();
         String currentPage = (String) session.getAttribute(CURRENT_PAGE);

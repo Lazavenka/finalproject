@@ -17,14 +17,9 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class RegistrationCommand implements CustomCommand {
 
-    private final UserService userService;
-
-    public RegistrationCommand() {
-        this.userService = UserServiceImpl.getInstance();
-    }
-
     @Override
     public Router execute(HttpServletRequest request) {
+        UserService userService = UserServiceImpl.getInstance();
         Router router = new Router();
 
         Map<String, String> userData = new HashMap<>();

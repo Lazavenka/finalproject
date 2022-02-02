@@ -14,7 +14,7 @@ public interface EquipmentDao extends BaseDao<Long, Equipment> {
 
     List<Equipment> findEquipmentByType(EquipmentType type) throws DaoException;
 
-    List<Equipment> findEquipmentByLaboratory(Laboratory laboratory) throws DaoException;
+    List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws DaoException;
 
     Optional<Equipment> findEquipmentByName(String patternName) throws DaoException;
 

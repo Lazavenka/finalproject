@@ -22,19 +22,30 @@ public enum CommandType {
     GO_REGISTER_PAGE_COMMAND(new GoRegisterPageCommand(), EnumSet.of(GUEST)),
     GO_ABOUT_PAGE_COMMAND(new GoAboutPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
     GO_SIGN_IN_PAGE_COMMAND(new GoSignInPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
-    GO_BALANCE_PAGE_COMMAND(new GoBalancePageCommand(), EnumSet.of(CLIENT)),
     GO_EQUIPMENT_PAGE_COMMAND(new GoEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
     FIND_EQUIPMENT_BY_TYPE_COMMAND(new FindEquipmentByTypeCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+
     ADD_EQUIPMENT_TO_CART_COMMAND(new AddEquipmentToCartCommand(), EnumSet.of(CLIENT)),
+
+    GO_BALANCE_PAGE_COMMAND(new GoBalancePageCommand(), EnumSet.of(CLIENT)),
 
     ADD_BALANCE_COMMAND(new AddBalanceCommand(), EnumSet.of(CLIENT)),
 
-    FIND_ALL_MANAGERS(new FindAllManagersCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
-    FIND_MANAGER_DETAILS_BY_ID(new FindManagerDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    FIND_ALL_MANAGERS_COMMAND(new FindAllManagersCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    FIND_MANAGER_DETAILS_BY_ID_COMMAND(new FindManagerDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    FIND_ALL_DEPARTMENTS_COMMAND(new FindAllDepartmentsCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    FIND_DEPARTMENT_DETAILS_BY_ID_COMMAND(new FindDepartmentDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
+    FIND_LABORATORY_DETAILS_BY_ID_COMMAND(new FindLaboratoryDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
 
     SHOW_SCHEDULE_COMMAND(new ShowScheduleCommand(), EnumSet.of(ASSISTANT)),
+    GO_MANAGERS_LAB_COMMAND(new GoManagersLabCommand(), EnumSet.of(MANAGER)),
+    GO_USER_MANAGEMENT_PAGE_COMMAND(new GoUserManagementPageCommand(), EnumSet.of(ADMIN)),
+    GO_ADD_NEW_LABORATORY_PAGE_COMMAND(new GoAddNewLaboratoryPageCommand(), EnumSet.of(ADMIN)),
+    GO_ADD_NEW_EQUIPMENT_TYPE_PAGE_COMMAND(new GoAddNewEquipmentTypePageCommand(), EnumSet.of(ADMIN)),
+    ADD_EQUIPMENT_TYPE_COMMAND(new AddEquipmentTypeCommand(), EnumSet.of(ADMIN)),
+    ADD_NEW_LABORATORY_COMMAND(new AddNewLaboratoryCommand(), EnumSet.of(ADMIN)),
+    ADD_NEW_DEPARTMENT_COMMAND(new AddNewDepartmentCommand(), EnumSet.of(ADMIN));
 
-    USER_MANAGEMENT_COMMAND(new UserManagementCommand(), EnumSet.of(ADMIN));
 
     private final CustomCommand command;
     private final EnumSet<UserRole> allowedRoles;

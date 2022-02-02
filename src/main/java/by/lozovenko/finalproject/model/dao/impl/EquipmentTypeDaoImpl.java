@@ -6,10 +6,7 @@ import by.lozovenko.finalproject.model.entity.EquipmentType;
 import by.lozovenko.finalproject.model.mapper.impl.EquipmentTypeMapper;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +20,8 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
     private static final String GET_EQUIPMENT_TYPE_BY_ID = """
     SELECT equipment_type_id, equipment_type_name, equipment_type_description FROM equipment_types
     WHERE equipment_type_id = ?""";
+
+    private static final String CREATE_EQUIPMENT_TYPE = "INSERT INTO equipment_types (equipment_type_name, equipment_type_description) VALUES (?, ?)";
 
     private EquipmentTypeDaoImpl(){
     }
@@ -46,7 +45,7 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
                 optionalEquipmentType.ifPresent(equipmentTypes::add);
             }
         }catch (SQLException e){
-            throw new DaoException(e);
+            throw new DaoException("Error in findAll method EquipmentTypeDao class. Unable to get access to database.", e);
         }
         return equipmentTypes;
     }
@@ -64,7 +63,7 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
                 optionalEquipmentType = mapper.rowMap(equipmentType, resultSet);
             }
         }catch (SQLException e){
-            throw new DaoException(e);
+            throw new DaoException("Error in findEntityById method EquipmentTypeDao class. Unable to get access to database.", e);
         }
         return optionalEquipmentType;
     }
@@ -81,7 +80,21 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
 
     @Override
     public long create(EquipmentType equipmentType) throws DaoException {
-        return 0;
+        long equipmentTypeId = -1;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+        PreparedStatement createEquipmentTypeStatement = connection.prepareStatement(CREATE_EQUIPMENT_TYPE, Statement.RETURN_GENERATED_KEYS)){
+            createEquipmentTypeStatement.setString(1, equipmentType.getName());
+            createEquipmentTypeStatement.setString(2, equipmentType.getDescription());
+
+            createEquipmentTypeStatement.executeUpdate();
+            ResultSet generatedIdResultSet = createEquipmentTypeStatement.getGeneratedKeys();
+            if (generatedIdResultSet.next()){
+                equipmentTypeId = generatedIdResultSet.getLong(1);
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in create method EquipmentTypeDao class. Unable to get access to database.", e);
+        }
+        return equipmentTypeId;
     }
 
     @Override

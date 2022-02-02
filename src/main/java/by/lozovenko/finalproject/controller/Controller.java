@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Optional;
 
+import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
 import static by.lozovenko.finalproject.controller.RequestParameter.COMMAND;
 
 @WebServlet(urlPatterns = {"/controller"})
@@ -49,11 +50,9 @@ public class Controller extends HttpServlet {
             }
         }else {
 
-            request.getSession().setAttribute("errorReason", "message.nullpage"); //todo make constants
+            request.getSession().setAttribute(EXCEPTION, "message.nullpage");
             LOGGER.log(Level.WARN, "Command = {} not found", commandName);
             response.sendRedirect(PagePath.ERROR_404_PAGE);
-
         }
-
     }
 }

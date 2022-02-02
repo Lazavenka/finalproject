@@ -74,6 +74,35 @@ public class Manager extends User{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Manager manager = (Manager) o;
+
+        if (managerId != manager.managerId) return false;
+        if (departmentId != manager.departmentId) return false;
+        if (laboratoryId != manager.laboratoryId) return false;
+        if (imageFilePath != null ? !imageFilePath.equals(manager.imageFilePath) : manager.imageFilePath != null)
+            return false;
+        if (description != null ? !description.equals(manager.description) : manager.description != null) return false;
+        return managerDegree == manager.managerDegree;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) (managerId ^ (managerId >>> 32));
+        result = 31 * result + (int) (departmentId ^ (departmentId >>> 32));
+        result = 31 * result + (imageFilePath != null ? imageFilePath.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (int) (laboratoryId ^ (laboratoryId >>> 32));
+        result = 31 * result + (managerDegree != null ? managerDegree.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Manager{");
         sb.append(super.toString());

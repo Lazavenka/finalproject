@@ -57,4 +57,41 @@ public class Laboratory extends CustomEntity{
     public void setDepartmentId(long departmentId) {
         this.departmentId = departmentId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Laboratory that = (Laboratory) o;
+
+        if (departmentId != that.departmentId) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (imageFilePath != null ? !imageFilePath.equals(that.imageFilePath) : that.imageFilePath != null)
+            return false;
+        return description != null ? description.equals(that.description) : that.description == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (imageFilePath != null ? imageFilePath.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (int) (departmentId ^ (departmentId >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Laboratory{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", imageFilePath='").append(imageFilePath).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", departmentId=").append(departmentId);
+        sb.append('}');
+        return sb.toString();
+    }
 }

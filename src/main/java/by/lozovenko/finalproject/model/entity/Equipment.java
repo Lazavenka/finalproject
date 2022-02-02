@@ -136,4 +136,20 @@ public class Equipment extends CustomEntity{
         result = 31 * result + averageResearchTime.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Equipment{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", imageFilePath='").append(imageFilePath).append('\'');
+        sb.append(", equipmentTypeId=").append(equipmentTypeId);
+        sb.append(", laboratoryId=").append(laboratoryId);
+        sb.append(", isNeedAssistant=").append(isNeedAssistant);
+        sb.append(", state=").append(state);
+        sb.append(", pricePerHour=").append(pricePerHour);
+        sb.append(", averageResearchTime=").append(averageResearchTime);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -6,7 +6,6 @@ import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Assistant;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.OrderEquipment;
-import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.EquipmentService;
 import by.lozovenko.finalproject.model.service.OrderEquipmentService;
 import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;

@@ -15,12 +15,10 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
 import static by.lozovenko.finalproject.controller.RequestParameter.TOKEN;
 
 public class ConfirmRegistrationCommand implements CustomCommand {
-    UserService userService;
-    public ConfirmRegistrationCommand(){
-        userService = UserServiceImpl.getInstance();
-    }
+
     @Override
     public Router execute(HttpServletRequest request) {
+        UserService userService = UserServiceImpl.getInstance();
         Router router = new Router(CONFIRM_REGISTRATION_PAGE, Router.DispatchType.FORWARD);
         String token = request.getParameter(TOKEN);
         try {

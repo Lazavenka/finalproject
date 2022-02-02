@@ -11,4 +11,6 @@ public interface EquipmentService {
     List<Equipment> findAll() throws ServiceException;
     List<Equipment> findAllByType(EquipmentType equipmentType) throws ServiceException;
     Optional<Equipment> findById(long equipmentId) throws ServiceException;
+
+    List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws ServiceException;
 }

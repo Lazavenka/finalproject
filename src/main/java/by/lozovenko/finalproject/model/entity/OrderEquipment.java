@@ -52,4 +52,38 @@ public class OrderEquipment extends CustomEntity{
     public void setAssistantId(long assistantId) {
         this.assistantId = assistantId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderEquipment that = (OrderEquipment) o;
+
+        if (equipmentId != that.equipmentId) return false;
+        if (assistantId != that.assistantId) return false;
+        if (rentStartTime != null ? !rentStartTime.equals(that.rentStartTime) : that.rentStartTime != null)
+            return false;
+        return rentTime != null ? rentTime.equals(that.rentTime) : that.rentTime == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (equipmentId ^ (equipmentId >>> 32));
+        result = 31 * result + (rentStartTime != null ? rentStartTime.hashCode() : 0);
+        result = 31 * result + (rentTime != null ? rentTime.hashCode() : 0);
+        result = 31 * result + (int) (assistantId ^ (assistantId >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("OrderEquipment{");
+        sb.append("equipmentId=").append(equipmentId);
+        sb.append(", rentStartTime=").append(rentStartTime);
+        sb.append(", rentTime=").append(rentTime);
+        sb.append(", assistantId=").append(assistantId);
+        sb.append('}');
+        return sb.toString();
+    }
 }

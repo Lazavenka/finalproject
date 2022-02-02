@@ -14,6 +14,7 @@ public interface UserService {
 
     List<Manager> findAllManagers() throws ServiceException;
 
+    Optional<Manager> findManagerById(String managerId) throws ServiceException;
     Optional<Manager> findManagerById(Long managerId) throws ServiceException;
 
     boolean registerUser(Map<String, String> userData) throws ServiceException;
@@ -25,4 +26,6 @@ public interface UserService {
     boolean addBalance(Long userId, String balanceString) throws ServiceException;
 
     List<User> findAllUsers() throws ServiceException;
+
+    Optional<Manager> findManagerByLaboratoryId(long laboratoryId) throws ServiceException;
 }

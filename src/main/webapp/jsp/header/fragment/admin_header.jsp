@@ -10,17 +10,19 @@
 <fmt:message var="user_management" key="admin.user_management"/>
 <fmt:message var="department_management" key="admin.department_management"/>
 <fmt:message var="order_management" key="admin.orders_management"/>
+<fmt:message var="add_laboratory" key="admin.add_laboratory"/>
+<fmt:message var="add_equipment_type" key="admin.add_equipment_type"/>
 <fmt:message var="menu" key="admin.menu"/>
 
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">${menu}</a>
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li><a class="dropdown-item" href="controller?command=user_management_command">${user_management}</a></li>
-        <li><a class="dropdown-item" href="controller?command=department_management_command">${department_management}</a></li>
+        <li><a class="dropdown-item" href="controller?command=go_user_management_page_command">${user_management}</a></li>
+        <li><a class="dropdown-item" href="controller?command=go_department_management_page_command">${department_management}</a></li>
         <li><a class="dropdown-item" href="controller?command=order_management_command">${order_management}</a></li>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">Separated link</a></li>
+        <li><a class="dropdown-item" href="controller?command=go_add_new_laboratory_page_command">${add_laboratory}</a></li>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">One more separated link</a></li>
+        <li><a class="dropdown-item" href="controller?command=go_add_new_equipment_type_page_command">${add_equipment_type}</a></li>
     </ul>
 </li>

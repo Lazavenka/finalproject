@@ -64,7 +64,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 optionalEquipment.ifPresent(equipmentList::add);
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findAll method EquipmentDao class. Unable to get access to database.", e);
         }
         return equipmentList;
     }
@@ -82,7 +82,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 optionalEquipment = mapper.rowMap(equipment, resultSet);
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findEntityById method EquipmentDao class. Unable to get access to database.", e);
         }
         return optionalEquipment;
     }
@@ -118,7 +118,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 result = generatedKey.getLong(1);
             }
         }catch (SQLException e){
-            throw new DaoException(e);
+            throw new DaoException("Error in create method EquipmentDao class. Unable to create entity into database.", e);
         }
         return result;
     }
@@ -147,18 +147,17 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 optionalEquipment.ifPresent(equipmentList::add);
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findEquipmentByType method EquipmentDao class. Unable to get access to database.", e);
         }
         return equipmentList;
     }
 
     @Override
-    public List<Equipment> findEquipmentByLaboratory(Laboratory laboratory) throws DaoException {
+    public List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws DaoException {
         List<Equipment> equipmentList = new ArrayList<>();
         EquipmentMapper mapper = EquipmentMapper.getInstance();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_LABORATORY_ID)){
-            long laboratoryId = laboratory.getId();
             preparedStatement.setLong(1, laboratoryId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -167,7 +166,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 optionalEquipment.ifPresent(equipmentList::add);
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findEquipmentByLaboratoryId method EquipmentDao class. Unable to get access to database.", e);
         }
         return equipmentList;
     }

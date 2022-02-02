@@ -10,20 +10,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
 
-import java.math.BigDecimal;
-
 import static by.lozovenko.finalproject.controller.PagePath.CLIENT_BALANCE_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.CLIENT_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.BALANCE;
 
 public class AddBalanceCommand implements CustomCommand {
-    private final UserService userService;
-    public AddBalanceCommand() {
-        this.userService = UserServiceImpl.getInstance();
-    }
+
     @Override
     public Router execute(HttpServletRequest request) {
+        UserService userService = UserServiceImpl.getInstance();
         logger.log(Level.INFO, "AddBalanceCommand");
         Router router = new Router();
         String balanceString = request.getParameter(BALANCE);

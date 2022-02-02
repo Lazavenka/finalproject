@@ -2,6 +2,9 @@ package by.lozovenko.finalproject.validator.impl;
 
 import by.lozovenko.finalproject.model.entity.EquipmentState;
 import by.lozovenko.finalproject.validator.CustomFieldValidator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CustomFieldValidatorImpl implements CustomFieldValidator {
     private static CustomFieldValidator instance;
@@ -12,7 +15,7 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     private static final String EMAIL_PATTERN = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,6}$";
     private static final String EMAIL_SYMBOL_PATTERN = ".{8,55}";
     private static final String PHONE_PATTERN = "(25|29|33|44)\\d{7}";
-    private static final String ID_PATTERN = "^\\d+$";
+    private static final String ID_PATTERN = "^\\d{1,18}$";
     private static final String BALANCE_PATTERN = "^\\d{1,3}\\.?\\d{0,2}$";
     private static final String MANAGER_DEGREE_PATTERN = "B\\.Sc\\.|M\\.Sc\\.|Ph\\.D\\.";
     private static final String EQUIPMENT_PRICE_PER_HOUR_PATTERN = "^\\d{1,4}\\.?\\d{0,2}$";
@@ -78,6 +81,16 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     @Override
     public boolean isCorrectManagerDegree(String degree) {
         return notNullOrEmpty(degree) && degree.matches(MANAGER_DEGREE_PATTERN);
+    }
+
+    @Override
+    public boolean isCorrectId(String id) {
+        Logger logger = LogManager.getLogger();
+
+        boolean result = notNullOrEmpty(id) && id.matches(ID_PATTERN);
+
+        logger.log(Level.DEBUG, "isCorrectId method string id = {} result = {}", id, result);
+        return result;
     }
 
     @Override

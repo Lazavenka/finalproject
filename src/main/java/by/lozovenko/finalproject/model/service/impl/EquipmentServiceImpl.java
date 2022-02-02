@@ -39,7 +39,6 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public List<Equipment> findAllByType(EquipmentType type) throws ServiceException {
-
         List<Equipment> equipmentList;
         try {
             equipmentList = equipmentDao.findEquipmentByType(type);
@@ -56,6 +55,17 @@ public class EquipmentServiceImpl implements EquipmentService {
         }catch (DaoException e){
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    public List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws ServiceException {
+        List<Equipment> equipmentList;
+        try {
+            equipmentList = equipmentDao.findEquipmentByLaboratoryId(laboratoryId);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle findEquipmentByLaboratoryId request at EquipmentService", e);
+        }
+        return equipmentList;
     }
 
 
