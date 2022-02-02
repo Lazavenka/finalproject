@@ -36,16 +36,10 @@ public class LoginCommand implements CustomCommand {
                     case ACTIVE -> {
                         UserRole role = user.getRole();
                         session.setAttribute(USER, user);
-                        switch (role) {
-                            case ADMIN -> router.setPage(ADMIN_PAGE);
-                            case MANAGER -> router.setPage(MANAGER_PAGE);
-                            case ASSISTANT -> router.setPage(ASSISTANT_PAGE);
-                            case CLIENT -> {
-                                router.setPage(CLIENT_PAGE);
+                        router.setPage(ABOUT);
+                        if (role == UserRole.CLIENT){
                                 BigDecimal balance = ((Client) user).getBalance();
                                 session.setAttribute(USER_BALANCE, balance);
-                            }
-                            default -> router.setPage(GUEST_PAGE);
                         }
                     }
                     case BLOCKED -> {

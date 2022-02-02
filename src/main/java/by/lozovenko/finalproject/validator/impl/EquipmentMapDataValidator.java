@@ -31,7 +31,7 @@ public class EquipmentMapDataValidator extends CustomMapDataValidator {
 
 
         if (!customFieldValidator.isCorrectEquipmentName(name)){
-            mapData.put(EQUIPMENT_TYPE_NAME, INVALID_EQUIPMENT_TYPE_NAME);
+            mapData.put(EQUIPMENT_NAME, INVALID_EQUIPMENT_NAME);
             result = false;
         }
 

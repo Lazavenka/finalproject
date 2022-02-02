@@ -29,7 +29,7 @@
         <p class="card-text">${requestScope.manager.description}</p>
         <p class="card-text">+${requestScope.manager.phone}</p>
         <p class="card-text">${requestScope.manager.email}</p>
-        <a href="${abs}/controller?command=edit_profile_command&manager_id=${sessionScope.user.id}" class="stretched-link">${edit}</a>
+        <a href="${abs}/controller?command=edit_profile_command&manager_id=${sessionScope.user.id}" class="btn btn-primary">${edit}</a>
     </div>
 </div>
 <div class="d-flex position-relative">
@@ -50,12 +50,8 @@
         </dl>
     </div>
 </div>
-<c:choose>
-    <c:when test="${requestScope.empty_list}">${not_found}</c:when>
-    <c:otherwise>
-        <div class="justify-content-center">${equipment_list}</div>
-        <jsp:include page="${abs}/jsp/common/equipment_table.jsp"/>
-    </c:otherwise>
-</c:choose>
+<div class="justify-content-center">${equipment_list}</div>
+<jsp:include page="/jsp/common/equipment_table.jsp"/>
+
 </body>
 </html>

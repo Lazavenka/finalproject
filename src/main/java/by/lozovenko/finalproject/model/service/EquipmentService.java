@@ -5,6 +5,7 @@ import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface EquipmentService {
@@ -13,4 +14,6 @@ public interface EquipmentService {
     Optional<Equipment> findById(long equipmentId) throws ServiceException;
 
     List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws ServiceException;
+
+    boolean addNewEquipment(Map<String, String> equipmentData) throws ServiceException;
 }

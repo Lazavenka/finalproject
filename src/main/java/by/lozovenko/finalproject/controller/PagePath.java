@@ -22,6 +22,7 @@ public class PagePath {
     public static final String LABORATORY_DETAILS_PAGE = "jsp/common/laboratory_details.jsp";
     public static final String ASSISTANT_SCHEDULE_PAGE = "jsp/assistant/assistant_schedule.jsp";
     public static final String ADD_EQUIPMENT_TYPE_PAGE = "jsp/admin/add_equipment_type_page.jsp";
+    public static final String ADD_EQUIPMENT_PAGE = "jsp/manager/add_equipment_page.jsp";
     public static final String ADD_DEPARTMENT_PAGE = "jsp/admin/add_department_page.jsp";
     public static final String ADD_LABORATORY_PAGE = "jsp/admin/add_laboratory_page.jsp";
     public static final String USER_MANAGEMENT_PAGE = "jsp/admin/manage_users.jsp";

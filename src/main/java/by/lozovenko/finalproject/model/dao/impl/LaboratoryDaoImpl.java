@@ -28,7 +28,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             FROM laboratories WHERE department_id = ?""";
 
     private static final String GET_ALL_LABORATORIES = """
-            SELECT laboratory_name, department_id, laboratory_location, laboratory_photo_link, laboratory_description
+            SELECT laboratory_id, laboratory_name, department_id, laboratory_location, laboratory_photo_link, laboratory_description
             FROM laboratories""";
 
     private static final String GET_LABORATORY_BY_MANAGER_ID = """

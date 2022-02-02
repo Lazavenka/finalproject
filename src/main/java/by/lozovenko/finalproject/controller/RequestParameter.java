@@ -26,6 +26,7 @@ public class RequestParameter {
     public static final String LABORATORY_LOCATION = "lab_location";
     public static final String DEPARTMENT_ADDRESS = "department_address";
     public static final String PRICE_PER_HOUR = "price_per_hour";
+    public static final String IS_NEED_ASSISTANT = "is_need_assistant";
     public static final String AVERAGE_RESEARCH_TIME = "average_research_time";
     public static final String EQUIPMENT_STATE = "equipment_state";
     private RequestParameter(){

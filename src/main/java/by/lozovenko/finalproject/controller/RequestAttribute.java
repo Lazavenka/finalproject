@@ -22,6 +22,7 @@ public class RequestAttribute {
     public static final String CURRENT_PAGE = "current_page";
     public static final String USER_REGISTRATION_DATA = "user_registration_data";
     public static final String EQUIPMENT_TYPE_DATA = "equipment_type_data";
+    public static final String EQUIPMENT_DATA = "equipment_data";
     public static final String DEPARTMENT_DATA = "department_data";
     public static final String LABORATORY_DATA = "laboratory_data";
     public static final String EQUIPMENT_TYPE_LIST = "equipment_types";
@@ -44,6 +45,7 @@ public class RequestAttribute {
     public static final String INVALID_DESCRIPTION = "invalid_description";
     public static final String INVALID_LOCATION = "invalid_location";
     public static final String INVALID_LABORATORY_NAME = "invalid_laboratory_name";
+    public static final String INVALID_EQUIPMENT_NAME = "invalid_equipment_name";
     public static final String INVALID_EQUIPMENT_TYPE_NAME = "invalid_equipment_type_name";
     public static final String INVALID_DEGREE = "invalid_degree";
     public static final String INVALID_ENUM = "invalid_enum";

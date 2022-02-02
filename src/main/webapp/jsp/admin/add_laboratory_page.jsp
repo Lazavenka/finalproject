@@ -35,10 +35,10 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 <div class="container-fluid">
-    <form action="${abs}/controller" method="post">
+    <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
+        <input type="hidden" name="command" value="add_new_laboratory_command"/>
         <div class="row mb-3">
             <div class="col-xs-2">
-                <input type="hidden" name="command" value="add_new_laboratory_command"/>
                 <div class="select-form">
                     <span>${department}</span>
                     <select id="department_id" name="department_id" class="form-control">
@@ -77,7 +77,7 @@
             <div class="col-sm-10">
                 <input type="text" name="lab_location" class="form-control"
                        value="<c:if test="${!empty laboratory_data and laboratory_data.get(location_param) != 'invalid_location' }">${laboratory_data.get(location_param)}</c:if>"
-                       id="validationLabLocation" required pattern="[A-Za-zА-Яа-я]{2,20}">
+                       id="validationLabLocation" required pattern="[A-Za-zА-Яа-я]{2,255}">
                 <c:if test="${requestScope.invalid_location}">
                     <div style="color: red">${invalid_lab_location}</div>
                 </c:if>
@@ -114,5 +114,29 @@
 <div>
     <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
 </div>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        let forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+</body>
+</html>
 </body>
 </html>

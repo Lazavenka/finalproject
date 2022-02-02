@@ -106,7 +106,18 @@ public class LaboratoryServiceImpl implements LaboratoryService {
             laboratory.setDescription(description);
             return laboratoryDao.create(laboratory) != 0;
         }catch (DaoException e){
-            throw new ServiceException("Can't handle addNewLaboratory request at DepartmentService", e);
+            throw new ServiceException("Can't handle addNewLaboratory request at LaboratoryService", e);
         }
+    }
+
+    @Override
+    public List<Laboratory> findAll() throws ServiceException {
+        List<Laboratory> laboratoryList;
+        try {
+            laboratoryList = laboratoryDao.findAll();
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle findAll request at LaboratoryService", e);
+        }
+        return laboratoryList;
     }
 }
