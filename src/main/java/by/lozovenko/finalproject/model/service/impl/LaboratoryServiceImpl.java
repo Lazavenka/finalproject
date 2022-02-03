@@ -40,7 +40,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         try {
             return laboratoryDao.findLaboratoryNameById(id);
         }catch (DaoException e){
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle findLaboratoryNameById request at LaboratoryService", e);
         }
     }
 

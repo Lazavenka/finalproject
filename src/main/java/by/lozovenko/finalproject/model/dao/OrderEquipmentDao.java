@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface OrderEquipmentDao extends BaseDao<Long, OrderEquipment> {
     List<OrderEquipment> findOrderEquipmentsByAssistant(Assistant assistant) throws DaoException; //todo question Assistant or User?
+    List<OrderEquipment> findOrderEquipmentsByOrderId(long orderId) throws DaoException; //todo question Assistant or User?
 }

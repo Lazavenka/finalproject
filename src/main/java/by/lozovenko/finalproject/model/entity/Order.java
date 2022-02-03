@@ -1,17 +1,20 @@
 package by.lozovenko.finalproject.model.entity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Order extends CustomEntity{
     private long clientId;
     private OrderState state;
     private List<OrderEquipment> orderEquipments;
+    private BigDecimal totalCost;
 
     public Order(long id, long clientId, OrderState state, List<OrderEquipment> orderEquipments) {
         super(id);
         this.clientId = clientId;
         this.state = state;
         this.orderEquipments = orderEquipments;
+        totalCost = BigDecimal.valueOf(0);
     }
 
     public long getClientId() {
@@ -25,7 +28,6 @@ public class Order extends CustomEntity{
     public OrderState getState() {
         return state;
     }
-
     public void setState(OrderState state) {
         this.state = state;
     }
@@ -37,6 +39,22 @@ public class Order extends CustomEntity{
         return orderEquipments.remove(orderEquipment);
     }
 
+    public List<OrderEquipment> getOrderEquipments() {
+        return orderEquipments;
+    }
+
+    public void setOrderEquipments(List<OrderEquipment> orderEquipments) {
+        this.orderEquipments = orderEquipments;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,7 +64,9 @@ public class Order extends CustomEntity{
 
         if (clientId != order.clientId) return false;
         if (state != order.state) return false;
-        return orderEquipments != null ? orderEquipments.equals(order.orderEquipments) : order.orderEquipments == null;
+        if (orderEquipments != null ? !orderEquipments.equals(order.orderEquipments) : order.orderEquipments != null)
+            return false;
+        return totalCost != null ? totalCost.equals(order.totalCost) : order.totalCost == null;
     }
 
     @Override
@@ -54,6 +74,7 @@ public class Order extends CustomEntity{
         int result = (int) (clientId ^ (clientId >>> 32));
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (orderEquipments != null ? orderEquipments.hashCode() : 0);
+        result = 31 * result + (totalCost != null ? totalCost.hashCode() : 0);
         return result;
     }
 
@@ -63,6 +84,7 @@ public class Order extends CustomEntity{
         sb.append("clientId=").append(clientId);
         sb.append(", state=").append(state);
         sb.append(", orderEquipments=").append(orderEquipments);
+        sb.append(", totalPrice=").append(totalCost);
         sb.append('}');
         return sb.toString();
     }

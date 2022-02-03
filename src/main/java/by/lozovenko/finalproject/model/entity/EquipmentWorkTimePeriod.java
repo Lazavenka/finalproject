@@ -1,15 +1,21 @@
 package by.lozovenko.finalproject.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class EquipmentWorkTimePeriod {
     private LocalDateTime startOfPeriod;
     private LocalDateTime endOfPeriod;
     private EquipmentAvailability availability;
-    public EquipmentWorkTimePeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod, EquipmentAvailability availability){
+    private final List<Assistant> availableAssistantsInPeriod = new ArrayList<>();
+
+    public EquipmentWorkTimePeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod, EquipmentAvailability availability, List<Assistant> availableAssistantsInPeriod) {
         this.startOfPeriod = startOfPeriod;
         this.endOfPeriod = endOfPeriod;
         this.availability = availability;
+        this.availableAssistantsInPeriod.addAll(availableAssistantsInPeriod);
     }
 
     public EquipmentAvailability getAvailability() {
@@ -18,6 +24,10 @@ public class EquipmentWorkTimePeriod {
 
     public void setAvailability(EquipmentAvailability availability) {
         this.availability = availability;
+    }
+
+    public Optional<Assistant> getAvailableAssistantInPeriod() {
+        return availableAssistantsInPeriod.stream().findAny();
     }
 
     public LocalDateTime getStartOfPeriod() {
@@ -36,8 +46,35 @@ public class EquipmentWorkTimePeriod {
         this.endOfPeriod = endOfPeriod;
     }
 
-    public boolean containsStartDateTime(LocalDateTime startOfPeriod){
+    public List<Assistant> getAvailableAssistantsInPeriod() {
+        return availableAssistantsInPeriod;
+    }
+
+    public boolean removeAssistantById(long assistantId) {
+        return availableAssistantsInPeriod.removeIf(assistant -> assistant.getAssistantId() == assistantId);
+    }
+
+    public boolean containsStartDateTime(LocalDateTime startOfPeriod) {
         return this.startOfPeriod.isEqual(startOfPeriod) || (this.startOfPeriod.isBefore(startOfPeriod) && this.endOfPeriod.isAfter(startOfPeriod));
+    }
+
+    public boolean containsEndDateTime(LocalDateTime endOfPeriod) {
+        return (this.startOfPeriod.isBefore(endOfPeriod) && this.endOfPeriod.isAfter(endOfPeriod)) || this.endOfPeriod.isEqual(endOfPeriod);
+    }
+
+    public boolean isInsideAnotherPeriod(EquipmentWorkTimePeriod another) {
+        return this.startOfPeriod.isAfter(another.startOfPeriod) && this.endOfPeriod.isBefore(another.endOfPeriod);
+    }
+
+    public boolean crossPeriod(EquipmentWorkTimePeriod another) {
+        boolean crossing = this.isInsideAnotherPeriod(another);
+        if (this.containsStartDateTime(another.startOfPeriod)) {
+            crossing = true;
+        }
+        if (this.containsEndDateTime(another.endOfPeriod)) {
+            crossing = true;
+        }
+        return crossing;
     }
 
     @Override
@@ -68,4 +105,6 @@ public class EquipmentWorkTimePeriod {
         sb.append('}');
         return sb.toString();
     }
+
+
 }

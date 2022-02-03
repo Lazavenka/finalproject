@@ -8,25 +8,25 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService {
     private static Logger logger = LogManager.getLogger();
 
     @Override
-    public void buildTimeTable(EquipmentTimeTable equipmentTimeTable) throws ServiceException {
+    public void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable) throws ServiceException {
         if (equipmentTimeTable.getEquipment() == null) {
             throw new ServiceException("Error in EquipmentTimeTableService. Equipment parameter can't be null!");
         }
         int dayCount = EquipmentTimeTable.COUNT_OF_DAYS;
         LocalDate currentDate = LocalDate.now();
-        buildTimeTable(equipmentTimeTable, currentDate, dayCount);
+        buildTimeTable(laboratoryAssistants, equipmentTimeTable, currentDate, dayCount);
     }
 
     @Override
-    public void buildTimeTable(EquipmentTimeTable equipmentTimeTable, LocalDate startDate, int daysCount) throws ServiceException {
+    public void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable, LocalDate startDate, int daysCount) {
         LocalTime averageResearchTime = equipmentTimeTable.getEquipment().getAverageResearchTime();
         int averageResearchTimeHours = averageResearchTime.getHour();
         int averageResearchTimeMinutes = averageResearchTime.getMinute();
@@ -37,48 +37,58 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
             boolean dayNotFinished = true;
             while (dayNotFinished) {
                 LocalDateTime startDateTimePeriod = currentDate.atTime(startCurrentPeriod);
-                System.out.println(startDateTimePeriod);
                 LocalTime endCurrentTimePeriod = startCurrentPeriod.plus(averageResearchTimeHours, ChronoUnit.HOURS)
                         .plus(averageResearchTimeMinutes, ChronoUnit.MINUTES);
                 if (endCurrentTimePeriod.isAfter(endWorkingDay)) {
                     dayNotFinished = false;
                 } else {
                     EquipmentAvailability availability;
-                    if (startDateTimePeriod.isBefore(LocalDateTime.now())){
+                    if (startDateTimePeriod.isBefore(LocalDateTime.now())) {
                         availability = EquipmentAvailability.PAST;
-                    }else {
+                    } else {
                         availability = EquipmentAvailability.FULL_AVAILABLE;
                     }
                     LocalDateTime endDateTimePeriod = currentDate.atTime(endCurrentTimePeriod);
-                    System.out.println(endDateTimePeriod);
-                    EquipmentWorkTimePeriod currentPeriod = new EquipmentWorkTimePeriod(startDateTimePeriod, endDateTimePeriod, availability);
+                    EquipmentWorkTimePeriod currentPeriod = new EquipmentWorkTimePeriod(startDateTimePeriod, endDateTimePeriod, availability, laboratoryAssistants);
                     equipmentTimeTable.getTimeTable().add(currentPeriod);
                 }
                 startCurrentPeriod = endCurrentTimePeriod;
             }
             currentDate = currentDate.plusDays(1);
-            if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY){
+            if (currentDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
                 currentDate = currentDate.plusDays(2);
             }
         }
     }
 
     @Override
-    public void setAvailability(EquipmentTimeTable equipmentTimeTable, List<OrderEquipment> equipmentOrders, List<OrderEquipment> assistantsOrders) {
+    public void setAvailability(EquipmentTimeTable equipmentTimeTable, List<OrderEquipment> equipmentOrders, Map<Long, List<OrderEquipment>> assistantsOrders) {
         List<EquipmentWorkTimePeriod> timeTable = equipmentTimeTable.getTimeTable();
-        for (OrderEquipment assistantOrder : assistantsOrders) {
-            LocalDateTime orderStart = assistantOrder.getRentStartTime();
-            LocalDateTime orderEnd = orderStart.ge;
-            EquipmentWorkTimePeriod assistantOrdertimePeriod = new EquipmentWorkTimePeriod(assistantOrder.getRentStartTime(),LocalDateTime);
-            for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
-                if (currentPeriod.containsStartDateTime(assistantOrder.getRentStartTime())){
-                    currentPeriod.setAvailability(EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT);
+        for (Map.Entry<Long, List<OrderEquipment>> currentAssistantOrders : assistantsOrders.entrySet()) {
+            List<OrderEquipment> currentOrders = currentAssistantOrders.getValue();
+            Long currentAssistantId = currentAssistantOrders.getKey();
+            for (OrderEquipment assistantOrder : currentOrders) {
+                LocalDateTime orderStart = assistantOrder.getRentStartTime();
+                LocalDateTime orderEnd = assistantOrder.getRentEndTime();
+                EquipmentWorkTimePeriod assistantOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT, Collections.emptyList());
+                for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
+                    if (currentPeriod.crossPeriod(assistantOrderTimePeriod)) {
+                        currentPeriod.removeAssistantById(currentAssistantId);
+                    }
                 }
             }
         }
+        for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
+            if (currentPeriod.getStartOfPeriod().isAfter(LocalDateTime.now()) && currentPeriod.getAvailableAssistantsInPeriod().isEmpty()) {
+                currentPeriod.setAvailability(EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT);
+            }
+        }
         for (OrderEquipment equipmentOrder : equipmentOrders) {
+            LocalDateTime orderStart = equipmentOrder.getRentStartTime();
+            LocalDateTime orderEnd = equipmentOrder.getRentEndTime();
+            EquipmentWorkTimePeriod equipmentOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.BUSY, Collections.emptyList());
             for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
-                if (currentPeriod.containsStartDateTime(equipmentOrder.getRentStartTime())){
+                if (currentPeriod.crossPeriod(equipmentOrderTimePeriod)) {
                     currentPeriod.setAvailability(EquipmentAvailability.BUSY);
                 }
             }

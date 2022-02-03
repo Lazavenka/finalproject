@@ -9,15 +9,16 @@ public class OrderEquipment extends CustomEntity{
     ***/
     private long equipmentId;
     private LocalDateTime rentStartTime;
-    private LocalTime rentTime;
+    private LocalDateTime rentEndTime;
     private long assistantId;
 
+    public OrderEquipment(){}
     public OrderEquipment(long id, long equipmentId, LocalDateTime rentStartTime,
-                          LocalTime rentTime, long assistantId) {
+                          LocalDateTime rentTime, long assistantId) {
         super(id);
         this.equipmentId = equipmentId;
         this.rentStartTime = rentStartTime;
-        this.rentTime = rentTime;
+        this.rentEndTime = rentTime;
         this.assistantId = assistantId;
     }
 
@@ -37,12 +38,12 @@ public class OrderEquipment extends CustomEntity{
         this.rentStartTime = rentStartTime;
     }
 
-    public LocalTime getRentTime() {
-        return rentTime;
+    public LocalDateTime getRentEndTime() {
+        return rentEndTime;
     }
 
-    public void setRentTime(LocalTime rentTime) {
-        this.rentTime = rentTime;
+    public void setRentEndTime(LocalDateTime rentEndTime) {
+        this.rentEndTime = rentEndTime;
     }
 
     public long getAssistantId() {
@@ -64,14 +65,14 @@ public class OrderEquipment extends CustomEntity{
         if (assistantId != that.assistantId) return false;
         if (rentStartTime != null ? !rentStartTime.equals(that.rentStartTime) : that.rentStartTime != null)
             return false;
-        return rentTime != null ? rentTime.equals(that.rentTime) : that.rentTime == null;
+        return rentEndTime != null ? rentEndTime.equals(that.rentEndTime) : that.rentEndTime == null;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (equipmentId ^ (equipmentId >>> 32));
         result = 31 * result + (rentStartTime != null ? rentStartTime.hashCode() : 0);
-        result = 31 * result + (rentTime != null ? rentTime.hashCode() : 0);
+        result = 31 * result + (rentEndTime != null ? rentEndTime.hashCode() : 0);
         result = 31 * result + (int) (assistantId ^ (assistantId >>> 32));
         return result;
     }
@@ -81,7 +82,7 @@ public class OrderEquipment extends CustomEntity{
         final StringBuilder sb = new StringBuilder("OrderEquipment{");
         sb.append("equipmentId=").append(equipmentId);
         sb.append(", rentStartTime=").append(rentStartTime);
-        sb.append(", rentTime=").append(rentTime);
+        sb.append(", rentTime=").append(rentEndTime);
         sb.append(", assistantId=").append(assistantId);
         sb.append('}');
         return sb.toString();

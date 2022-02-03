@@ -3,9 +3,8 @@ package by.lozovenko.finalproject.model.entity;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public class EquipmentTimeTable implements Comparable<EquipmentWorkTimePeriod>{
+public class EquipmentTimeTable {
     private Equipment equipment;
     private final List<EquipmentWorkTimePeriod> timeTable = new ArrayList<>();
     public static final LocalTime START_WORKING_TIME = LocalTime.of(8, 0,0);
@@ -41,8 +40,4 @@ public class EquipmentTimeTable implements Comparable<EquipmentWorkTimePeriod>{
         return sb.toString();
     }
 
-    @Override
-    public int compareTo(EquipmentWorkTimePeriod o) {
-        return 0;
-    }
 }

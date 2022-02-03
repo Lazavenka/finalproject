@@ -6,7 +6,8 @@ import by.lozovenko.finalproject.model.entity.*;
 import java.util.List;
 
 public interface OrderDao extends BaseDao<Long, Order> {
-    List<Order> findAllOrdersByUser(Client client) throws DaoException;
+    List<Order> findAllOrdersByClientId(long clientId) throws DaoException;
     List<Order> findOrdersByState(OrderState orderState) throws DaoException;
+    List<Order> findOrdersByLaboratoryId(long laboratoryId) throws DaoException;
     List<OrderEquipment> findOrderEquipmentByStateAndAssistantId(OrderState orderState, Long assistantId) throws DaoException;
 }
