@@ -22,9 +22,10 @@ public class ConfirmRegistrationCommand implements CustomCommand {
         Router router = new Router(CONFIRM_REGISTRATION_PAGE, Router.DispatchType.FORWARD);
         String token = request.getParameter(TOKEN);
         try {
-            boolean result = userService.confirmUserRegistration(token);
-            if (!result) {
+            if (userService.confirmUserRegistration(token)) {
                 request.setAttribute(CONFIRM_FAILED, true);
+            } else {
+                router.setRedirect();
             }
         }catch (ServiceException e){
             logger.log(Level.WARN, "ERROR in ConfirmRegistrationCommand. ", e);

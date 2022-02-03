@@ -9,7 +9,6 @@ import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.logging.log4j.Level;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -37,19 +36,14 @@ public class LoginCommand implements CustomCommand {
                         UserRole role = user.getRole();
                         session.setAttribute(USER, user);
                         router.setPage(ABOUT);
+                        router.setRedirect();
                         if (role == UserRole.CLIENT){
                                 BigDecimal balance = ((Client) user).getBalance();
                                 session.setAttribute(USER_BALANCE, balance);
                         }
                     }
-                    case BLOCKED -> {
-                        router.setPage(LOGIN_PAGE);
-                        request.setAttribute(BLOCKED_USER, true);
-                    }
-                    case REGISTRATION -> {
-                        router.setPage(LOGIN_PAGE);
-                        request.setAttribute(UNCONFIRMED_USER, true);
-                    }
+                    case BLOCKED -> request.setAttribute(BLOCKED_USER, true);
+                    case REGISTRATION -> request.setAttribute(UNCONFIRMED_USER, true);
                 }
             } else {
                 request.setAttribute(INCORRECT_LOGIN_OR_PASSWORD, true);

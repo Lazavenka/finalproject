@@ -30,6 +30,7 @@ public class AddNewDepartmentCommand implements CustomCommand {
         try {
             if (departmentService.addNewDepartment(departmentData)){
                 router.setPage(ADMIN_PAGE);
+                router.setRedirect();
             }    else {
                 for (Map.Entry<String, String> entry : departmentData.entrySet()) {
                     String value = entry.getValue();

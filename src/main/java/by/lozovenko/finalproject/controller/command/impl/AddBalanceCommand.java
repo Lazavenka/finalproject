@@ -32,6 +32,7 @@ public class AddBalanceCommand implements CustomCommand {
                 logger.log(Level.DEBUG, "AddBalanceCommand Success = {}", success);
                 if (success){
                     router.setPage(CLIENT_PAGE);
+                    router.setRedirect();
                 }else{
                     request.setAttribute(INVALID_BALANCE, true);
                     router.setPage(CLIENT_BALANCE_PAGE);

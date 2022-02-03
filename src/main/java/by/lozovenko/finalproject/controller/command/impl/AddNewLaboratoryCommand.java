@@ -39,6 +39,7 @@ public class AddNewLaboratoryCommand implements CustomCommand {
         try {
             if (laboratoryService.addNewLaboratory(laboratoryData)){
                 router.setPage(ADMIN_PAGE);
+                router.setRedirect();
             }else {
                 for (Map.Entry<String, String> entry : laboratoryData.entrySet()) {
                     String value = entry.getValue();
@@ -64,16 +65,12 @@ public class AddNewLaboratoryCommand implements CustomCommand {
                 request.setAttribute(LABORATORY_DATA, laboratoryData);
                 router.setPage(ADD_LABORATORY_PAGE);
             }
-
-
         }catch (ServiceException e){
             logger.log(Level.ERROR, "Error in AddNewLaboratoryCommand", e);
             request.setAttribute(EXCEPTION, e);
             router.setPage(ERROR_404_PAGE);
             router.setRedirect();
         }
-
-
         return router;
     }
 }

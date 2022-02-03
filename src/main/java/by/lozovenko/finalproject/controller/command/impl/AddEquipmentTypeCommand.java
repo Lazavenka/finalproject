@@ -28,6 +28,7 @@ public class AddEquipmentTypeCommand implements CustomCommand {
         try {
             if (equipmentTypeService.addNewEquipmentType(equipmentTypeData)){
                 router.setPage(ADMIN_PAGE);
+                router.setRedirect();
             }    else {
                 for (Map.Entry<String, String> entry : equipmentTypeData.entrySet()) {
                     String value = entry.getValue();

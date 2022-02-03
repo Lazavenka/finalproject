@@ -49,6 +49,7 @@ public class AddNewEquipmentCommand implements CustomCommand {
                         case ADMIN -> router.setPage(ADMIN_PAGE);
                         case MANAGER -> router.setPage(MANAGER_PAGE);
                     }
+                    router.setRedirect();
                 }else {
                     clearInvalidDataAndSetRequestAttributes(request, equipmentData);
                     List<Laboratory> laboratories = laboratoryService.findAll();
