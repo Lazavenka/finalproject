@@ -28,4 +28,6 @@ public interface UserService {
     List<User> findAllUsers() throws ServiceException;
 
     Optional<Manager> findManagerByLaboratoryId(long laboratoryId) throws ServiceException;
+
+    boolean updateAvatar(User user, String path) throws ServiceException;
 }

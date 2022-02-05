@@ -1,10 +1,9 @@
 package by.lozovenko.finalproject.model.dao.impl;
 
 import by.lozovenko.finalproject.model.dao.OrderDao;
-import by.lozovenko.finalproject.model.dao.OrderEquipmentDao;
 import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.exception.DaoException;
-import by.lozovenko.finalproject.model.mapper.impl.OrderEquipmentMapper;
+import by.lozovenko.finalproject.model.mapper.impl.OrderMapper;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
 
 import java.sql.Connection;
@@ -18,14 +17,22 @@ import java.util.Optional;
 public class OrderDaoImpl implements OrderDao {
     private static OrderDao instance;
 
-    private static final String GET_ORDER_EQUIPMENT_BY_STATE_AND_ASSISTANT_ID = """
-            SELECT oe.order_id, oe.equipment_id, oe.rent_start, oe.rent_end, assistant_id FROM order_equipment AS oe
-            JOIN orders AS o ON oe.order_id = o.order_id WHERE assistant_id = ? AND order_state = ?""";
+    private static final String GET_ORDERS_BY_STATE_AND_ASSISTANT_ID = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id
+            FROM orders WHERE order_state = ? AND order_assistant_id = ?""";
+    private static final String GET_ORDERS_BY_CLIENT_ID = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id
+            FROM orders WHERE client_id = ?""";
+    private static final String GET_ORDERS_BY_LABORATORY_ID = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
+            order_assistant_id FROM orders
+            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ?""";
 
-    private OrderDaoImpl(){
+    private OrderDaoImpl() {
     }
-    public static OrderDao getInstance(){
-        if (instance == null){
+
+    public static OrderDao getInstance() {
+        if (instance == null) {
             instance = new OrderDaoImpl();
         }
         return instance;
@@ -63,7 +70,20 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findAllOrdersByClientId(long clientId) throws DaoException {
-        return null;
+        List<Order> orderList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_CLIENT_ID)) {
+            preparedStatement.setLong(1, clientId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Order order = new Order();
+                Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                optionalOrder.ifPresent(orderList::add);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return orderList;
     }
 
     @Override
@@ -73,25 +93,38 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findOrdersByLaboratoryId(long laboratoryId) throws DaoException {
-        return null;
+        List<Order> orderList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_LABORATORY_ID)) {
+            preparedStatement.setLong(1, laboratoryId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Order order = new Order();
+                Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                optionalOrder.ifPresent(orderList::add);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return orderList;
     }
 
     @Override
-    public List<OrderEquipment> findOrderEquipmentByStateAndAssistantId(OrderState orderState, Long assistantId) throws DaoException {
-        List<OrderEquipment> orderEquipmentList = new ArrayList<>();
+    public List<Order> findOrderByStateAndAssistantId(OrderState orderState, Long assistantId) throws DaoException {
+        List<Order> orderList = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDER_EQUIPMENT_BY_STATE_AND_ASSISTANT_ID)){
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_STATE_AND_ASSISTANT_ID)) {
             preparedStatement.setLong(1, assistantId);
             preparedStatement.setString(2, orderState.name());
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                OrderEquipment orderEquipment = new OrderEquipment();
-                Optional<OrderEquipment> optionalOrderEquipment = OrderEquipmentMapper.getInstance().rowMap(orderEquipment, resultSet);
-                optionalOrderEquipment.ifPresent(orderEquipmentList::add);
+            while (resultSet.next()) {
+                Order order = new Order();
+                Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                optionalOrder.ifPresent(orderList::add);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException(e);
         }
-        return orderEquipmentList;
+        return orderList;
     }
 }

@@ -4,12 +4,11 @@ import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.dao.EquipmentDao;
 import by.lozovenko.finalproject.model.dao.impl.EquipmentDaoImpl;
-import by.lozovenko.finalproject.model.entity.Equipment;
-import by.lozovenko.finalproject.model.entity.EquipmentState;
-import by.lozovenko.finalproject.model.entity.EquipmentType;
-import by.lozovenko.finalproject.model.entity.Laboratory;
+import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.EquipmentService;
+import by.lozovenko.finalproject.validator.CustomFieldValidator;
 import by.lozovenko.finalproject.validator.CustomMapDataValidator;
+import by.lozovenko.finalproject.validator.impl.CustomFieldValidatorImpl;
 import by.lozovenko.finalproject.validator.impl.EquipmentMapDataValidator;
 import by.lozovenko.finalproject.validator.impl.LaboratoryMapDataValidator;
 import by.lozovenko.finalproject.validator.impl.UserMapDataValidator;
@@ -27,8 +26,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     private static EquipmentService instance;
 
     private final EquipmentDao equipmentDao = EquipmentDaoImpl.getInstance();
-    private final CustomMapDataValidator validator = UserMapDataValidator.getInstance();
     private final CustomMapDataValidator dataValidator = EquipmentMapDataValidator.getInstance();
+    private final CustomFieldValidator inputFieldValidator = CustomFieldValidatorImpl.getInstance();
 
     private EquipmentServiceImpl(){
     }
@@ -58,6 +57,19 @@ public class EquipmentServiceImpl implements EquipmentService {
         }
         return equipmentList;
     }
+
+    @Override
+    public Optional<Equipment> findById(String equipmentIdString) throws ServiceException {
+        Optional<Equipment> optionalDepartment;
+        if (inputFieldValidator.isCorrectId(equipmentIdString)){
+            long id = Long.parseLong(equipmentIdString);
+            optionalDepartment = findById(id);
+        }else {
+            optionalDepartment = Optional.empty();
+        }
+        return optionalDepartment;
+    }
+
 
     @Override
     public Optional<Equipment> findById(long equipmentId) throws ServiceException {

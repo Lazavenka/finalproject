@@ -20,14 +20,11 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class GoEquipmentPageCommand implements CustomCommand {
 
-    public GoEquipmentPageCommand() {
-    }
-
     @Override
     public Router execute(HttpServletRequest request) {
         EquipmentTypeService equipmentTypeService = EquipmentTypeServiceImpl.getInstance();
         EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
-        Router router = new Router();
+        Router router = new Router(EQUIPMENT_PAGE, Router.DispatchType.FORWARD);
         try {
             List<EquipmentType> equipmentTypeList = equipmentTypeService.findAll();
             List<Equipment> equipmentList = equipmentService.findAll();
@@ -38,7 +35,7 @@ public class GoEquipmentPageCommand implements CustomCommand {
             if (equipmentList.isEmpty()){
                 request.setAttribute(EMPTY_LIST, true);
             }
-            router.setPage(EQUIPMENT_PAGE);
+
         } catch (ServiceException e) {
             logger.log(Level.ERROR, "Error in GoEquipmentPageCommand");
             request.setAttribute(EXCEPTION, e);

@@ -21,7 +21,6 @@ public class RegistrationCommand implements CustomCommand {
     public Router execute(HttpServletRequest request) {
         UserService userService = UserServiceImpl.getInstance();
         Router router = new Router();
-
         Map<String, String> userData = new HashMap<>();
         userData.put(LOGIN, request.getParameter(LOGIN).trim());
         userData.put(PASSWORD, request.getParameter(PASSWORD).trim());
@@ -33,7 +32,7 @@ public class RegistrationCommand implements CustomCommand {
 
         try {
             if (userService.registerUser(userData)) {
-                router.setPage(LOGIN_PAGE);
+                router.setPage(CHECK_MAIL_PAGE);
                 router.setRedirect();
 
             } else {

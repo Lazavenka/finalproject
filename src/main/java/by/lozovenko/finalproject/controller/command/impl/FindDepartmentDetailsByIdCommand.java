@@ -18,6 +18,7 @@ import java.util.Optional;
 import static by.lozovenko.finalproject.controller.PagePath.DEPARTMENT_DETAILS_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
+import static by.lozovenko.finalproject.controller.RequestParameter.CURRENT_DEPARTMENT_ID;
 import static by.lozovenko.finalproject.controller.RequestParameter.DEPARTMENT_ID;
 
 public class FindDepartmentDetailsByIdCommand implements CustomCommand {
@@ -27,6 +28,9 @@ public class FindDepartmentDetailsByIdCommand implements CustomCommand {
         DepartmentService departmentService = DepartmentServiceImpl.getInstance();
         LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
         String departmentId = request.getParameter(DEPARTMENT_ID);
+        if (departmentId == null){
+            departmentId = request.getParameter(CURRENT_DEPARTMENT_ID);
+        }
         try {
             Optional<Department> optionalDepartment = departmentService.findDepartmentById(departmentId);
             if (optionalDepartment.isPresent()){
@@ -34,13 +38,13 @@ public class FindDepartmentDetailsByIdCommand implements CustomCommand {
                 long selectedDepartmentId = selectedDepartment.getId();
                 request.setAttribute(SELECTED_DEPARTMENT, selectedDepartment);
                 List<Laboratory> laboratoryList = laboratoryService.findLaboratoriesByDepartmentId(selectedDepartmentId);
-                List<Department> departmentList = departmentService.findAll();
                 request.setAttribute(LABORATORIES, laboratoryList);
-                request.setAttribute(DEPARTMENTS, departmentList);
                 if (laboratoryList.isEmpty()) {
                     request.setAttribute(EMPTY_LIST, true);
                 }
             }
+            List<Department> departmentList = departmentService.findAll();
+            request.setAttribute(DEPARTMENTS, departmentList);
         }catch (ServiceException e){
             logger.log(Level.ERROR, "Error in FindDepartmentDetailsByIdCommand", e);
             request.setAttribute(EXCEPTION, e);

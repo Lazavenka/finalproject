@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 }
                 return optionalUser;
             } catch (DaoException e) {
-                throw new ServiceException("Can't handle signIn method in UserService. " + e);
+                throw new ServiceException("Can't handle signIn method in UserService. ", e);
             }
         } else {
             LOGGER.log(Level.INFO, "User login or password is invalid.");
@@ -87,10 +87,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<Manager> findManagerById(String managerId) throws ServiceException {
         Optional<Manager> optionalUser;
-        if (inputFieldValidator.isCorrectId(managerId)){
+        if (inputFieldValidator.isCorrectId(managerId)) {
             Long id = Long.parseLong(managerId);
             optionalUser = findManagerById(id);
-        }else {
+        } else {
             optionalUser = Optional.empty();
         }
         return optionalUser;
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
                 String mailBody = MailMessageBuilder.buildMessage(tokenValue);
                 Mail.sendMail(userData.get(EMAIL), "You registered new account!", mailBody);
                 return true;
-            }else {
+            } else {
                 return false;
             }
         } catch (DaoException | IOException e) {
@@ -149,11 +149,11 @@ public class UserServiceImpl implements UserService {
         boolean result = false;
         try {
             Optional<Token> token = userDao.findUserTokenByValue(tokenValue);
-            if (token.isPresent()){
+            if (token.isPresent()) {
                 long userId = token.get().getId();
                 result = userDao.confirmUserRegistration(userId);
             }
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle confirmUserRegistration method in UserService. ", e);
         }
         return result;
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
         Optional<BigDecimal> optionalBalance;
         try {
             optionalBalance = userDao.checkUserBalanceByUserId(userId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle checkUserBalanceById method in UserService. ", e);
         }
         return optionalBalance;
@@ -172,22 +172,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean addBalance(Long userId, String balanceToAdd) throws ServiceException {
-        if (!inputFieldValidator.isCorrectBalance(balanceToAdd)){
+        if (!inputFieldValidator.isCorrectBalance(balanceToAdd)) {
             LOGGER.log(Level.DEBUG, "InvalidBalance - {}", balanceToAdd);
             return false;
         }
         boolean result;
         try {
             Optional<BigDecimal> optionalCurrentBalance = userDao.checkUserBalanceByUserId(userId);
-            if (optionalCurrentBalance.isPresent()){
+            if (optionalCurrentBalance.isPresent()) {
                 BigDecimal newBalance = new BigDecimal(balanceToAdd).add(optionalCurrentBalance.get());
                 LOGGER.log(Level.DEBUG, "New Balance = {}", newBalance.floatValue());
                 result = userDao.updateUserBalanceById(userId, newBalance);
-            }else {
+            } else {
                 result = false;
                 LOGGER.log(Level.INFO, "UserService - user:{} balance not found", userId);
             }
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle addBalance method in UserService. ", e);
         }
         return result;
@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllUsers() throws ServiceException {
         try {
             return userDao.findAll();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findAllUsers method in UserService. ", e);
         }
     }
@@ -212,7 +212,24 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private Client createClientFromUserData(Map<String, String> userData){
+    @Override
+    public boolean updateAvatar(User user, String path) throws ServiceException {
+        UserRole role = user.getRole();
+        long id = user.getId();
+        boolean result;
+        try {
+            switch (role) {
+                case MANAGER -> result = userDao.updateManagerAvatarPath(id, path) != 0;
+                case ASSISTANT -> result = userDao.updateAssistantAvatarPath(id, path) != 0;
+                default -> result = false;
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle updateAvatar method in UserService. ", e);
+        }
+        return result;
+    }
+
+    private Client createClientFromUserData(Map<String, String> userData) {
         Client user = new Client();
         String hashedPassword = PasswordEncryptor.encryptMd5Apache(userData.get(PASSWORD));
         user.setLogin(userData.get(LOGIN));

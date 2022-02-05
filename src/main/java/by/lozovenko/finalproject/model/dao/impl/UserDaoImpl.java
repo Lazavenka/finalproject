@@ -86,6 +86,8 @@ public class UserDaoImpl implements UserDao {
 
     private static final String UPDATE_USER_STATE_BY_ID = "UPDATE users SET user_state = ? WHERE user_id = ?";
     private static final String UPDATE_CLIENT_BALANCE_BY_ID = "UPDATE clients SET balance = ? WHERE user_id = ?";
+    private static final String UPDATE_MANAGER_AVATAR_BY_USER_ID = "UPDATE managers SET avatar_link = ? WHERE user_id = ?";
+    private static final String UPDATE_ASSISTANT_AVATAR_BY_USER_ID = "UPDATE assistants SET avatar_link = ? WHERE user_id = ?";
 
     public static UserDao getInstance() {
         if (instance == null) {
@@ -220,7 +222,7 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.log(Level.ERROR, "Change cancellation error in createManager transaction:", throwables);
             }
             throw new DaoException(e);
-        }finally {
+        } finally {
             try {
                 if (connection != null) {
                     connection.setAutoCommit(true);
@@ -495,6 +497,36 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public int updateAssistantAvatarPath(long id, String path) throws DaoException {
+        int result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ASSISTANT_AVATAR_BY_USER_ID)) {
+            preparedStatement.setString(1, path);
+            preparedStatement.setLong(2, id);
+
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateManagerAvatarPath method. Database access error.", e);
+        }
+        return result;
+    }
+
+    @Override
+    public int updateManagerAvatarPath(long id, String path) throws DaoException {
+        int result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MANAGER_AVATAR_BY_USER_ID)) {
+            preparedStatement.setString(1, path);
+            preparedStatement.setLong(2, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateManagerAvatarPath method. Database access error.", e);
+        }
+        return result;
+    }
+
+
+    @Override
     public Optional<User> findUserByLoginAndPassword(String login, String password) throws DaoException {
         return Optional.empty();
     }
@@ -592,7 +624,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findAssistantByOrderEquipment(OrderEquipment orderEquipment) throws DaoException {
+    public Optional<User> findAssistantByOrderEquipment(Order order) throws DaoException {
         return Optional.empty();
     }
 

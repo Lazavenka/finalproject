@@ -33,7 +33,7 @@ public interface UserDao extends BaseDao<Long, User> {
 
     List<User> findAssistantsByEquipmentType(EquipmentType equipmentType) throws DaoException;
 
-    Optional<User> findAssistantByOrderEquipment(OrderEquipment orderEquipment) throws DaoException;
+    Optional<User> findAssistantByOrderEquipment(Order order) throws DaoException;
 
     List<User> findAssistantsByOrder(Order order) throws DaoException;
 
@@ -45,4 +45,7 @@ public interface UserDao extends BaseDao<Long, User> {
     boolean updateUserBalanceById(Long userId, BigDecimal newBalance) throws DaoException;
 
     Optional<User> findManagerByLaboratoryId(long laboratoryId)  throws DaoException;
+
+    int updateAssistantAvatarPath(long id, String path) throws DaoException;
+    int updateManagerAvatarPath(long id, String path) throws DaoException;
 }

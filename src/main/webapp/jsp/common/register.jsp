@@ -25,6 +25,7 @@
 <fmt:message var="invalid_email" key="message.invalid_email"/>
 <fmt:message var="correct" key="message.correct"/>
 <fmt:message var="sign_up" key="header.sign_up"/>
+<fmt:message var="pass_helper" key="user.pass_helper"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 <c:set var="reg_data" value="${requestScope.user_registration_data}"/>
@@ -50,8 +51,8 @@
         <label for="validationFirstName" class="col-sm-2 col-form-label">${first_name}</label>
         <div class="col-sm-10">
             <input type="text" name="first_name" class="form-control"
-                value="<c:if test="${!empty reg_data and reg_data.get(f_name_param) != 'invalid_first_name' }">${reg_data.get(f_name_param)}</c:if>"
-                id="validationFirstName"  required pattern="^[A-Za-zА-Яа-я]{2,20}">
+                   value="<c:if test="${!empty reg_data and reg_data.get(f_name_param) != 'invalid_first_name' }">${reg_data.get(f_name_param)}</c:if>"
+                   id="validationFirstName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
             <c:if test="${requestScope.invalid_first_name}">
                 <div style="color: red">${invalid_name}</div>
             </c:if>
@@ -85,7 +86,8 @@
         <div class="col-sm-10">
             <input type="text" name="login" class="form-control"
                    value="<c:if test="${!empty reg_data and reg_data.get(login_param) != 'login_exists' or reg_data.get(login_param) != 'invalid_login'}">${reg_data.get(login_param)}</c:if>"
-                   id="validationCustomUsername" aria-describedby="inputGroupPrepend" required pattern="^[A-Za-zА-Яа-я0-9_.]{4,20}$">
+                   id="validationCustomUsername" aria-describedby="inputGroupPrepend" required
+                   pattern="^[A-Za-zА-Яа-я0-9_.]{4,20}$">
             <c:choose>
                 <c:when test="${requestScope.login_exists}">
                     <div style="color: red">${not_unique_login}</div>
@@ -106,8 +108,10 @@
         <label for="validationPassword" class="col-sm-2 col-form-label">${password}</label>
         <div class="col-sm-10">
             <input type="password" name="password" class="form-control"
-                   value="<c:if test="${!empty reg_data and reg_data.get(pass_param) != 'invalid_password' }">${reg_data.get(pass_param)}</c:if>"
-                   id="validationPassword" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
+                   id="validationPassword" required
+                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$"
+                   aria-describedby="passwordHelpBlock">
+            <div id="passwordHelpBlock" class="form-text">${pass_helper}</div>
             <c:if test="${requestScope.invalid_password}">
                 <div style="color: red">${invalid_password}</div>
             </c:if>
@@ -123,8 +127,10 @@
         <label for="validationCustom04" class="col-sm-2 col-form-label">${confirm_pass}</label>
         <div class="col-sm-10">
             <input type="password" name="confirmed_password" class="form-control"
-                   value="<c:if test="${!empty reg_data and reg_data.get(c_pass_param) != 'passwords_mismatch' }">${reg_data.get(c_pass_param)}</c:if>"
-                   id="validationCustom04" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
+                   id="validationCustom04" required
+                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$"
+                   aria-describedby="passwordHelpBlock">
+            <div id="passwordHelpBlock" class="form-text">${pass_helper}</div>
             <c:if test="${requestScope.passwords_mismatch}">
                 <div style="color: red">${password_mismatch}</div>
             </c:if>
@@ -141,10 +147,15 @@
         <div class="col-sm-10">
             <input type="text" name="email" class="form-control"
                    value="<c:if test="${!empty reg_data and reg_data.get(email_param) != 'invalid_email' or reg_data.get(email_param) != 'not_unique_email'}">${reg_data.get(email_param)}</c:if>"
-                   id="validationCustom05" aria-describedby="inputGroupPrepend" required pattern="^[\w-.]+@([\w-]+\.)+[\w-]{2,6}$" maxlength="55">
+                   id="validationCustom05" aria-describedby="inputGroupPrepend" required
+                   pattern="^[\w.-]+@([\w-]+\.)+[\w-]{2,6}$" maxlength="55">
             <c:choose>
-                <c:when test="${requestScope.invalid_email}"><div style="color: red">${invalid_email}</div></c:when>
-                <c:when test="${requestScope.not_unique_email}"><div style="color: red">${not_unique_email}</div></c:when>
+                <c:when test="${requestScope.invalid_email}">
+                    <div style="color: red">${invalid_email}</div>
+                </c:when>
+                <c:when test="${requestScope.not_unique_email}">
+                    <div style="color: red">${not_unique_email}</div>
+                </c:when>
             </c:choose>
             <div class="valid-feedback">
                 ${correct}

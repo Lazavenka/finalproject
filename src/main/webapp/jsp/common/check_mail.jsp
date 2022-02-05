@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
@@ -9,10 +10,10 @@
 </c:if>
 <fmt:setBundle basename="locale/language"/>
 
-<fmt:message var="success" key="registration.success_message"/>
-<fmt:message var="not_success" key="registration.fail_message"/>
+
 <fmt:message var="check_mail" key="registration.check_mail_message"/>
-<fmt:message var="sign_in" key="header.sign_in"/>
+<fmt:message var="sign_in" key="common.sign_in"/>
+
 <html>
 <head>
     <title>Registration confirm page. Research center.</title>
@@ -22,13 +23,11 @@
 <jsp:include page="../header/header.jsp"/>
 <figure class="text-center">
     <blockquote class="blockquote">
-        <c:choose>
-            <c:when test="${requestScope.confirm_failed}"><p>${not_success}</p></c:when>
-            <c:otherwise><p>${success}</p></c:otherwise>
-        </c:choose>
+            <p>${check_mail}</p>
     </blockquote>
 </figure>
 <br/>
 <a role="button" class="btn btn-primary" href="${abs}/controller?command=go_sign_in_page_command">${sign_in}</a>
+<ctg:print-footer/>
 </body>
 </html>

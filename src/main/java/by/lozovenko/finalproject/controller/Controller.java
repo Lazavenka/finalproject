@@ -4,6 +4,7 @@ import by.lozovenko.finalproject.controller.command.CommandProvider;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,16 +20,21 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
 import static by.lozovenko.finalproject.controller.RequestParameter.COMMAND;
 
 @WebServlet(urlPatterns = {"/controller"})
+@MultipartConfig(fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024,
+        maxRequestSize = 1024 * 1024)
 public class Controller extends HttpServlet {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOGGER.log(Level.INFO,"Controller -> doGet method");
         processRequest(request, response);
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOGGER.log(Level.INFO,"Controller -> doPost method");
         processRequest(request, response);
     }
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -49,7 +55,6 @@ public class Controller extends HttpServlet {
                 }
             }
         }else {
-
             request.getSession().setAttribute(EXCEPTION, "message.nullpage");
             LOGGER.log(Level.WARN, "Command = {} not found", commandName);
             response.sendRedirect(PagePath.ERROR_404_PAGE);

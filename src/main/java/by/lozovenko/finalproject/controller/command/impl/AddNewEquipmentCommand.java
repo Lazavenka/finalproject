@@ -39,16 +39,17 @@ public class AddNewEquipmentCommand implements CustomCommand {
         String laboratoryIdString = request.getParameter(LABORATORY_ID);
 
         fillMapData(request, equipmentData);
-
+        logger.log(Level.DEBUG, equipmentData);
         Optional<Object> optionalCurrentUser = Optional.ofNullable(session.getAttribute(USER));
         if (optionalCurrentUser.isPresent()){
             User currentUser = (User) optionalCurrentUser.get();
+            if (currentUser.getRole() == UserRole.MANAGER){
+                laboratoryIdString = String.valueOf(((Manager)currentUser).getLaboratoryId());
+                equipmentData.put(LABORATORY_ID, laboratoryIdString);
+            }
             try {
                 if (equipmentService.addNewEquipment(equipmentData)){
-                    switch (currentUser.getRole()){
-                        case ADMIN -> router.setPage(ADMIN_PAGE);
-                        case MANAGER -> router.setPage(MANAGER_PAGE);
-                    }
+
                     router.setRedirect();
                 }else {
                     clearInvalidDataAndSetRequestAttributes(request, equipmentData);
@@ -65,7 +66,7 @@ public class AddNewEquipmentCommand implements CustomCommand {
                     router.setPage(ADD_EQUIPMENT_PAGE);
                 }
             }catch (ServiceException e){
-                logger.log(Level.ERROR, "Error in AddNewLaboratoryCommand", e);
+                logger.log(Level.ERROR, "Error in AddNewEquipmentCommand", e);
                 request.setAttribute(EXCEPTION, e);
                 router.setPage(ERROR_404_PAGE);
                 router.setRedirect();

@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.RequestAttribute.USER;
 
-@WebFilter(urlPatterns = {"/*", "*.jsp"})
 public class NewUserFilter implements Filter {
     private static final Logger LOGGER = LogManager.getLogger();
     @Override

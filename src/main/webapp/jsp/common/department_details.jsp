@@ -29,9 +29,10 @@
 <jsp:include page="../header/header.jsp"/>
 <div class="container-fluid">
     <div class="col-xs-2">
-        <form action="${abs}/controller" method="post">
+        <form action="${abs}/controller" method="get">
             <div>
                 <input type="hidden" name="command" value="find_department_details_by_id_command"/>
+                <input type="hidden" name="current_department_id" value="${requestScope.selected_department.id}"/>
                 <div class="select-form">
                     <span>${department}</span>
                     <select id="department_id" name="department_id" class="form-control">

@@ -20,7 +20,6 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.USER;
 import static by.lozovenko.finalproject.controller.RequestParameter.COMMAND;
 
 
-@WebFilter(urlPatterns = {"/controller"})
 public class CommandPermissionFilter implements Filter {
     private static final Logger LOGGER = LogManager.getLogger();
     @Override

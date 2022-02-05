@@ -26,6 +26,7 @@
 <fmt:message var="add_balance" key="header.add_balance"/>
 <fmt:message var="client_orders" key="header.client_orders"/>
 <fmt:message var="profile" key="header.profile"/>
+<fmt:message var="browse" key="header.browse"/>
 
 <html>
 <head>
@@ -46,9 +47,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-start">
                 <li class="nav-item">
-                    <a class="nav-link active" href="${abs}/controller?command=go_home_command">${home}</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link active" href="${abs}/controller?command=go_about_page_command">${about}</a>
                 </li>
                 <c:choose>
@@ -63,12 +61,12 @@
                     </c:when>
                 </c:choose>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">${browse}</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_all_departments_command">${departments}</a></li>
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_department_details_by_id_command&department_id=0">${laboratories}</a></li>
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_all_managers_command">${managers}</a></li>
-                        <li><a class="dropdown-item" href="${abs}/controller?command=go_equipment_page_command">${equipment}</a></li>
+                        <li><a class="dropdown-item" href="${abs}/controller?command=find_equipment_by_type_command&equipment_type_id=0">${equipment}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Separated link</a></li>
                         <li role="separator" class="divider"></li>
@@ -87,7 +85,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">${user.login}</a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="${abs}/controller?command=go_edit_profile_page_command">${profile}</a></li>
+                                <li><a class="dropdown-item" href="${abs}/controller?command=go_edit_user_page_command&user_id=${sessionScope.user.id}">${profile}</a></li>
                                 <c:if test="${user.role eq 'CLIENT'}">
                                     <li><a class="dropdown-item" href="${abs}/controller?command=check_balance_command">${balance}<c:if test="${sessionScope.user_balance != null}">: ${sessionScope.user_balance.floatValue()}</c:if></a></li>
                                     <li><a class="dropdown-item" href="${abs}/controller?command=go_balance_page_command">${add_balance}</a></li>

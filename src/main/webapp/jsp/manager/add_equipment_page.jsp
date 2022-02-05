@@ -105,7 +105,7 @@
         <div class="row mb-3">
             <label for="validationDescription" class="col-sm-2 col-form-label">${description}</label>
             <div class="col-sm-10">
-                <input type="text" name="description" class="form-control"
+                <input type="text" name="description" class="form-control" height="100"
                        value="<c:if test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(description_param)}</c:if>"
                        id="validationDescription" required>
                 <c:if test="${requestScope.invalid_description}">
@@ -124,7 +124,7 @@
             <div class="col-sm-10">
                 <input type="text" name="price_per_hour" class="form-control"
                        value="<c:if test="${!empty equipment_data and equipment_data.get(price_param) != 'invalid_price'}">${equipment_data.get(price_param)}</c:if>"
-                       id="validationPrice" placeholder="1.00" required pattern="^\d{1,4}\.?\d{0,2}$">
+                       id="validationPrice" placeholder="1.00" required pattern="^\d{1,4}(\.\d{0,2})?$">
                 <c:if test="${requestScope.invalid_price}">
                     <div style="color: red">${invalid_price}</div>
                 </c:if>
@@ -141,7 +141,7 @@
             <div class="col-sm-10">
                 <input type="text" name="average_research_time" class="form-control"
                        value="<c:if test="${!empty equipment_data and equipment_data.get(average_time_param) != 'invalid_research_time'}">${equipment_data.get(average_time_param)}</c:if>"
-                       id="validationResearchTime" required pattern="^(([0-1]?[0-9])|(2[0-3])):[0-5]?[0-9]:[0-5]?[0-9]$">
+                       id="validationResearchTime" placeholder="00:00:00" required pattern="^(([0-1][0-9])|(2[0-3])):[0-5]?[0-9]:[0-5]?[0-9]$">
                 <c:if test="${requestScope.invalid_price}">
                     <div style="color: red">${invalid_research_time}</div>
                 </c:if>
@@ -155,7 +155,7 @@
         </div>
         <div class="row mb-3">
             <div class="select-form">
-                <span>${equipment_state}</span>
+                <label for="equipment_state">${equipment_state}</label>
                 <select id="equipment_state" name="equipment_state" class="form-control">
                     <option value="ACTIVE">${state_active}</option>
                     <option value="INACTIVE">${state_inactive}</option>
@@ -166,7 +166,10 @@
             </div>
         </div>
         <div class="col-sm-5">
-            <input type="checkbox" name="is_need_assistant" value="true">${necessary_assistant}
+            <label class="form-check-label" for="needAssistant">
+                ${necessary_assistant}
+            </label>
+            <input class="form-check-input" type="checkbox" id="needAssistant" name="is_need_assistant" value="true">
         </div>
         <div class="col-sm-5">
             <input type="submit" value="${add}"/>

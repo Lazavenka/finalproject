@@ -23,6 +23,7 @@ public class AddBalanceCommand implements CustomCommand {
         logger.log(Level.INFO, "AddBalanceCommand");
         Router router = new Router();
         String balanceString = request.getParameter(BALANCE);
+        logger.log(Level.DEBUG, "balance string = {}", balanceString);
         HttpSession session = request.getSession();
         Object user = session.getAttribute(USER);
         if (user != null){

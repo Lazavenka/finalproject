@@ -31,14 +31,15 @@
 
 <div class="container-fluid">
     <div class="col-xs-2">
-        <form action="${abs}/controller" method="post">
+        <form action="${abs}/controller" method="get">
             <div>
                 <input type="hidden" name="command" value="find_laboratory_details_by_id_command"/>
+                <input type="hidden" name="current_laboratory_id" value="${requestScope.selected_laboratory.id}">
                 <div class="select-form">
                     <span>${laboratory}</span>
                     <select id="laboratory_id" name="laboratory_id" class="form-control">
                         <c:if test="${requestScope.selected_laboratory!= null}">
-                            <option selected disabled>${requestScope.selected_laboratory.name}</option>
+                            <option selected disabled value="${requestScope.selected_laboratory.id}">${requestScope.selected_laboratory.name}</option>
                         </c:if>
                         <c:if test="${requestScope.selected_laboratory == null}">
                             <option selected disabled>${choose_laboratory}</option>
@@ -55,7 +56,7 @@
         </form>
     </div>
     <div class="d-flex position-relative">
-        <img src="${requestScope.selected_laboratory.imageFilePath}" class="flex-shrink-0 me-3" alt="...">
+        <img src="${abs}/${requestScope.selected_laboratory.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="${requestScope.selected_laboratory.name}">
         <div>
             <h5 class="card-title">${requestScope.selected_laboratory.name}</h5>
             <dl class="row">
@@ -83,7 +84,7 @@
                     <c:otherwise>
                         <dd class="col-sm-9">
                             <div class="d-flex position-relative">
-                                <img src="${requestScope.manager.imageFilePath}" class="flex-shrink-0 me-3" alt="...">
+                                <img src="${abs}/${requestScope.manager.imageFilePath}" width="200" class="flex-shrink-0 me-3" alt="...">
                                 <div>
                                     <h5 class="mt-0">${requestScope.manager.lastName} ${requestScope.manager.firstName}</h5>
                                     <p class="card-text">${requestScope.manager.managerDegree.value}</p>
@@ -99,13 +100,8 @@
             </dl>
         </div>
     </div>
-    <c:choose>
-        <c:when test="${requestScope.empty_list}">${not_found}</c:when>
-        <c:otherwise>
-            <div class="justify-content-center">${equipment_list}</div>
-            <jsp:include page="equipment_table.jsp"/>
-        </c:otherwise>
-    </c:choose>
+    <div class="justify-content-center">${equipment_list}</div>
+    <jsp:include page="equipment_table.jsp"/>
 </div>
 
 <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>

@@ -30,15 +30,19 @@ public enum CommandType {
     FIND_DEPARTMENT_DETAILS_BY_ID_COMMAND(new FindDepartmentDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
     FIND_LABORATORY_DETAILS_BY_ID_COMMAND(new FindLaboratoryDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
 
+    GO_EDIT_USER_PAGE_COMMAND(new GoEditUserPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
+
     CHECK_BALANCE_COMMAND(new CheckBalanceCommand(), EnumSet.of(CLIENT)),
     ADD_EQUIPMENT_TO_CART_COMMAND(new AddEquipmentToCartCommand(), EnumSet.of(CLIENT)),
     GO_BALANCE_PAGE_COMMAND(new GoBalancePageCommand(), EnumSet.of(CLIENT)),
     ADD_BALANCE_COMMAND(new AddBalanceCommand(), EnumSet.of(CLIENT)),
 
     SHOW_SCHEDULE_COMMAND(new ShowScheduleCommand(), EnumSet.of(ASSISTANT)),
-
+    UPLOAD_AVATAR_COMMAND(new UploadAvatarCommand(), EnumSet.of(ASSISTANT, MANAGER)),
     GO_MANAGERS_LAB_COMMAND(new GoManagersLabCommand(), EnumSet.of(MANAGER)),
     GO_ADD_NEW_EQUIPMENT_PAGE_COMMAND(new GoAddNewEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
+    GO_EDIT_EQUIPMENT_PAGE_COMMAND(new GoEditEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
+
     ADD_NEW_EQUIPMENT_COMMAND(new AddNewEquipmentCommand(), EnumSet.of(ADMIN, MANAGER)),
 
     GO_USER_MANAGEMENT_PAGE_COMMAND(new GoUserManagementPageCommand(), EnumSet.of(ADMIN)),

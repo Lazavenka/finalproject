@@ -27,10 +27,11 @@ public class RequestAttribute {
     public static final String LABORATORY_DATA = "laboratory_data";
     public static final String EQUIPMENT_TYPE_LIST = "equipment_types";
     public static final String EQUIPMENT_LIST = "equipment_list";
-    public static final String ORDER_EQUIPMENT_LIST = "order_equipment_list";
+    public static final String ORDER_LIST = "order_list";
     public static final String SELECTED_EQUIPMENT_TYPE = "selected_equipment_type";
     public static final String SELECTED_DEPARTMENT = "selected_department";
     public static final String SELECTED_LABORATORY = "selected_laboratory";
+    public static final String SELECTED_EQUIPMENT = "selected_equipment";
     public static final String DEPARTMENT_LABORATORIES = "department_laboratories";
     public static final String EMPTY_LIST = "empty_list";
     public static final String INCORRECT_LOGIN_OR_PASSWORD = "incorrect_login_or_password";
@@ -53,6 +54,8 @@ public class RequestAttribute {
     public static final String INVALID_DEPARTMENT_ADDRESS = "invalid_department_address";
     public static final String INVALID_RESEARCH_TIME = "invalid_research_time";
     public static final String INVALID_PRICE = "invalid_price";
+    public static final String INVALID_FILE_SIZE = "invalid_file_size";
+    public static final String WRONG_FILE_EXTENSION = "wrong_file_extension";
     public static final String EMPTY = "";
     public static final String INVALID_EMAIL = "invalid_email";
     public static final String PASSWORDS_MISMATCH = "passwords_mismatch";

@@ -19,7 +19,10 @@ public class OrderMapper implements CustomRowMapper<Order> {
     public static final String ORDER_ID = "order_id";
     public static final String ORDER_STATE = "order_state";
     public static final String ORDER_TOTAL_COST = "order_total_cost";
-
+    public static final String ORDER_ASSISTANT_ID = "order_assistant_id";
+    public static final String RENT_START = "order_rent_start";
+    public static final String RENT_END = "order_rent_end";
+    public static final String ORDER_EQUIPMENT_ID = "order_equipment_id";
 
 
     private static OrderMapper instance;
@@ -36,8 +39,13 @@ public class OrderMapper implements CustomRowMapper<Order> {
         try {
             order.setId(resultSet.getLong(ORDER_ID));
             order.setClientId(resultSet.getLong(CLIENT_ID));
+            order.setAssistantId(resultSet.getLong(ORDER_ASSISTANT_ID));
+            order.setEquipmentId(resultSet.getLong(ORDER_EQUIPMENT_ID));
             order.setState(OrderState.valueOf(resultSet.getString(ORDER_STATE)));
             order.setTotalCost(resultSet.getBigDecimal(ORDER_TOTAL_COST));
+            order.setRentStartTime(resultSet.getTimestamp(RENT_START).toLocalDateTime());
+            order.setRentEndTime(resultSet.getTimestamp(RENT_END).toLocalDateTime());
+
             optionalOrder = Optional.of(order);
         } catch (SQLException e) {
             LOGGER.log(Level.ERROR, "Mapping error in Order mapping class! {}", e.getMessage());

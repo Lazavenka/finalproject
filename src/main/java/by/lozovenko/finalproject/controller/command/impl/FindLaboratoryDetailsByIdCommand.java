@@ -23,8 +23,7 @@ import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
-import static by.lozovenko.finalproject.controller.RequestParameter.DEPARTMENT_ID;
-import static by.lozovenko.finalproject.controller.RequestParameter.LABORATORY_ID;
+import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class FindLaboratoryDetailsByIdCommand implements CustomCommand {
     @Override
@@ -35,6 +34,9 @@ public class FindLaboratoryDetailsByIdCommand implements CustomCommand {
         UserService userService = UserServiceImpl.getInstance();
         EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
         String laboratoryIdString = request.getParameter(LABORATORY_ID);
+        if(laboratoryIdString == null){
+            laboratoryIdString = request.getParameter(CURRENT_LABORATORY_ID);
+        }
         try {
             Optional<Laboratory> optionalLaboratory = laboratoryService.findLaboratoryById(laboratoryIdString);
             if (optionalLaboratory.isPresent()){

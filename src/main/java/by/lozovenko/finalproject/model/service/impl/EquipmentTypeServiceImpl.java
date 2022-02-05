@@ -47,7 +47,7 @@ public class EquipmentTypeServiceImpl implements EquipmentTypeService{
     @Override
     public Optional<EquipmentType> findById(String equipmentTypeId) throws ServiceException {
         if (!inputFieldValidator.isCorrectEquipmentTypeId(equipmentTypeId)){
-            throw new ServiceException("EquipmentTypeId didn't pass validation.");
+            return Optional.empty();
         }
         Optional<EquipmentType> optionalEquipmentType;
         try {

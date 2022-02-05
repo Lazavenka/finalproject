@@ -49,5 +49,4 @@ public interface CustomFieldValidator {
 
     boolean isCorrectLaboratoryLocation(String laboratoryLocation);
 
-
 }

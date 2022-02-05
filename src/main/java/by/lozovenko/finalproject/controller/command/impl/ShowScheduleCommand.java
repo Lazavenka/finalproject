@@ -5,11 +5,11 @@ import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Assistant;
 import by.lozovenko.finalproject.model.entity.Equipment;
-import by.lozovenko.finalproject.model.entity.OrderEquipment;
+import by.lozovenko.finalproject.model.entity.Order;
 import by.lozovenko.finalproject.model.service.EquipmentService;
-import by.lozovenko.finalproject.model.service.OrderEquipmentService;
+import by.lozovenko.finalproject.model.service.OrderService;
 import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
-import by.lozovenko.finalproject.model.service.impl.OrderEquipmentServiceImpl;
+import by.lozovenko.finalproject.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
@@ -32,15 +32,15 @@ public class ShowScheduleCommand implements CustomCommand {
             try {
                 Assistant assistant = (Assistant) user;
                 long assistantId = assistant.getAssistantId();
-                OrderEquipmentService orderEquipmentService = OrderEquipmentServiceImpl.getInstance();
+                OrderService orderService = OrderServiceImpl.getInstance();
                 EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
-                List<OrderEquipment> orderEquipmentList = orderEquipmentService.findPayedOrderEquipmentByAssistantId(assistantId);
+                List<Order> orderList = orderService.findPayedOrdersByAssistantIdFromNow(assistantId);
                 List<Equipment> equipmentList = new ArrayList<>();
-                for (OrderEquipment item: orderEquipmentList) {
+                for (Order item: orderList) {
                     Optional<Equipment> optionalEquipment = equipmentService.findById(item.getEquipmentId());
                     optionalEquipment.ifPresent(equipmentList::add);
                 }
-                request.setAttribute(ORDER_EQUIPMENT_LIST, orderEquipmentList);
+                request.setAttribute(ORDER_LIST, orderList);
                 request.setAttribute(EQUIPMENT_LIST, equipmentList);
                 if (equipmentList.isEmpty()){
                     request.setAttribute(EMPTY_LIST, true);

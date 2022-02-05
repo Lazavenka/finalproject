@@ -3,8 +3,6 @@ package by.lozovenko.finalproject.model.service.impl;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.EquipmentTimeTableService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -13,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService {
-    private static Logger logger = LogManager.getLogger();
 
     @Override
     public void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable) throws ServiceException {
@@ -62,12 +59,12 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
     }
 
     @Override
-    public void setAvailability(EquipmentTimeTable equipmentTimeTable, List<OrderEquipment> equipmentOrders, Map<Long, List<OrderEquipment>> assistantsOrders) {
+    public void setAvailability(EquipmentTimeTable equipmentTimeTable, List<Order> equipmentOrders, Map<Long, List<Order>> assistantsOrders) {
         List<EquipmentWorkTimePeriod> timeTable = equipmentTimeTable.getTimeTable();
-        for (Map.Entry<Long, List<OrderEquipment>> currentAssistantOrders : assistantsOrders.entrySet()) {
-            List<OrderEquipment> currentOrders = currentAssistantOrders.getValue();
+        for (Map.Entry<Long, List<Order>> currentAssistantOrders : assistantsOrders.entrySet()) {
+            List<Order> currentOrders = currentAssistantOrders.getValue();
             Long currentAssistantId = currentAssistantOrders.getKey();
-            for (OrderEquipment assistantOrder : currentOrders) {
+            for (Order assistantOrder : currentOrders) {
                 LocalDateTime orderStart = assistantOrder.getRentStartTime();
                 LocalDateTime orderEnd = assistantOrder.getRentEndTime();
                 EquipmentWorkTimePeriod assistantOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT, Collections.emptyList());
@@ -83,7 +80,7 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
                 currentPeriod.setAvailability(EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT);
             }
         }
-        for (OrderEquipment equipmentOrder : equipmentOrders) {
+        for (Order equipmentOrder : equipmentOrders) {
             LocalDateTime orderStart = equipmentOrder.getRentStartTime();
             LocalDateTime orderEnd = equipmentOrder.getRentEndTime();
             EquipmentWorkTimePeriod equipmentOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.BUSY, Collections.emptyList());
