@@ -37,7 +37,7 @@
         <div class="col-sm-10">
             <input type="text" name="department_name" class="form-control"
                    value="<c:if test="${!empty department_data and department_data.get(name_param) != 'invalid_department_name' }">${department_data.get(name_param)}</c:if>"
-                   id="validationDepartmentName"  required pattern="[A-Za-zА-Яа-я0-9]{2,200}">
+                   id="validationDepartmentName"  required pattern="[A-Za-zА-Яа-я0-9 ]{2,200}">
             <c:if test="${requestScope.invalid_department_name}">
                 <div class="alert alert-danger">${invalid_department_name}</div>
             </c:if>

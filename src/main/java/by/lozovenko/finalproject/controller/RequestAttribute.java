@@ -8,6 +8,7 @@ public class RequestAttribute {
 
     public static final String LABORATORY = "laboratory";
     public static final String LABORATORIES = "laboratories";
+    public static final String AVAILABLE_LABORATORIES = "available_laboratories";
 
     public static final String DEPARTMENT = "department";
     public static final String DEPARTMENTS = "departments";

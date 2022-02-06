@@ -34,7 +34,7 @@
         <div class="col-sm-10">
             <input type="text" name="equipment_type_name" class="form-control"
                    value="<c:if test="${!empty equipment_type_data and equipment_type_data.get(name_param) != 'invalid_equipment_type_name' }">${equipment_type_data.get(name_param)}</c:if>"
-                   id="validationEquipmentType"  required pattern="[A-Za-zА-Яа-я0-9]{2,200}">
+                   id="validationEquipmentType"  required pattern="[A-Za-zА-Яа-я0-9 ]{2,200}">
             <c:if test="${requestScope.invalid_equipment_type_name}">
                 <div style="color: red">${invalid_equipment_type_name}</div>
             </c:if>

@@ -60,7 +60,7 @@
             <div class="col-sm-10">
                 <input type="text" name="laboratory_name" class="form-control"
                        value="<c:if test="${!empty laboratory_data and laboratory_data.get(name_param) != 'invalid_laboratory_name' }">${laboratory_data.get(name_param)}</c:if>"
-                       id="validationLabName" required pattern="[A-Za-zА-Яа-я0-9]{2,200}">
+                       id="validationLabName" required pattern="[A-Za-zА-Яа-я0-9 ]{2,255}">
                 <c:if test="${requestScope.invalid_laboratory_name}">
                     <div style="color: red">${invalid_lab_name}</div>
                 </c:if>
@@ -77,7 +77,7 @@
             <div class="col-sm-10">
                 <input type="text" name="lab_location" class="form-control"
                        value="<c:if test="${!empty laboratory_data and laboratory_data.get(location_param) != 'invalid_location' }">${laboratory_data.get(location_param)}</c:if>"
-                       id="validationLabLocation" required pattern="[A-Za-zА-Яа-я]{2,255}">
+                       id="validationLabLocation" required pattern="[A-Za-zА-Яа-я ]{2,255}">
                 <c:if test="${requestScope.invalid_location}">
                     <div style="color: red">${invalid_lab_location}</div>
                 </c:if>

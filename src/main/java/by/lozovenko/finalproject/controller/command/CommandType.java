@@ -59,6 +59,8 @@ public enum CommandType {
     GO_ADD_NEW_DEPARTMENT_PAGE_COMMAND(new GoAddNewDepartmentPageCommand(), EnumSet.of(ADMIN)),
     GO_ADD_NEW_LABORATORY_PAGE_COMMAND(new GoAddNewLaboratoryPageCommand(), EnumSet.of(ADMIN)),
     GO_ADD_NEW_EQUIPMENT_TYPE_PAGE_COMMAND(new GoAddNewEquipmentTypePageCommand(), EnumSet.of(ADMIN)),
+    GO_ADD_MANAGER_PAGE_COMMAND(new GoAddManagerPageCommand(), EnumSet.of(ADMIN)),
+    ADD_NEW_MANAGER_COMMAND(new AddNewManagerCommand(), EnumSet.of(ADMIN)),
 
     ADD_EQUIPMENT_TYPE_COMMAND(new AddEquipmentTypeCommand(), EnumSet.of(ADMIN)),
     ADD_NEW_LABORATORY_COMMAND(new AddNewLaboratoryCommand(), EnumSet.of(ADMIN)),

@@ -120,4 +120,13 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         }
         return laboratoryList;
     }
+
+    @Override
+    public List<Laboratory> findLaboratoriesWithoutManager() throws ServiceException {
+        try {
+            return laboratoryDao.findLaboratoriesWithoutManager();
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle findAll request at LaboratoryService", e);
+        }
+    }
 }

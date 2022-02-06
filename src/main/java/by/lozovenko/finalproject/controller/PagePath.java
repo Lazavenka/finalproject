@@ -30,6 +30,7 @@ public class PagePath {
     public static final String ADD_EQUIPMENT_PAGE = "jsp/manager/add_equipment_page.jsp";
     public static final String ADD_DEPARTMENT_PAGE = "jsp/admin/add_department_page.jsp";
     public static final String ADD_LABORATORY_PAGE = "jsp/admin/add_laboratory_page.jsp";
+    public static final String ADD_MANAGER_PAGE = "jsp/admin/add_manager_page.jsp";
     public static final String USER_MANAGEMENT_PAGE = "jsp/admin/manage_users.jsp";
     private PagePath() {
     }

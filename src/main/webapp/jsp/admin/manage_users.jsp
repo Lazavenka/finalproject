@@ -58,70 +58,79 @@
 </c:choose>
 <br>
 <div class="container">
-    <div class="col-sm-2 justify-content-center">
-        <div class="btn-group-vertical">
-            <a href="${abs}/controller?command=go_add_admin_page_command" class="btn btn-primary">${add_admin}</a>
-            <br>
-            <a href="${abs}/controller?command=go_add_manager_page_command" class="btn btn-primary">${add_manager}</a>
-            <br>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#usersTable"
-                    aria-expanded="false" aria-controls="usersTable">
-                ${show_users}
-            </button>
+    <div class="row">
+        <div class="col-sm-2 justify-content-center">
+            <div class="btn-group-vertical">
+                <a href="${abs}/controller?command=go_add_admin_page_command" class="btn btn-primary">${add_admin}</a>
+                <br>
+                <a href="${abs}/controller?command=go_add_manager_page_command"
+                   class="btn btn-primary">${add_manager}</a>
+                <br>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#usersTable"
+                        aria-expanded="false" aria-controls="usersTable">
+                    ${show_users}
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-10">
-        <table class="table-light" id="usersTable">
-            <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">${first_name}</th>
-                <th scope="col">${last_name}</th>
-                <th scope="col">${phone}</th>
-                <th scope="col">${email}</th>
-                <th scope="col">${login}</th>
-                <th scope="col">${user_role}</th>
-                <th scope="col">${user_state}</th>
-                <th scope="col">${edit}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="user" items="${requestScope.users}">
-                <tr>
-                    <th scope="row">${user.id}</th>
-                    <td>${user.firstName}</td>
-                    <td>${user.lastName}</td>
-                    <td>${user.phone}</td>
-                    <td>${user.email}</td>
-                    <td>${user.login}</td>
-                    <td>${user.role}</td>
-                    <td>
-                        <form action="${abs}/controller" method="post" class="form-control">
-                            <input type="hidden" name="command" value="update_user_state_command"/>
-                            <input type="hidden" name="user_id" value="${user.id}"/>
-                            <div class="hstack gap-1">
-                                <select id="user_state" name="user_state" class="form-control">
-                                    <option
-                                            <c:if test="${user.state.name() eq 'ACTIVE'}">selected</c:if>
-                                            value="ACTIVE">${state_active}</option>
-                                    <option
-                                            <c:if test="${user.state.name() eq 'INACTIVE'}">selected</c:if>
-                                            value="BLOCKED">${state_blocked}</option>
-                                </select>
-                                <c:if test="${requestScope.invalid_enum}">
-                                    <div class="alert alert-danger">${invalid_enum_message}</div>
-                                </c:if>
-                                <button type="submit" class="btn btn-primary btn-sm">${update}</button>
-                            </div>
-                        </form>
-                    </td>
-                    <td><a role="button" class="btn btn-primary <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>"
-                           href="${abs}/controller?command=delete_user_command&user_id=${user.id}">${delete}</a></td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
+        <div class="col-sm-10">
+            <div class="collapse" id="usersTable">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">${first_name}</th>
+                        <th scope="col">${last_name}</th>
+                        <th scope="col">${phone}</th>
+                        <th scope="col">${email}</th>
+                        <th scope="col">${login}</th>
+                        <th scope="col">${user_role}</th>
+                        <th scope="col">${user_state}</th>
+                        <th scope="col">${edit}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="user" items="${requestScope.users}">
+                        <tr>
+                            <th scope="row">${user.id}</th>
+                            <td>${user.firstName}</td>
+                            <td>${user.lastName}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.email}</td>
+                            <td>${user.login}</td>
+                            <td>${user.role}</td>
+                            <td>
+                                <form action="${abs}/controller" method="post" class="form-control">
+                                    <input type="hidden" name="command" value="update_user_state_command"/>
+                                    <input type="hidden" name="user_id" value="${user.id}"/>
+                                    <div class="hstack gap-1">
+                                        <select id="user_state" name="user_state">
+                                            <option
+                                                    <c:if test="${user.state.name() eq 'ACTIVE'}">selected</c:if>
+                                                    value="ACTIVE">${state_active}</option>
+                                            <option
+                                                    <c:if test="${user.state.name() eq 'BLOCKED'}">selected</c:if>
+                                                    value="BLOCKED">${state_blocked}</option>
+                                        </select>
+                                        <c:if test="${requestScope.invalid_enum}">
+                                            <div class="alert alert-danger">${invalid_enum_message}</div>
+                                        </c:if>
+                                        <a role="button" class="btn btn-primary" <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>
+                                        href="${abs}/controller?command=update_user_state_command&user_id=${user.id}">${update}</a>
+
+                                    </div>
+                                </form>
+                            </td>
+                            <td><a role="button"
+                                   class="btn btn-primary" <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>
+                                   href="${abs}/controller?command=delete_user_command&user_id=${user.id}">${delete}</a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

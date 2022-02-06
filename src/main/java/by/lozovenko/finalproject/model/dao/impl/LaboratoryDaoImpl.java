@@ -7,10 +7,7 @@ import by.lozovenko.finalproject.model.mapper.impl.LaboratoryMapper;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
 import org.apache.logging.log4j.Level;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +32,14 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             SELECT l.laboratory_name, l.laboratory_id, l.department_id, l.laboratory_location,
             l.laboratory_photo_link, l.laboratory_description FROM laboratories AS l
             JOIN managers AS m on m.laboratory_id = l.laboratory_id WHERE m.manager_id = ?""";
+    private static final String CREATE_LABORATORY = """
+            INSERT INTO laboratories (laboratory_name, department_id, laboratory_location, laboratory_description) 
+            VALUES (?, ?, ?, ?)""";
+
+    private static final String GET_LABS_WITHOUT_MANAGER = """
+            SELECT laboratory_id, laboratory_name, department_id, laboratory_location,
+            laboratory_photo_link, laboratory_description FROM laboratories
+            WHERE NOT EXISTS(SELECT manager_id FROM managers WHERE managers.laboratory_id = laboratories.laboratory_id)""";
 
     private LaboratoryDaoImpl(){
     }
@@ -93,7 +98,22 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
 
     @Override
     public long create(Laboratory laboratory) throws DaoException {
-        return -1;
+        long laboratoryId = -1;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement createLaboratoryStatement = connection.prepareStatement(CREATE_LABORATORY, Statement.RETURN_GENERATED_KEYS)){
+            createLaboratoryStatement.setString(1, laboratory.getName());
+            createLaboratoryStatement.setLong(2, laboratory.getDepartmentId());
+            createLaboratoryStatement.setString(3, laboratory.getLocation());
+            createLaboratoryStatement.setString(4, laboratory.getDescription());
+            createLaboratoryStatement.executeUpdate();
+            ResultSet generatedIdResultSet = createLaboratoryStatement.getGeneratedKeys();
+            if (generatedIdResultSet.next()){
+                laboratoryId = generatedIdResultSet.getLong(1);
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in create method LaboratoryDao class. Unable to get access to database.", e);
+        }
+        return laboratoryId;
     }
 
     @Override
@@ -153,5 +173,22 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             throw new DaoException("Error in findLaboratoryNameById method LaboratoryDao class. Unable to get access to database.", e);
         }
         return optionalLaboratoryName;
+    }
+
+    @Override
+    public List<Laboratory> findLaboratoriesWithoutManager() throws DaoException {
+        List<Laboratory> laboratoryList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_LABS_WITHOUT_MANAGER)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Laboratory laboratory = new Laboratory();
+                Optional<Laboratory> optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory,resultSet);
+                optionalLaboratory.ifPresent(laboratoryList::add);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in findLaboratoriesWithoutManager method LaboratoryDao class. Unable to get access to database.", e);
+        }
+    return laboratoryList;
     }
 }
