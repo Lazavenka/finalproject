@@ -6,6 +6,7 @@ import by.lozovenko.finalproject.model.service.EquipmentTimeTableService;
 import by.lozovenko.finalproject.model.service.impl.EquipmentTimeTableServiceImpl;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,8 +18,6 @@ import java.util.Map;
 
 public class Main { //todo DELETE NAFIG!
     public static void main(String[] args) {
-        LocalTime localtime = LocalTime.parse("01:01");
-        System.out.println(localtime);
-        System.out.println(""+localtime.getHour()+"h "+localtime.getMinute()+"m "+localtime.getSecond()+"s");
+
     }
 }

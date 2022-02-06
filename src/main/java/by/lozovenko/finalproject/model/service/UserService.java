@@ -1,6 +1,7 @@
 package by.lozovenko.finalproject.model.service;
 
 import by.lozovenko.finalproject.exception.ServiceException;
+import by.lozovenko.finalproject.model.entity.Assistant;
 import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
 
@@ -30,4 +31,12 @@ public interface UserService {
     Optional<Manager> findManagerByLaboratoryId(long laboratoryId) throws ServiceException;
 
     boolean updateAvatar(User user, String path) throws ServiceException;
+
+    List<Assistant> findAssistantsByLaboratoryId(long laboratoryId) throws ServiceException;
+
+    boolean updatePassword(String login, Map<String, String> passwordData) throws ServiceException;
+
+    boolean updateManagerDescriptionByUserId(long id, String description) throws ServiceException;
+
+    boolean updateUserProfile(long id, Map<String, String> profileData) throws ServiceException;
 }

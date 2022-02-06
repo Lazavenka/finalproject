@@ -5,6 +5,7 @@ public class RequestAttribute {
     public static final String USERS = "users";
     public static final String MANAGER = "manager";
     public static final String MANAGERS = "managers";
+
     public static final String LABORATORY = "laboratory";
     public static final String LABORATORIES = "laboratories";
 
@@ -19,14 +20,20 @@ public class RequestAttribute {
     public static final String MANAGER_NOT_FOUND = "manager_not_found";
     public static final String NO_MANAGERS_FOUND = "no_managers";
     public static final String USER_ROLE = "role";
+    public static final String UPLOAD_SUCCESS = "upload_success";
+    public static final String SUCCESS_MESSAGE = "success_message";
     public static final String CURRENT_PAGE = "current_page";
     public static final String USER_REGISTRATION_DATA = "user_registration_data";
     public static final String EQUIPMENT_TYPE_DATA = "equipment_type_data";
     public static final String EQUIPMENT_DATA = "equipment_data";
     public static final String DEPARTMENT_DATA = "department_data";
     public static final String LABORATORY_DATA = "laboratory_data";
+    public static final String PASSWORD_DATA = "change_password_data";
+    public static final String PROFILE_DATA = "profile_data";
     public static final String EQUIPMENT_TYPE_LIST = "equipment_types";
+    public static final String INCORRECT_OLD_PASSWORD = "incorrect_old_password";
     public static final String EQUIPMENT_LIST = "equipment_list";
+    public static final String ASSISTANT_LIST = "assistant_list";
     public static final String ORDER_LIST = "order_list";
     public static final String SELECTED_EQUIPMENT_TYPE = "selected_equipment_type";
     public static final String SELECTED_DEPARTMENT = "selected_department";
@@ -34,6 +41,7 @@ public class RequestAttribute {
     public static final String SELECTED_EQUIPMENT = "selected_equipment";
     public static final String DEPARTMENT_LABORATORIES = "department_laboratories";
     public static final String EMPTY_LIST = "empty_list";
+    public static final String EMPTY_ASSISTANT_LIST = "empty_assistant_list";
     public static final String INCORRECT_LOGIN_OR_PASSWORD = "incorrect_login_or_password";
     public static final String INVALID_LAST_NAME = "invalid_last_name";
     public static final String INVALID_FIRST_NAME = "invalid_first_name";

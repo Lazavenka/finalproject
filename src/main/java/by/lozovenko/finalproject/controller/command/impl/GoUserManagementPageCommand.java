@@ -24,6 +24,7 @@ public class GoUserManagementPageCommand implements CustomCommand {
         Router router = new Router(USER_MANAGEMENT_PAGE, Router.DispatchType.FORWARD);
         try {
             List<User> userList = userService.findAllUsers();
+            logger.log(Level.DEBUG, "UserManagementCommand add to request list of {} users", userList.size());
             request.setAttribute(USERS, userList);
         }catch (ServiceException e){
             logger.log(Level.ERROR, "Error in UserManagementCommand");

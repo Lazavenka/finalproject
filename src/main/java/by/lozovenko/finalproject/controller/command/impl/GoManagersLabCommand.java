@@ -9,6 +9,7 @@ import by.lozovenko.finalproject.model.service.LaboratoryService;
 import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
+import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -28,11 +29,17 @@ public class GoManagersLabCommand implements CustomCommand {
             router.setPage(MANAGER_PAGE);
             LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
             EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
+            UserService userService = UserServiceImpl.getInstance();
             try {
                 Manager loggedManager = (Manager) optionalManager.get();
                 long laboratoryId = loggedManager.getLaboratoryId();
                 Optional<Laboratory> optionalLaboratory = laboratoryService.findLaboratoryById(laboratoryId);
                 List<Equipment> equipmentList = equipmentService.findEquipmentByLaboratoryId(laboratoryId);
+                List<Assistant> assistants =  userService.findAssistantsByLaboratoryId(laboratoryId);
+                request.setAttribute(ASSISTANT_LIST, assistants);
+                if (assistants.isEmpty()){
+                    request.setAttribute(EMPTY_ASSISTANT_LIST, true);
+                }
                 request.setAttribute(EQUIPMENT_LIST, equipmentList);
                 if (optionalLaboratory.isPresent()){
                     request.setAttribute(SELECTED_LABORATORY, optionalLaboratory.get());

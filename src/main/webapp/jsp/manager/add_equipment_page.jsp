@@ -30,6 +30,8 @@
 <fmt:message var="average_research_time" key="equipment.avg_time"/>
 <fmt:message var="add" key="buttons.add"/>
 <fmt:message var="home" key="header.home"/>
+<fmt:message var="hour" key="equipment.hours"/>
+<fmt:message var="minute" key="equipment.minute"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 <c:set var="equipment_data" value="${requestScope.equipment_data}"/>
@@ -137,20 +139,27 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label for="validationResearchTime" class="col-sm-2 col-form-label">${average_research_time}</label>
+            <label for="fallbackTimePicker" class="col-sm-2 col-form-label">${average_research_time}</label>
             <div class="col-sm-10">
-                <input type="text" name="average_research_time" class="form-control"
-                       value="<c:if test="${!empty equipment_data and equipment_data.get(average_time_param) != 'invalid_research_time'}">${equipment_data.get(average_time_param)}</c:if>"
-                       id="validationResearchTime" placeholder="00:00:00" required pattern="^(([0-1][0-9])|(2[0-3])):[0-5]?[0-9]:[0-5]?[0-9]$">
-                <c:if test="${requestScope.invalid_price}">
+                <div class="hstack gap-1" id="fallbackTimePicker">
+                    <div>
+                            <span>
+                                <label for="hour">${hour}</label>
+                                <select id="hour" name="research_time_h">
+                                </select>
+                            </span>
+                    </div>
+                    <div>
+                            <span>
+                                <label for="minute">${minute}</label>
+                                <select id="minute" name="research_time_m">
+                                </select>
+                            </span>
+                    </div>
+                </div>
+                <c:if test="${requestScope.invalid_research_time}">
                     <div style="color: red">${invalid_research_time}</div>
                 </c:if>
-                <div class="valid-feedback">
-                    ${correct}
-                </div>
-                <div class="invalid-feedback">
-                    ${invalid_research_time}
-                </div>
             </div>
         </div>
         <div class="row mb-3">
@@ -179,5 +188,41 @@
 <div>
     <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
 </div>
+<script type="text/javascript">
+    // define variables
+    const hourSelect = document.querySelector('#hour');
+    const minuteSelect = document.querySelector('#minute');
+    populateHours();
+    populateMinutes();
+
+    function populateHours() {
+        for (let i = 0; i <= 10; i++) {
+            const option = document.createElement('option');
+            option.textContent = (i < 10) ? ("0" + i) : i;
+            hourSelect.appendChild(option);
+        }
+    }
+
+    function populateMinutes() {
+        for (let i = 0; i <= 59; i++) {
+            const option = document.createElement('option');
+            option.textContent = (i < 10) ? ("0" + i) : i;
+            minuteSelect.appendChild(option);
+        }
+    }
+
+    // make it so that if the hour is 18, the minutes value is set to 00
+    // — you can't select times past 18:00
+    function setMinutesToZero() {
+        if (hourSelect.value === '10') {
+            minuteSelect.value = '00';
+        }
+    }
+
+    hourSelect.onchange = setMinutesToZero;
+    minuteSelect.onchange = setMinutesToZero;
+
+</script>
+
 </body>
 </html>

@@ -8,6 +8,8 @@
 <fmt:setBundle basename="locale/language"/>
 
 <fmt:message var="details" key="common.details"/>
+<fmt:message var="add_department" key="buttons.add"/>
+<fmt:message var="edit" key="button.edit"/>
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
 <html>
@@ -17,7 +19,9 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-
+<c:if test="${sessionScope.user.role.name() eq 'ADMIN'}">
+    <a href="${abs}/controller?command=add_new_department_command" class="btn btn-primary">${add_department}</a>
+</c:if>
 <c:forEach var="department" items="${requestScope.departments}">
     <div class="d-flex position-relative">
         <div>
@@ -26,6 +30,9 @@
             <p class="card-text">${department.address}</p>
             <a href="${abs}/controller?command=find_department_details_by_id_command&department_id=${department.id}" class="stretched-link">${details}</a>
         </div>
+        <c:if test="${sessionScope.user.role.name() eq 'ADMIN'}">
+            <a href="${abs}/controller?command=edit_department_command&department_id=${department}" class="btn btn-primary">${edit}</a>
+        </c:if>
     </div>
 </c:forEach>
 

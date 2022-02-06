@@ -26,7 +26,8 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     private static final int EQUIPMENT_TYPE_NAME_STRING_LENGTH = 200;
     private static final int EQUIPMENT_NAME_STRING_LENGTH = 255;
     private static final int COMMON_DESCRIPTION_LENGTH = 65535;
-    private static final String EQUIPMENT_RESEARCH_TIME_PATTERN = "^(([0-1][0-9])|(2[0-3])):[0-5]?[0-9]:[0-5]?[0-9]$";
+    private static final String TEN_HOURS_PATTERN = "^(([0][0-9])|(10))$";
+    private static final String MINUTES_PATTERN = "^[0-5]?[0-9]$";
 
     private CustomFieldValidatorImpl() {
     }
@@ -138,10 +139,7 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
         return notNullOrEmpty(equipmentPrice) && equipmentPrice.matches(EQUIPMENT_PRICE_PER_HOUR_PATTERN);
     }
 
-    @Override
-    public boolean isCorrectEquipmentResearchTime(String researchTime) {
-        return notNullOrEmpty(researchTime) && researchTime.matches(EQUIPMENT_RESEARCH_TIME_PATTERN);
-    }
+
 
     @Override
     public boolean isCorrectEquipmentState(String equipmentState) {
@@ -163,6 +161,15 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
         return notNullOrEmpty(laboratoryLocation) && laboratoryLocation.length() < LABORATORY_LOCATION_STRING_LENGTH;
     }
 
+    @Override
+    public boolean isCorrectMinutes(String researchTimeMinute) {
+        return notNullOrEmpty(researchTimeMinute) && researchTimeMinute.matches(MINUTES_PATTERN);
+    }
+
+    @Override
+    public boolean isCorrectHours(String researchTimeHours) {
+        return notNullOrEmpty(researchTimeHours) && researchTimeHours.matches(TEN_HOURS_PATTERN);
+    }
 
 
     public boolean notNullOrEmpty(String stringLine) {

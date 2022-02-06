@@ -39,7 +39,6 @@ public class AddNewEquipmentCommand implements CustomCommand {
         String laboratoryIdString = request.getParameter(LABORATORY_ID);
 
         fillMapData(request, equipmentData);
-        logger.log(Level.DEBUG, equipmentData);
         Optional<Object> optionalCurrentUser = Optional.ofNullable(session.getAttribute(USER));
         if (optionalCurrentUser.isPresent()){
             User currentUser = (User) optionalCurrentUser.get();
@@ -47,6 +46,7 @@ public class AddNewEquipmentCommand implements CustomCommand {
                 laboratoryIdString = String.valueOf(((Manager)currentUser).getLaboratoryId());
                 equipmentData.put(LABORATORY_ID, laboratoryIdString);
             }
+            logger.log(Level.DEBUG, equipmentData);
             try {
                 if (equipmentService.addNewEquipment(equipmentData)){
 
@@ -80,7 +80,9 @@ public class AddNewEquipmentCommand implements CustomCommand {
     private void fillMapData(HttpServletRequest request, Map<String, String> mapData){
         String laboratoryIdString = request.getParameter(LABORATORY_ID);
         String equipmentTypeId = request.getParameter(EQUIPMENT_TYPE_ID);
-        String averageResearchTime = request.getParameter(AVERAGE_RESEARCH_TIME);
+        String timeHourParam = request.getParameter(RESEARCH_TIME_HOUR);
+        String timeMinuteParam = request.getParameter(RESEARCH_TIME_MINUTE);
+
         String equipmentName = request.getParameter(EQUIPMENT_NAME);
         String equipmentDescription = request.getParameter(DESCRIPTION);
         String pricePerHour = request.getParameter(PRICE_PER_HOUR);
@@ -91,7 +93,8 @@ public class AddNewEquipmentCommand implements CustomCommand {
         mapData.put(EQUIPMENT_TYPE_ID, equipmentTypeId);
         mapData.put(EQUIPMENT_NAME, equipmentName);
         mapData.put(DESCRIPTION, equipmentDescription);
-        mapData.put(AVERAGE_RESEARCH_TIME, averageResearchTime);
+        mapData.put(RESEARCH_TIME_MINUTE, timeMinuteParam);
+        mapData.put(RESEARCH_TIME_HOUR, timeHourParam);
         mapData.put(PRICE_PER_HOUR, pricePerHour);
         mapData.put(EQUIPMENT_STATE, state);
         mapData.put(IS_NEED_ASSISTANT, isNeedAssistant);
@@ -115,7 +118,8 @@ public class AddNewEquipmentCommand implements CustomCommand {
                 }
                 case INVALID_RESEARCH_TIME -> {
                     request.setAttribute(INVALID_RESEARCH_TIME, true);
-                    mapData.put(AVERAGE_RESEARCH_TIME, EMPTY);
+                    mapData.put(RESEARCH_TIME_MINUTE, EMPTY);
+                    mapData.put(RESEARCH_TIME_HOUR, EMPTY);
                 }
                 case INVALID_ENUM -> {
                     request.setAttribute(INVALID_ENUM, true);

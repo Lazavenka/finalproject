@@ -105,7 +105,10 @@ public class EquipmentServiceImpl implements EquipmentService {
             BigDecimal pricePerHour = new BigDecimal(equipmentData.get(PRICE_PER_HOUR));
             String description = equipmentData.get(DESCRIPTION);
             EquipmentState equipmentState = EquipmentState.valueOf(equipmentData.get(EQUIPMENT_STATE));
-            LocalTime averageResearchTime = LocalTime.parse(equipmentData.get(AVERAGE_RESEARCH_TIME));
+
+            int researchTimeHours = Integer.parseInt(equipmentData.get(RESEARCH_TIME_HOUR));
+            int researchTimeMinutes = Integer.parseInt(equipmentData.get(RESEARCH_TIME_MINUTE));
+            LocalTime averageResearchTime = LocalTime.of(researchTimeHours,researchTimeMinutes);
 
             Equipment equipment = new Equipment();
             equipment.setLaboratoryId(laboratoryId);
@@ -120,6 +123,17 @@ public class EquipmentServiceImpl implements EquipmentService {
         }catch (DaoException e){
             throw new ServiceException("Can't handle addNewEquipment request at EquipmentService", e);
         }
+    }
+
+    @Override
+    public boolean updateImageByEquipmentId(long id, String databasePath) throws ServiceException {
+        boolean result;
+        try {
+            result = equipmentDao.updateEquipmentPhoto(id, databasePath) != 0;
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updateImageByEquipmentId request at EquipmentService", e);
+        }
+        return result;
     }
 
 

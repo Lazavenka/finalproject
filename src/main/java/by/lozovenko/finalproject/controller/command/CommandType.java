@@ -31,6 +31,8 @@ public enum CommandType {
     FIND_LABORATORY_DETAILS_BY_ID_COMMAND(new FindLaboratoryDetailsByIdCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
 
     GO_EDIT_USER_PAGE_COMMAND(new GoEditUserPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
+    CHANGE_USER_PASSWORD_COMMAND(new ChangePasswordCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
+    UPDATE_USER_PROFILE_COMMAND(new UpdateUserProfileCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
 
     CHECK_BALANCE_COMMAND(new CheckBalanceCommand(), EnumSet.of(CLIENT)),
     ADD_EQUIPMENT_TO_CART_COMMAND(new AddEquipmentToCartCommand(), EnumSet.of(CLIENT)),
@@ -39,15 +41,25 @@ public enum CommandType {
 
     SHOW_SCHEDULE_COMMAND(new ShowScheduleCommand(), EnumSet.of(ASSISTANT)),
     UPLOAD_AVATAR_COMMAND(new UploadAvatarCommand(), EnumSet.of(ASSISTANT, MANAGER)),
+
     GO_MANAGERS_LAB_COMMAND(new GoManagersLabCommand(), EnumSet.of(MANAGER)),
+    UPDATE_MANAGER_DESCRIPTION_COMMAND(new UpdateManagerDescriptionCommand(), EnumSet.of(MANAGER)),
+
     GO_ADD_NEW_EQUIPMENT_PAGE_COMMAND(new GoAddNewEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
     GO_EDIT_EQUIPMENT_PAGE_COMMAND(new GoEditEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
+    GO_EDIT_LABORATORY_PAGE_COMMAND(new GoEditLaboratoryPageCommand(), EnumSet.of(ADMIN, MANAGER)),
+    UPLOAD_EQUIPMENT_PHOTO_COMMAND(new UploadEquipmentPhotoCommand(), EnumSet.of(ADMIN, MANAGER)),
+
+    UPDATE_EQUIPMENT_COMMAND(new GoEditEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
+    DELETE_EQUIPMENT_COMMAND(new GoEditEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
 
     ADD_NEW_EQUIPMENT_COMMAND(new AddNewEquipmentCommand(), EnumSet.of(ADMIN, MANAGER)),
 
     GO_USER_MANAGEMENT_PAGE_COMMAND(new GoUserManagementPageCommand(), EnumSet.of(ADMIN)),
+    GO_ADD_NEW_DEPARTMENT_PAGE_COMMAND(new GoAddNewDepartmentPageCommand(), EnumSet.of(ADMIN)),
     GO_ADD_NEW_LABORATORY_PAGE_COMMAND(new GoAddNewLaboratoryPageCommand(), EnumSet.of(ADMIN)),
     GO_ADD_NEW_EQUIPMENT_TYPE_PAGE_COMMAND(new GoAddNewEquipmentTypePageCommand(), EnumSet.of(ADMIN)),
+
     ADD_EQUIPMENT_TYPE_COMMAND(new AddEquipmentTypeCommand(), EnumSet.of(ADMIN)),
     ADD_NEW_LABORATORY_COMMAND(new AddNewLaboratoryCommand(), EnumSet.of(ADMIN)),
     ADD_NEW_DEPARTMENT_COMMAND(new AddNewDepartmentCommand(), EnumSet.of(ADMIN));

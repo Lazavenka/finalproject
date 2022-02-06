@@ -3,6 +3,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
+import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.entity.UserRole;
 import by.lozovenko.finalproject.model.service.UserService;
@@ -22,16 +23,16 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_500_PAGE;
+import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.CONTENT;
+import static by.lozovenko.finalproject.controller.RequestParameter.DESCRIPTION;
 
 public class UploadAvatarCommand implements CustomCommand {
     private static final String UPLOAD_ROOT = "C:\\Users\\Roger\\IdeaProjects\\finalproject\\src\\main\\webapp\\static\\images\\";
-    private static final String UPLOAD_MANAGER_SUBDIR = "managers" + File.separator;
+    private static final String UPLOAD_MANAGER_SUBDIRECTORY = "managers" + File.separator;
     private static final String MANAGER_DATABASE_FILEPATH = "static/images/managers/";
-    private static final String UPLOAD_ASSISTANT_SUBDIR = "assistants" + File.separator;
+    private static final String UPLOAD_ASSISTANT_SUBDIRECTORY = "assistants" + File.separator;
     private static final String ASSISTANT_DATABASE_FILEPATH = "static/images/assistants/";
 
     @Override
@@ -39,7 +40,6 @@ public class UploadAvatarCommand implements CustomCommand {
 
         Router router = new Router();
         HttpSession session = request.getSession();
-        String currentPage = (String) session.getAttribute(CURRENT_PAGE);
         Optional<Object> optionalUser = Optional.ofNullable(session.getAttribute(USER));
         UserService userService = UserServiceImpl.getInstance();
         if (optionalUser.isPresent()) {
@@ -47,14 +47,14 @@ public class UploadAvatarCommand implements CustomCommand {
             UserRole role = user.getRole();
             String directory = UPLOAD_ROOT;
             String databaseDirectory = "";
-            router.setPage(currentPage);
+            router.setPage(EDIT_PROFILE_PAGE);
             switch (role) {
                 case MANAGER -> {
-                    directory = directory + UPLOAD_MANAGER_SUBDIR;
+                    directory = directory + UPLOAD_MANAGER_SUBDIRECTORY;
                     databaseDirectory = MANAGER_DATABASE_FILEPATH;
                 }
                 case ASSISTANT -> {
-                    directory = directory + UPLOAD_ASSISTANT_SUBDIR;
+                    directory = directory + UPLOAD_ASSISTANT_SUBDIRECTORY;
                     databaseDirectory = ASSISTANT_DATABASE_FILEPATH;
                 }
             }
@@ -91,6 +91,9 @@ public class UploadAvatarCommand implements CustomCommand {
                     logger.log(Level.INFO, "Invalid file extension ({}) or content type ({})", extension, contentType);
                     request.setAttribute(WRONG_FILE_EXTENSION, true);
                     return router;
+                }
+                if (role == UserRole.MANAGER){
+                    request.setAttribute(DESCRIPTION, ((Manager)user).getDescription());
                 }
             } catch (IOException | ServiceException | ServletException e) {
                 logger.log(Level.ERROR, "Error in UploadAvatarCommand", e);

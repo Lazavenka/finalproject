@@ -2,13 +2,13 @@ package by.lozovenko.finalproject.model.dao.impl;
 
 import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.dao.EquipmentDao;
-import by.lozovenko.finalproject.model.dao.LaboratoryDao;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentState;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
 import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.mapper.impl.EquipmentMapper;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
+import org.apache.logging.log4j.Level;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,6 +41,8 @@ public class EquipmentDaoImpl implements EquipmentDao {
             INSERT INTO equipment(equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
             equipment_photo_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""";
+
+    private static final String UPDATE_EQUIPMENT_PHOTO_BY_ID = "UPDATE equipment SET equipment_photo_link = ? WHERE equipment_id = ?";
 
     private EquipmentDaoImpl(){
     }
@@ -165,6 +167,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
                 Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
                 optionalEquipment.ifPresent(equipmentList::add);
             }
+            LOGGER.log(Level.INFO, "findEquipmentByLaboratoryId (laboratoryId = {}) method found {} items", laboratoryId, equipmentList.size());
         } catch (SQLException e) {
             throw new DaoException("Error in findEquipmentByLaboratoryId method EquipmentDao class. Unable to get access to database.", e);
         }
@@ -179,5 +182,20 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public List<Equipment> findAllActiveEquipmentByLaboratory(Laboratory laboratory) throws DaoException {
         return null;
+    }
+
+    @Override
+    public int updateEquipmentPhoto(long id, String databasePath) throws DaoException {
+        int result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_EQUIPMENT_PHOTO_BY_ID)) {
+            preparedStatement.setString(1, databasePath);
+            preparedStatement.setLong(2, id);
+
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateEquipmentPhoto method. Database access error.", e);
+        }
+        return result;
     }
 }

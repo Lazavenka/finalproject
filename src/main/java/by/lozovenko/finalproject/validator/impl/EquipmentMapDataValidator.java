@@ -26,7 +26,8 @@ public class EquipmentMapDataValidator extends CustomMapDataValidator {
         String name = mapData.get(EQUIPMENT_NAME);
         String description = mapData.get(DESCRIPTION);
         String pricePerHour = mapData.get(PRICE_PER_HOUR);
-        String averageResearchTime = mapData.get(AVERAGE_RESEARCH_TIME);
+        String researchTimeHour = mapData.get(RESEARCH_TIME_HOUR);
+        String researchTimeMinute = mapData.get(RESEARCH_TIME_MINUTE);
         String state = mapData.get(EQUIPMENT_STATE);
 
 
@@ -44,8 +45,12 @@ public class EquipmentMapDataValidator extends CustomMapDataValidator {
             mapData.put(PRICE_PER_HOUR, INVALID_PRICE);
             result = false;
         }
-        if (!customFieldValidator.isCorrectEquipmentResearchTime(averageResearchTime)){
-            mapData.put(AVERAGE_RESEARCH_TIME, INVALID_RESEARCH_TIME);
+        if (!customFieldValidator.isCorrectHours(researchTimeHour)){
+            mapData.put(RESEARCH_TIME_HOUR, INVALID_RESEARCH_TIME);
+            result = false;
+        }
+        if (!customFieldValidator.isCorrectMinutes(researchTimeMinute)){
+            mapData.put(RESEARCH_TIME_MINUTE, INVALID_RESEARCH_TIME);
             result = false;
         }
         if (!customFieldValidator.isCorrectEquipmentState(state)){

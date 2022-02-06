@@ -17,4 +17,6 @@ public interface EquipmentService {
     List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws ServiceException;
 
     boolean addNewEquipment(Map<String, String> equipmentData) throws ServiceException;
+
+    boolean updateImageByEquipmentId(long id, String databasePath) throws ServiceException;
 }

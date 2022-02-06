@@ -35,7 +35,7 @@ public interface UserDao extends BaseDao<Long, User> {
 
     Optional<User> findAssistantByOrderEquipment(Order order) throws DaoException;
 
-    List<User> findAssistantsByOrder(Order order) throws DaoException;
+    Optional<User> findAssistantByOrder(Order order) throws DaoException;
 
     Optional<User> findUserByEmail(String email) throws DaoException;
     boolean isExistUserWithEmail(String email) throws DaoException;
@@ -48,4 +48,12 @@ public interface UserDao extends BaseDao<Long, User> {
 
     int updateAssistantAvatarPath(long id, String path) throws DaoException;
     int updateManagerAvatarPath(long id, String path) throws DaoException;
+
+    List<User> findAssistantByLaboratoryId(long laboratoryId) throws DaoException;
+
+    boolean isExistUser(String login, String encryptedPassword) throws DaoException;
+
+    int updateManagerDescriptionByUserId(long id, String description) throws DaoException;
+
+    int updateUserDataById(long id, String lastName, String firstName, String phone) throws DaoException;
 }

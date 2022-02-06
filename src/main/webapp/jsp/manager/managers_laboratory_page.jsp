@@ -6,6 +6,7 @@
     <fmt:setLocale value="${sessionScope.locale}"/>
 </c:if>
 <fmt:setBundle basename="locale/language"/>
+
 <fmt:message var="description" key="common.description"/>
 <fmt:message var="location" key="common.location"/>
 <fmt:message var="not_found" key="common.not_found"/>
@@ -19,6 +20,13 @@
 <fmt:message var="edit" key="button.edit"/>
 <fmt:message var="equipment_state" key="equipment.state"/>
 <fmt:message var="add_equipment" key="admin.add_equipment"/>
+<fmt:message var="my_lab" key="manager.my_lab"/>
+<fmt:message var="show_equipment" key="buttons.show_equipment"/>
+<fmt:message var="show_assistants" key="buttons.show_assistants"/>
+<fmt:message var="add_assistant" key="buttons.add"/>
+<fmt:message var="assistants" key="laboratory.assistants"/>
+
+
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
 <html>
@@ -37,7 +45,7 @@
         <p class="card-text">${requestScope.manager.description}</p>
         <p class="card-text">+${requestScope.manager.phone}</p>
         <p class="card-text">${requestScope.manager.email}</p>
-        <a href="${abs}/controller?command=edit_profile_command&manager_id=${sessionScope.user.id}"
+        <a href="${abs}/controller?command=edit_profile_command&user_id=${sessionScope.user.id}"
            class="btn btn-primary">${edit}</a>
     </div>
 </div>
@@ -61,59 +69,59 @@
         </dl>
     </div>
 </div>
-<div class="justify-content-center">${equipment_list}</div>
-<c:if test="${sessionScope.user.role.name() eq 'ADMIN' or sessionScope.user.role.name() eq 'MANAGER' }">
-    <div class="col-xs-2">
-        <a class="btn btn-primary"
-           href="${abs}/controller?command=go_add_new_equipment_page_command">${add_equipment}</a>
-    </div>
-</c:if>
-<div class="col-xs-10">
-    <c:if test="${requestScope.empty_list}">
-        <div class="justify-content-center">${not_found}</div>
-    </c:if>
-    <c:forEach var="equipmentItem" items="${requestScope.equipment_list}">
-        <div class="d-flex position-relative">
-            <img src="${abs}/${equipmentItem.imageFilePath}" width="300" class="img-fluid rounded-start"
-                 alt="${equipmentItem.name}">
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title">${equipmentItem.name}</h5>
-                    <dl class="row">
-                        <dt class="col-sm-3">${description}</dt>
-                        <dd class="col-sm-9">${equipmentItem.description}</dd>
-
-                        <dt class="col-sm-3">${equipment_price}</dt>
-                        <dd class="col-sm-9">${equipmentItem.pricePerHour.floatValue()} BYN</dd>
-
-                        <dt class="col-sm-3">${equipment_avg_research_time}</dt>
-                        <dd class="col-sm-9">${equipmentItem.averageResearchTime.toString()}</dd>
-
-                        <dt class="col-sm-3 <c:if test="${equipmentItem.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${equipmentItem.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipment_state}</dt>
-                        <dd class="col-sm-9 <c:if test="${equipmentItem.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${equipmentItem.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipmentItem.state.name()}</dd>
-
-                        <dt class="col-sm-3"></dt>
-                        <c:choose>
-                            <c:when test="${sessionScope.user.role.name() eq 'CLIENT'}">
-                                <dd class="col-sm-9"><a
-                                        href="${abs}/controller?command=go_book_equipment_details_page_command&equipment_id=${equipmentItem.id}"
-                                        class="btn btn-primary <c:if test="${equipmentItem.state.name() eq 'INACTIVE'}">disabled</c:if>">${booking_details}</a>
-                                </dd>
-                            </c:when>
-                            <c:when test="${sessionScope.user.role.name() eq 'ADMIN' or sessionScope.user.role.name() eq 'MANAGER'}">
-                                <dd class="col-sm-9">
-                                    <a href="${abs}/controller?command=go_edit_equipment_page_command&equipment_id=${equipmentItem.id}"
-                                       class="btn btn-primary">${edit}</a>
-                                </dd>
-                            </c:when>
-                        </c:choose>
-                    </dl>
-                </div>
+<div class="container">
+    <br>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+            <p>${my_lab}</p>
+        </blockquote>
+    </figure>
+    <div class="row">
+        <div class="col-sm-2 justify-content-center">
+            <div class="btn-group-vertical">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#show_equipment_table"
+                        aria-expanded="false" aria-controls="show_equipment_table">
+                    ${show_equipment}
+                </button>
+                <br>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#show_assistants"
+                        aria-expanded="false" aria-controls="show_assistants">
+                    ${show_assistants}
+                </button>
+                <br>
             </div>
         </div>
-    </c:forEach>
+        <div class="col-sm-10">
+            <div class="collapse" id="show_equipment_table">
+                <div class="justify-content-center">${equipment_list}</div>
+                <%@include file="../common/fragment/equipment_table.jspf"%>
+            </div>
+            <div class="collapse" id="show_assistants">
+                <div class="justify-content-center">${assistants}</div>
+                <div class="col-xs-2">
+                    <a class="btn btn-primary"
+                       href="${abs}/controller?command=go_add_assistant_page_command">${add_assistant}</a>
+                </div>
+                <c:if test="${requestScope.empty_assistant_list}">
+                    <div class="justify-content-center">${not_found}</div>
+                </c:if>
+                <c:forEach var="assistant" items="${requestScope.assistant_list}">
+                    <div class="d-flex position-relative">
+                        <img src="${abs}/${assistant.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="${assistant.lastName} ${assistant.firstName}">
+                        <div>
+                            <h5 class="mt-0">${assistant.lastName} ${assistant.firstName}</h5>
+                            <p class="card-text">+${assistant.phone}</p>
+                            <p class="card-text">${assistant.email}</p>
+                            <a href="${abs}/controller?command=delete_assistant_command&user_id=${assistant.id}"
+                               class="btn btn-primary">${edit}</a>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </div>
 </div>
-
-
 </body>
 </html>

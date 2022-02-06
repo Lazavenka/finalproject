@@ -32,6 +32,9 @@ public class UserDaoImpl implements UserDao {
     private static final String GET_USER_BY_LOGIN = """
             SELECT user_id, login, password, first_name, last_name, email,
             phone_number, user_role, user_state FROM users WHERE (login = ?)""";
+    private static final String FIND_USER_BY_LOGIN_AND_PASSWORD = """
+            SELECT user_id, login, password, first_name, last_name, email,
+            phone_number, user_role, user_state FROM users WHERE login = ? AND password = ?""";
     private static final String GET_USER_BY_EMAIL = """
             SELECT user_id, login, password, first_name, last_name, email,
             phone_number, user_role, user_state FROM users WHERE (email = ?)""";
@@ -68,6 +71,10 @@ public class UserDaoImpl implements UserDao {
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
             m.description, m.degree FROM users AS u
             JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.degree = ?""";
+    private static final String GET_ASSISTANTS_BY_LABORATORY_ID = """
+            SELECT u.user_id, login, password, first_name, last_name, email, phone_number, user_role,
+            user_state, a.avatar_link, a.laboratory_id, a.assistant_id FROM users AS u
+            JOIN assistants AS a ON u.user_id = a.user_id WHERE a.laboratory_id = ?""";
 
     private static final String GET_USER_ROLE_BY_LOGIN = "SELECT user_role FROM users WHERE (login = ?)";
 
@@ -85,8 +92,11 @@ public class UserDaoImpl implements UserDao {
     private static final String DELETE_TOKEN_BY_ID = "DELETE FROM user_tokens WHERE user_id = ?";
 
     private static final String UPDATE_USER_STATE_BY_ID = "UPDATE users SET user_state = ? WHERE user_id = ?";
+    private static final String UPDATE_USER_PASSWORD_BY_LOGIN = "UPDATE users SET password = ? WHERE login = ?";
+    private static final String UPDATE_USER_PROFILE_BY_USER_ID = "UPDATE users SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?";
     private static final String UPDATE_CLIENT_BALANCE_BY_ID = "UPDATE clients SET balance = ? WHERE user_id = ?";
     private static final String UPDATE_MANAGER_AVATAR_BY_USER_ID = "UPDATE managers SET avatar_link = ? WHERE user_id = ?";
+    private static final String UPDATE_MANAGER_DESCRIPTION_BY_USER_ID = "UPDATE managers SET description = ? WHERE user_id = ?";
     private static final String UPDATE_ASSISTANT_AVATAR_BY_USER_ID = "UPDATE assistants SET avatar_link = ? WHERE user_id = ?";
 
     public static UserDao getInstance() {
@@ -182,7 +192,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean updatePasswordByLogin(String password, String login) throws DaoException {
-        return false;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PASSWORD_BY_LOGIN)){
+            preparedStatement.setString(1, password);
+            preparedStatement.setString(2, login);
+            return preparedStatement.executeUpdate() != 0;
+        }catch (SQLException e){
+            throw new DaoException("Error in updatePasswordByLogin method UserDao class. Unable to get access to database.", e);
+        }
     }
 
     @Override
@@ -398,7 +415,7 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setString(1, userState.name());
             preparedStatement.setLong(2, userId);
 
-            result = preparedStatement.executeUpdate() > 0;
+            result = preparedStatement.executeUpdate() != 0;
 
         } catch (SQLException e) {
             throw new DaoException("Error in updateUserStateById method. Can't update user. Database access error.", e);
@@ -471,7 +488,7 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setBigDecimal(1, newBalance);
             preparedStatement.setLong(2, userId);
 
-            result = preparedStatement.executeUpdate() > 0;
+            result = preparedStatement.executeUpdate() != 0;
         } catch (SQLException e) {
             throw new DaoException("Error in updateUserBalanceById method. Can't update clientBalance by id. Database access error.", e);
         }
@@ -521,6 +538,64 @@ public class UserDaoImpl implements UserDao {
             result = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException("Error in updateManagerAvatarPath method. Database access error.", e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<User> findAssistantByLaboratoryId(long laboratoryId) throws DaoException {
+        List<User> assistants = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+        PreparedStatement getAssistantStatement = connection.prepareStatement(GET_ASSISTANTS_BY_LABORATORY_ID)){
+            getAssistantStatement.setLong(1, laboratoryId);
+            ResultSet resultSet = getAssistantStatement.executeQuery();
+            getAssistantsFromResultSet(assistants, resultSet);
+            LOGGER.log(Level.INFO, "findAssistantByLaboratoryId (laboratoryId = {}) found {} assistants in database", laboratoryId, assistants.size());
+        }catch (SQLException e){
+            throw new DaoException("Error in findAssistantByLaboratoryId method. Can't find Assistants in database. Database access error.", e);
+        }
+        return assistants;
+    }
+
+    @Override
+    public boolean isExistUser(String login, String encryptedPassword) throws DaoException {
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_BY_LOGIN_AND_PASSWORD)) {
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, encryptedPassword);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.isBeforeFirst();
+        }catch (SQLException e){
+            throw new DaoException("Error in isExistUser method. Can't find Assistants in database. Database access error.", e);
+        }
+    }
+
+    @Override
+    public int updateManagerDescriptionByUserId(long id, String description) throws DaoException {
+        int result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MANAGER_DESCRIPTION_BY_USER_ID)) {
+            preparedStatement.setString(1, description);
+            preparedStatement.setLong(2, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateManagerDescriptionByUserId method. Database access error.", e);
+        }
+        return result;
+    }
+
+    @Override
+    public int updateUserDataById(long id, String lastName, String firstName, String phone) throws DaoException {
+        int result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PROFILE_BY_USER_ID)) {
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, phone);
+            preparedStatement.setLong(4, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateManagerDescriptionByUserId method. Database access error.", e);
         }
         return result;
     }
@@ -584,6 +659,15 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    private void getAssistantsFromResultSet(List<User> assistants, ResultSet resultSet) throws SQLException, DaoException {
+        while (resultSet.next()) {
+            User assistant = new User();
+            UserMapper.getInstance().rowMap(assistant, resultSet);
+            Optional<User> optionalUser = AssistantMapper.getInstance().rowMap(assistant, resultSet);
+            optionalUser.ifPresent(assistants::add);
+        }
+    }
+
     @Override
     public Optional<User> findManagerByName(String patternName) throws DaoException {
         return Optional.empty();
@@ -629,7 +713,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAssistantsByOrder(Order order) throws DaoException {
+    public Optional<User> findAssistantByOrder(Order order) throws DaoException {
         return null;
     }
 

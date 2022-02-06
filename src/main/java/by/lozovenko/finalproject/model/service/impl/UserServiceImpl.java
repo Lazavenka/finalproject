@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.RequestAttribute.LOGIN_EXISTS;
-import static by.lozovenko.finalproject.controller.RequestAttribute.NOT_UNIQUE_EMAIL;
+import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class UserServiceImpl implements UserService {
@@ -229,8 +228,94 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    private Client createClientFromUserData(Map<String, String> userData) {
-        Client user = new Client();
+    @Override
+    public List<Assistant> findAssistantsByLaboratoryId(long laboratoryId) throws ServiceException {
+        try {
+            return userDao.findAssistantByLaboratoryId(laboratoryId).stream().map(Assistant.class::cast).toList();
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle findAssistantsByLaboratoryId method in UserService. ", e);
+        }
+    }
+
+    @Override
+    public boolean updatePassword(String login, Map<String, String> passwordData) throws ServiceException {
+        String oldPassword = passwordData.get(OLD_PASSWORD);
+        try {
+            boolean checkResult = inputFieldValidator.isCorrectPassword(oldPassword) && userDao.isExistUser(login, PasswordEncryptor.encryptMd5Apache(oldPassword));
+            if (checkResult){
+                String newPassword = passwordData.get(NEW_PASSWORD);
+                if (!inputFieldValidator.isCorrectPassword(newPassword)){
+                    passwordData.put(NEW_PASSWORD, INVALID_PASSWORD);
+                    checkResult = false;
+                    LOGGER.log(Level.DEBUG, "Incorrect new password");
+                }
+                String confirmedPassword = passwordData.get(CONFIRMED_PASSWORD);
+                if (!inputFieldValidator.isMatchesPasswords(newPassword, confirmedPassword)){
+                    passwordData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
+                    checkResult = false;
+                    LOGGER.log(Level.DEBUG, "Mismatching passwords was entered");
+
+                }
+                if (checkResult){
+                    String newEncryptedPassword = PasswordEncryptor.encryptMd5Apache(newPassword);
+                    checkResult = userDao.updatePasswordByLogin(newEncryptedPassword, login);
+                }
+            }else {
+                passwordData.clear();
+                passwordData.put(OLD_PASSWORD, INCORRECT_OLD_PASSWORD);
+                LOGGER.log(Level.DEBUG, "Incorrect old password");
+            }
+            return checkResult;
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updatePassword method in UserService. ", e);
+        }
+    }
+
+    @Override
+    public boolean updateManagerDescriptionByUserId(long id, String description) throws ServiceException {
+        try {
+            if (!inputFieldValidator.isCorrectManagerDescription(description)){
+                return false;
+            }
+            return userDao.updateManagerDescriptionByUserId(id, description) != 0;
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updateManagerDescriptionByUserId method in UserService. ", e);
+
+        }
+    }
+
+    @Override
+    public boolean updateUserProfile(long id, Map<String, String> profileData) throws ServiceException {
+        boolean checkResult = true;
+        try {
+            String firstName = profileData.get(FIRST_NAME);
+            String lastName = profileData.get(LAST_NAME);
+            String phone = profileData.get(PHONE);
+
+            if (!inputFieldValidator.isCorrectName(lastName)){
+                profileData.put(LAST_NAME, INVALID_LAST_NAME);
+                checkResult = false;
+            }
+            if (!inputFieldValidator.isCorrectName(firstName)){
+                profileData.put(FIRST_NAME, INVALID_FIRST_NAME);
+                checkResult = false;
+            }
+            if (!inputFieldValidator.isCorrectPhone(phone)){
+                profileData.put(PHONE, INVALID_PHONE);
+                checkResult = false;
+            }
+
+            if (checkResult){
+                checkResult = userDao.updateUserDataById(id, lastName, firstName, phone) != 0;
+            }
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updateUserProfile method in UserService. ", e);
+        }
+        return checkResult;
+    }
+
+    private User createUserFromData(Map<String, String> userData){
+        User user = new User();
         String hashedPassword = PasswordEncryptor.encryptMd5Apache(userData.get(PASSWORD));
         user.setLogin(userData.get(LOGIN));
         user.setPassword(hashedPassword);
@@ -241,5 +326,36 @@ public class UserServiceImpl implements UserService {
         user.setRole(UserRole.CLIENT);
         user.setState(UserState.REGISTRATION);
         return user;
+    }
+    private Client createClientFromUserData(Map<String, String> userData) {
+        User user = createUserFromData(userData);
+        Client client = new Client(user);
+        user.setRole(UserRole.CLIENT);
+        user.setState(UserState.REGISTRATION);
+        return client;
+    }
+    private Assistant createAssistantFromMapData(Map<String, String> userData){
+        User user = createUserFromData(userData);
+        Assistant assistant = new Assistant(user);
+        assistant.setState(UserState.ACTIVE);
+        assistant.setRole(UserRole.ASSISTANT);
+        long laboratoryId = Long.parseLong(userData.get(LABORATORY_ID));
+        assistant.setLaboratoryId(laboratoryId);
+        return assistant;
+    }
+    private Manager createManagerFromMapData(Map<String, String> userData){
+        User user = createUserFromData(userData);
+        Manager manager = new Manager(user);
+        manager.setState(UserState.ACTIVE);
+        manager.setRole(UserRole.MANAGER);
+        ManagerDegree degree = ManagerDegree.getDegreeByString(userData.get(MANAGER_DEGREE));
+        manager.setManagerDegree(degree);
+        manager.setDescription(userData.get(DESCRIPTION));
+        long departmentId = Long.parseLong(userData.get(DEPARTMENT_ID));
+        manager.setDepartmentId(departmentId);
+        long laboratoryId = Long.parseLong(userData.get(LABORATORY_ID));
+        manager.setLaboratoryId(laboratoryId);
+
+        return manager;
     }
 }

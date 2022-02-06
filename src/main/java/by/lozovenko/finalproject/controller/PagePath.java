@@ -21,6 +21,7 @@ public class PagePath {
     public static final String ALL_DEPARTMENTS_PAGE = "jsp/common/see_departments.jsp";
     public static final String EQUIPMENT_PAGE = "jsp/common/equipment_page.jsp";
     public static final String EDIT_EQUIPMENT_PAGE = "jsp/manager/edit_equipment_page.jsp";
+    public static final String EDIT_LABORATORY_PAGE = "jsp/manager/edit_laboratory_page.jsp";
     public static final String MANAGER_DETAILS_PAGE = "jsp/common/manager_details.jsp";
     public static final String DEPARTMENT_DETAILS_PAGE = "jsp/common/department_details.jsp";
     public static final String LABORATORY_DETAILS_PAGE = "jsp/common/laboratory_details.jsp";

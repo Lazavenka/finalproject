@@ -19,7 +19,7 @@
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">${menu}</a>
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
         <li><a class="dropdown-item" href="controller?command=go_user_management_page_command">${user_management}</a></li>
-        <li><a class="dropdown-item" href="controller?command=go_department_management_page_command">${department_management}</a></li>
+        <li><a class="dropdown-item" href="controller?command=find_all_departments_command">${department_management}</a></li>
         <li><a class="dropdown-item" href="controller?command=order_management_command">${order_management}</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="controller?command=go_add_new_laboratory_page_command">${add_laboratory}</a></li>

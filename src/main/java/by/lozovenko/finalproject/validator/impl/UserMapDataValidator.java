@@ -40,12 +40,17 @@ public class UserMapDataValidator extends CustomMapDataValidator {
             mapData.put(PASSWORD, INVALID_PASSWORD);
             result = false;
         }
-        if (!customFieldValidator.isCorrectName(firstName)){
-            mapData.put(FIRST_NAME, INVALID_FIRST_NAME);
+        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)){
+            mapData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
             result = false;
         }
+
         if (!customFieldValidator.isCorrectName(lastName)){
             mapData.put(LAST_NAME, INVALID_LAST_NAME);
+            result = false;
+        }
+        if (!customFieldValidator.isCorrectName(firstName)){
+            mapData.put(FIRST_NAME, INVALID_FIRST_NAME);
             result = false;
         }
         if (!customFieldValidator.isCorrectPhone(phone)){
@@ -56,10 +61,7 @@ public class UserMapDataValidator extends CustomMapDataValidator {
             mapData.put(EMAIL, INVALID_EMAIL);
             result = false;
         }
-        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)){
-            mapData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
-            result = false;
-        }
+
         return result;
     }
 

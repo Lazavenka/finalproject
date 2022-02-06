@@ -3,6 +3,8 @@ package by.lozovenko.finalproject.controller;
 public class RequestParameter {
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
+    public static final String OLD_PASSWORD = "old_password";
+    public static final String NEW_PASSWORD = "NEW_password";
     public static final String CONFIRMED_PASSWORD = "confirmed_password";
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
@@ -31,7 +33,8 @@ public class RequestParameter {
     public static final String DEPARTMENT_ADDRESS = "department_address";
     public static final String PRICE_PER_HOUR = "price_per_hour";
     public static final String IS_NEED_ASSISTANT = "is_need_assistant";
-    public static final String AVERAGE_RESEARCH_TIME = "average_research_time";
+    public static final String RESEARCH_TIME_HOUR = "research_time_h";
+    public static final String RESEARCH_TIME_MINUTE = "research_time_m";
     public static final String EQUIPMENT_STATE = "equipment_state";
     private RequestParameter(){
     }

@@ -39,7 +39,6 @@ public interface CustomFieldValidator {
 
     boolean isCorrectEquipmentPricePerHour(String equipmentPrice);
 
-    boolean isCorrectEquipmentResearchTime(String researchTime);
 
     boolean isCorrectEquipmentState(String equipmentState);
 
@@ -49,4 +48,6 @@ public interface CustomFieldValidator {
 
     boolean isCorrectLaboratoryLocation(String laboratoryLocation);
 
+    boolean isCorrectMinutes(String researchTimeMinute);
+    boolean isCorrectHours(String researchTimeHours);
 }

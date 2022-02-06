@@ -12,12 +12,16 @@
 <fmt:message var="old_password" key="user.old_password"/>
 <fmt:message var="pass_helper" key="user.pass_helper"/>
 <fmt:message var="invalid_password" key="message.invalid_password"/>
+<fmt:message var="incorrect_old_password" key="message.old_password_incorrect"/>
 <fmt:message var="correct" key="message.correct"/>
 <fmt:message var="new_password" key="user.new_password"/>
 <fmt:message var="confirm_pass" key="registration.confirm_password"/>
 <fmt:message var="password_mismatch" key="message.password_mismatch"/>
 <fmt:message var="invalid_phone" key="message.invalid_phone"/>
+<fmt:message var="invalid_description" key="message.invalid_description"/>
+<fmt:message var="success_message" key="message.success_message"/>
 <fmt:message var="upload" key="buttons.upload"/>
+<fmt:message var="description" key="common.description"/>
 <fmt:message var="edit" key="button.edit"/>
 <fmt:message var="greetings" key="message.greetings"/>
 <fmt:message var="profile_edit_page" key="message.profile_edit_page"/>
@@ -25,10 +29,15 @@
 <fmt:message var="first_name" key="registration.first_name"/>
 <fmt:message var="last_name" key="registration.last_name"/>
 <fmt:message var="phone" key="registration.phone"/>
+<fmt:message var="edit_managers_data" key="buttons.edit_manager"/>
 
 
 <c:set var="pass_data" value="${requestScope.change_password_data}"/>
-<c:set var="edit_data" value="${requestScope.edit_user_data}"/>
+<c:set var="profile_data" value="${requestScope.profile_data}"/>
+<c:set var="f_name_param" value="first_name"/>
+<c:set var="l_name_param" value="last_name"/>
+<c:set var="phone_param" value="phone_number"/>
+<c:set var="description_data" value="${requestScope.description}"/>
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
 <html>
@@ -47,6 +56,7 @@
         <blockquote class="blockquote">
             <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
             <p>${profile_edit_page}</p>
+            <c:if test="${requestScope.success_message}"><p class="alert-success">${success_message}</p></c:if>
         </blockquote>
     </figure>
     <div class="row">
@@ -70,18 +80,26 @@
                             ${upload_avatar}
                     </button>
                 </c:if>
+
+                <c:if test="${sessionScope.user.role.name() eq 'MANAGER'}">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#editManager"
+                            aria-expanded="false" aria-controls="editManager">
+                            ${edit_managers_data}
+                    </button>
+                </c:if>
             </div>
         </div>
 
         <div class="col-sm-10">
             <div class="collapse" id="editProfile">
-                <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
-                    <input type="hidden" value="command" name="update_user_profile_command">
+                <form method="post" action="${abs}/controller" class="profileData"  onclick="validateProfileForm()">
+                    <input type="hidden" name="command" value="update_user_profile_command" >
                     <div class="row mb-3">
                         <label for="firstName" class="col-sm-2 col-form-label">${first_name}</label>
                         <div class="col-sm-10">
                             <input type="text" name="first_name" class="form-control"
-                                   value="<c:choose><c:when test="${!empty edit_data and edit_data.get(f_name_param) != 'invalid_name' }">${edit_data.get(f_name_param)}</c:when><c:otherwise>${sessionScope.user.firstName}</c:otherwise></c:choose>"
+                                   value="<c:choose><c:when test="${!empty profile_data and profile_data.get(f_name_param) != 'invalid_name' }">${profile_data.get(f_name_param)}</c:when><c:otherwise>${sessionScope.user.firstName}</c:otherwise></c:choose>"
                                    id="firstName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
                             <c:if test="${requestScope.invalid_first_name}">
                                 <div style="color: red">${invalid_name}</div>
@@ -98,7 +116,7 @@
                         <label for="lastName" class="col-sm-2 col-form-label">${last_name}</label>
                         <div class="col-sm-10">
                             <input type="text" name="first_name" class="form-control"
-                                   value="<c:choose><c:when test="${!empty edit_data and edit_data.get(l_name_param) != 'invalid_name' }">${edit_data.get(l_name_param)}</c:when><c:otherwise>${sessionScope.user.lastName}</c:otherwise></c:choose>" id="lastName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
+                                   value="<c:choose><c:when test="${!empty profile_data and profile_data.get(l_name_param) != 'invalid_name' }">${profile_data.get(l_name_param)}</c:when><c:otherwise>${sessionScope.user.lastName}</c:otherwise></c:choose>" id="lastName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
                             <c:if test="${requestScope.invalid_last_name}">
                                 <div style="color: red">${invalid_name}</div>
                             </c:if>
@@ -114,7 +132,7 @@
                         <label for="phone" class="col-sm-2 col-form-label">${phone}</label>
                         <div class="col-sm-10">
                             <input type="text" name="phone_number" class="form-control"
-                                   value="<c:choose><c:when test="${!empty edit_data and edit_data.get(phone_param) != 'invalid_phone' }">${edit_data.get(phone_param)}</c:when><c:otherwise>${sessionScope.user.phone}</c:otherwise></c:choose>"
+                                   value="<c:choose><c:when test="${!empty profile_data and profile_data.get(phone_param) != 'invalid_phone' }">${profile_data.get(phone_param)}</c:when><c:otherwise>${sessionScope.user.phone}</c:otherwise></c:choose>"
                                    id="phone" required pattern="(25|29|33|44)\d{7}">
                             <c:if test="${requestScope.invalid_phone}">
                                 <div style="color: red">${invalid_phone}</div>
@@ -131,31 +149,31 @@
                 </form>
             </div>
             <div class="collapse" id="changePass">
-                <form method="post" action="${abs}/controller">
-                    <input type="hidden" value="command" name="change_user_password_command">
+                <form method="post" action="${abs}/controller" id="changePasswordForm" onclick="validatePasswordForm()">
+                    <input type="hidden" name="command" value="change_user_password_command">
                     <div class="row mb-3">
                         <label for="oldPass" class="col-sm-2 col-form-label">${old_password}</label>
                         <div class="col-sm-10">
-                            <input type="password" name="password" class="form-control"
+                            <input type="password" name="old_password" class="form-control"
                                    id="oldPass" required
                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$"
                                    aria-describedby="passwordHelpBlock">
                             <div id="passwordHelpBlock" class="form-text">${pass_helper}</div>
-                            <c:if test="${requestScope.invalid_password}">
-                                <div style="color: red">${invalid_password}</div>
+                            <c:if test="${requestScope.incorrect_old_password}">
+                                <div style="color: red">${incorrect_old_password}</div>
                             </c:if>
                             <div class="valid-feedback">
                                 ${correct}
                             </div>
                             <div class="invalid-feedback">
-                                ${invalid_password}
+                                ${incorrect_old_password}
                             </div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="newPassword" class="col-sm-2 col-form-label">${new_password}</label>
                         <div class="col-sm-10">
-                            <input type="password" name="password" class="form-control"
+                            <input type="password" name="new_password" class="form-control"
                                    id="newPassword" required
                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&_])[A-Za-z\d@$!#%*?&_]{8,20}$">
                             <c:if test="${requestScope.invalid_password}">
@@ -229,32 +247,60 @@
                     </script>
                 </form>
             </div>
+            <div class="collapse" id="editManager">
+                <form method="post" action="${abs}/controller" id="descriptionForm" onclick="validateDescription()">
+                    <input type="hidden" name="command" value="update_manager_description_command" >
+                    <input type="hidden" name="user_id" value="${sessionScope.user.id}">
+                    <div class="row mb-3">
+                        <label for="description" class="col-sm-2 col-form-label">${description}</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="description" class="form-control"
+                                   value="<c:if test="${!empty description_data}">${description_data}</c:if>"
+                                   id="description" required pattern="^[A-Za-zА-Яа-я]{2,20}">
+                            <c:if test="${requestScope.invalid_description}">
+                                <div style="color: red">${invalid_description}</div>
+                            </c:if>
+                            <div class="valid-feedback">
+                                ${correct}
+                            </div>
+                            <div class="invalid-feedback">
+                                ${invalid_description}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">${edit}</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 
 <script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (function () {
-        'use strict'
+    function validateData (form){
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
 
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        let forms = document.querySelectorAll('.needs-validation')
+                form.classList.add('was-validated')
+            }, false)
 
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
+    }
+    function validatePasswordForm(){
+        const form = document.querySelector("#changePasswordForm")
+        validateData(form)
+    }
+    function validateProfileForm(){
+        const form = document.querySelector("#profileData")
+        validateData(form)
+    }
+    function validateDescription(){
+        const form = document.querySelector("#descriptionForm")
+        validateData(form)
+    }
 
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
 </script>
 </body>
 </html>

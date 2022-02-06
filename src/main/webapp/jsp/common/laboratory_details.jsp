@@ -101,7 +101,7 @@
         </div>
     </div>
     <div class="justify-content-center">${equipment_list}</div>
-    <jsp:include page="equipment_table.jsp"/>
+    <%@include file="fragment/equipment_table.jspf"%>
 </div>
 
 <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
