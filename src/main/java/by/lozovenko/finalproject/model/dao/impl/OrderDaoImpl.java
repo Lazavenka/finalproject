@@ -74,11 +74,12 @@ public class OrderDaoImpl implements OrderDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_CLIENT_ID)) {
             preparedStatement.setLong(1, clientId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Order order = new Order();
-                Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
-                optionalOrder.ifPresent(orderList::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -97,11 +98,12 @@ public class OrderDaoImpl implements OrderDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_LABORATORY_ID)) {
             preparedStatement.setLong(1, laboratoryId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Order order = new Order();
-                Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
-                optionalOrder.ifPresent(orderList::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException(e);
@@ -116,11 +118,12 @@ public class OrderDaoImpl implements OrderDao {
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_STATE_AND_ASSISTANT_ID)) {
             preparedStatement.setLong(1, assistantId);
             preparedStatement.setString(2, orderState.name());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Order order = new Order();
-                Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
-                optionalOrder.ifPresent(orderList::add);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException(e);

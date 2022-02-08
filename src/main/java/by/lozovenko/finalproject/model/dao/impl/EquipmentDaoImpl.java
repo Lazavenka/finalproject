@@ -65,11 +65,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
         EquipmentMapper mapper = EquipmentMapper.getInstance();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_EQUIPMENT)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Equipment equipment = new Equipment();
-                Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
-                optionalEquipment.ifPresent(equipmentList::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Equipment equipment = new Equipment();
+                    Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
+                    optionalEquipment.ifPresent(equipmentList::add);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findAll method EquipmentDao class. Unable to get access to database.", e);
@@ -84,10 +85,11 @@ public class EquipmentDaoImpl implements EquipmentDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_ID)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                Equipment equipment = new Equipment();
-                optionalEquipment = mapper.rowMap(equipment, resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Equipment equipment = new Equipment();
+                    optionalEquipment = mapper.rowMap(equipment, resultSet);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findEntityById method EquipmentDao class. Unable to get access to database.", e);
@@ -120,10 +122,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
             preparedStatement.setString(8, String.valueOf(equipment.getState()));
             preparedStatement.setString(9, equipment.getImageFilePath());
             preparedStatement.executeUpdate();
-            ResultSet generatedKey = preparedStatement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                result = generatedKey.getLong(1);
+            try (ResultSet generatedKey = preparedStatement.getGeneratedKeys()) {
+                if (generatedKey.next()) {
+                    result = generatedKey.getLong(1);
+                }
             }
+
         } catch (SQLException e) {
             throw new DaoException("Error in create method EquipmentDao class. Unable to create entity into database.", e);
         }
@@ -168,12 +172,14 @@ public class EquipmentDaoImpl implements EquipmentDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_TYPE)) {
             preparedStatement.setLong(1, type.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Equipment equipment = new Equipment();
-                Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
-                optionalEquipment.ifPresent(equipmentList::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Equipment equipment = new Equipment();
+                    Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
+                    optionalEquipment.ifPresent(equipmentList::add);
+                }
             }
+
         } catch (SQLException e) {
             throw new DaoException("Error in findEquipmentByType method EquipmentDao class. Unable to get access to database.", e);
         }
@@ -187,11 +193,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_LABORATORY_ID)) {
             preparedStatement.setLong(1, laboratoryId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Equipment equipment = new Equipment();
-                Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
-                optionalEquipment.ifPresent(equipmentList::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Equipment equipment = new Equipment();
+                    Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
+                    optionalEquipment.ifPresent(equipmentList::add);
+                }
             }
             LOGGER.log(Level.INFO, "findEquipmentByLaboratoryId (laboratoryId = {}) method found {} items", laboratoryId, equipmentList.size());
         } catch (SQLException e) {
@@ -217,7 +224,6 @@ public class EquipmentDaoImpl implements EquipmentDao {
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_EQUIPMENT_PHOTO_BY_ID)) {
             preparedStatement.setString(1, databasePath);
             preparedStatement.setLong(2, id);
-
             result = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException("Error in updateEquipmentPhoto method. Database access error.", e);
@@ -228,13 +234,14 @@ public class EquipmentDaoImpl implements EquipmentDao {
     @Override
     public long countEquipment() throws DaoException {
         long count = 0;
-        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_EQUIPMENT)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                count = resultSet.getInt(1);
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_EQUIPMENT)) {
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in countEquipment method EquipmentDao class. Unable to get access to database.", e);
         }
         return count;

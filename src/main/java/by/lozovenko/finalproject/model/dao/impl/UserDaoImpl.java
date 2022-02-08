@@ -117,11 +117,12 @@ public class UserDaoImpl implements UserDao {
         List<User> users = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_USERS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                User user = new User();
-                Optional<User> optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
-                optionalUser.ifPresent(users::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    User user = new User();
+                    Optional<User> optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
+                    optionalUser.ifPresent(users::add);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findAll method UserDao class. Unable to get access to database.", e);
@@ -135,17 +136,18 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_ID)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                User user = new User();
-                optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
-                if (optionalUser.isPresent()) {
-                    UserRole role = user.getRole();
-                    optionalUser = addColumnsByUserRole(user, role, connection);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
+                    if (optionalUser.isPresent()) {
+                        UserRole role = user.getRole();
+                        optionalUser = addColumnsByUserRole(user, role, connection);
+                    }
+                    String loggerResult = optionalUser.isPresent() ? String.format("User with id = %d was found.", id)
+                            : String.format("User with id %d doesn't exist", id);
+                    LOGGER.log(Level.INFO, "findUserById completed successfully. {}", loggerResult);
                 }
-                String loggerResult = optionalUser.isPresent() ? String.format("User with id = %d was found.", id)
-                        : String.format("User with id %d doesn't exist", id);
-                LOGGER.log(Level.INFO, "findUserById completed successfully. {}", loggerResult);
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findEntityById method UserDao class. Unable to get access to database.", e);
@@ -170,9 +172,10 @@ public class UserDaoImpl implements UserDao {
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER, Statement.RETURN_GENERATED_KEYS)) {
             setUserColumnsInStatement(user, preparedStatement);
             preparedStatement.executeUpdate();
-            ResultSet generatedKey = preparedStatement.getGeneratedKeys();
-            if (generatedKey.next()) {
-                return generatedKey.getLong(1);
+            try (ResultSet generatedKey = preparedStatement.getGeneratedKeys()) {
+                if (generatedKey.next()) {
+                    return generatedKey.getLong(1);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in create method UserDao class. Unable to get access to database.", e);
@@ -199,11 +202,11 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean updatePasswordByLogin(String password, String login) throws DaoException {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PASSWORD_BY_LOGIN)){
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PASSWORD_BY_LOGIN)) {
             preparedStatement.setString(1, password);
             preparedStatement.setString(2, login);
             return preparedStatement.executeUpdate() != 0;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in updatePasswordByLogin method UserDao class. Unable to get access to database.", e);
         }
     }
@@ -219,20 +222,21 @@ public class UserDaoImpl implements UserDao {
                  PreparedStatement createManagerStatement = connection.prepareStatement(CREATE_MANAGER, Statement.RETURN_GENERATED_KEYS)) {
                 setUserColumnsInStatement(manager, createUserStatement);
                 createUserStatement.executeUpdate();
-                ResultSet userResultSet = createUserStatement.getGeneratedKeys();
                 long userId = 0;
-                if (userResultSet.next()) {
-                    userId = userResultSet.getLong(1);
-                    createManagerStatement.setLong(1, userId);
-                    createManagerStatement.setLong(2, manager.getDepartmentId());
-                    createManagerStatement.setLong(3, manager.getLaboratoryId());
-                    createManagerStatement.setString(4, manager.getImageFilePath());
-                    createManagerStatement.setString(5, manager.getDescription());
-                    createManagerStatement.setString(6, manager.getManagerDegree().getValue());
-                    createManagerStatement.executeUpdate();
-                    ResultSet managerResultSet = createManagerStatement.getResultSet();
-                    if (managerResultSet.next()) {
-                        generatedManagerId = managerResultSet.getLong(1);
+                try (ResultSet userResultSet = createUserStatement.getGeneratedKeys()) {
+                    if (userResultSet.next()) {
+                        userId = userResultSet.getLong(1);
+                        createManagerStatement.setLong(1, userId);
+                        createManagerStatement.setLong(2, manager.getDepartmentId());
+                        createManagerStatement.setLong(3, manager.getLaboratoryId());
+                        createManagerStatement.setString(4, manager.getImageFilePath());
+                        createManagerStatement.setString(5, manager.getDescription());
+                        createManagerStatement.setString(6, manager.getManagerDegree().getValue());
+                        createManagerStatement.executeUpdate();
+                        ResultSet managerResultSet = createManagerStatement.getResultSet();
+                        if (managerResultSet.next()) {
+                            generatedManagerId = managerResultSet.getLong(1);
+                        }
                     }
                 }
                 connection.commit();
@@ -270,25 +274,27 @@ public class UserDaoImpl implements UserDao {
                  PreparedStatement createTokenStatement = connection.prepareStatement(CREATE_TOKEN, Statement.RETURN_GENERATED_KEYS)) {
                 setUserColumnsInStatement(client, createUserStatement);
                 createUserStatement.executeUpdate();
-                ResultSet resultSet = createUserStatement.getGeneratedKeys();
                 long userId = 0;
                 long tokenId = 0;
-                if (resultSet.next()) {
-                    userId = resultSet.getLong(1);
-                    createClientStatement.setLong(1, userId);
-                    createClientStatement.executeUpdate();
-                    ResultSet clientResultSet = createClientStatement.getGeneratedKeys();
-                    if (clientResultSet.next()) {
-                        generatedClientId = clientResultSet.getLong(1);
-                    }
-                    createTokenStatement.setLong(1, userId);
-                    createTokenStatement.setString(2, token.getValue());
-                    createTokenStatement.setTimestamp(3, Timestamp.valueOf(token.getRegisterDateTime()));
-                    createTokenStatement.executeUpdate();
+                try (ResultSet resultSet = createUserStatement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        userId = resultSet.getLong(1);
+                        createClientStatement.setLong(1, userId);
+                        createClientStatement.executeUpdate();
+                        ResultSet clientResultSet = createClientStatement.getGeneratedKeys();
+                        if (clientResultSet.next()) {
+                            generatedClientId = clientResultSet.getLong(1);
+                        }
+                        createTokenStatement.setLong(1, userId);
+                        createTokenStatement.setString(2, token.getValue());
+                        createTokenStatement.setTimestamp(3, Timestamp.valueOf(token.getRegisterDateTime()));
+                        createTokenStatement.executeUpdate();
 
-                    ResultSet tokenResultSet = createTokenStatement.getGeneratedKeys();
-                    if (tokenResultSet.next()) {
-                        tokenId = clientResultSet.getLong(1);
+                        try (ResultSet tokenResultSet = createTokenStatement.getGeneratedKeys()) {
+                            if (tokenResultSet.next()) {
+                                tokenId = clientResultSet.getLong(1);
+                            }
+                        }
                     }
                 }
                 connection.commit();
@@ -320,13 +326,14 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_TOKEN_BY_VALUE)) {
             preparedStatement.setString(1, tokenValue);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                long userId = resultSet.getLong(USER_ID_COLUMN_NAME);
-                String userToken = resultSet.getString(USER_TOKEN_COLUMN_NAME);
-                LocalDateTime registerDateTime = resultSet.getTimestamp(REGISTER_TIMESTAMP_COLUMN_NAME).toLocalDateTime();
-                Token token = new Token(userId, userToken, registerDateTime);
-                optionalToken = Optional.of(token);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    long userId = resultSet.getLong(USER_ID_COLUMN_NAME);
+                    String userToken = resultSet.getString(USER_TOKEN_COLUMN_NAME);
+                    LocalDateTime registerDateTime = resultSet.getTimestamp(REGISTER_TIMESTAMP_COLUMN_NAME).toLocalDateTime();
+                    Token token = new Token(userId, userToken, registerDateTime);
+                    optionalToken = Optional.of(token);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findUserTokenByValue method UserDao class. Unable to get access to database.", e);
@@ -377,11 +384,12 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_ROLE_BY_LOGIN)) {
             preparedStatement.setString(1, login);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                role = UserRole.valueOf(resultSet.getString(UserMapper.USER_ROLE));
-            } else {
-                role = UserRole.GUEST;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    role = UserRole.valueOf(resultSet.getString(UserMapper.USER_ROLE));
+                } else {
+                    role = UserRole.GUEST;
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findUserRoleByLogin method. Can't find userRole by login.", e);
@@ -395,17 +403,18 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_LOGIN)) {
             preparedStatement.setString(1, login);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                User user = new User();
-                optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
-                if (optionalUser.isPresent()) {
-                    UserRole role = user.getRole();
-                    optionalUser = addColumnsByUserRole(user, role, connection);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
+                    if (optionalUser.isPresent()) {
+                        UserRole role = user.getRole();
+                        optionalUser = addColumnsByUserRole(user, role, connection);
+                    }
+                    String loggerResult = optionalUser.isPresent() ? String.format("User with id = %s was found.", user.getId())
+                            : String.format("User with login %s doesn't exist", login);
+                    LOGGER.log(Level.INFO, "findUserByLogin completed successfully. {}", loggerResult);
                 }
-                String loggerResult = optionalUser.isPresent() ? String.format("User with id = %s was found.", user.getId())
-                        : String.format("User with login %s doesn't exist", login);
-                LOGGER.log(Level.INFO, "findUserByLogin completed successfully. {}", loggerResult);
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findUserByLogin method. Can't find user by login.", e);
@@ -435,17 +444,18 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_EMAIL)) {
             preparedStatement.setString(1, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                User user = new User();
-                optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
-                if (optionalUser.isPresent()) {
-                    UserRole role = user.getRole();
-                    optionalUser = addColumnsByUserRole(user, role, connection);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
+                    if (optionalUser.isPresent()) {
+                        UserRole role = user.getRole();
+                        optionalUser = addColumnsByUserRole(user, role, connection);
+                    }
+                    String loggerResult = optionalUser.isPresent() ? String.format("User with email = %s was found.", user.getId())
+                            : String.format("User with email %s doesn't exist", email);
+                    LOGGER.log(Level.INFO, "findUserByEmail completed successfully. {}", loggerResult);
                 }
-                String loggerResult = optionalUser.isPresent() ? String.format("User with email = %s was found.", user.getId())
-                        : String.format("User with email %s doesn't exist", email);
-                LOGGER.log(Level.INFO, "findUserByEmail completed successfully. {}", loggerResult);
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findUserByEmail method. Can't find user by email. Database access error.", e);
@@ -455,13 +465,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean isExistUserWithEmail(String email) throws DaoException {
-        boolean result = false;
+        boolean result;
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_EMAIL)) {
             preparedStatement.setString(1, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                result = true;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                result = resultSet.next();
             }
         } catch (SQLException e) {
             throw new DaoException("Error in isExistUserWithEmail method UserDao class. Unable to get access to database.", e);
@@ -475,10 +484,11 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BALANCE_BY_USER_ID)) {
             preparedStatement.setLong(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                BigDecimal balance = resultSet.getBigDecimal(BALANCE);
-                optionalBalance = Optional.of(balance);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    BigDecimal balance = resultSet.getBigDecimal(BALANCE);
+                    optionalBalance = Optional.of(balance);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in checkUserBalanceByUserId method. Can't find clientBalance by id. Database access error.", e);
@@ -507,11 +517,12 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGER_BY_LABORATORY_ID)) {
             preparedStatement.setLong(1, laboratoryId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                User user = new User();
-                UserMapper.getInstance().rowMap(user, resultSet);
-                optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    UserMapper.getInstance().rowMap(user, resultSet);
+                    optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findManagerByLaboratoryId method. Can't find Manager by managerId. Database access error.", e);
@@ -552,12 +563,13 @@ public class UserDaoImpl implements UserDao {
     public List<User> findAssistantByLaboratoryId(long laboratoryId) throws DaoException {
         List<User> assistants = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-        PreparedStatement getAssistantStatement = connection.prepareStatement(GET_ASSISTANTS_BY_LABORATORY_ID)){
+             PreparedStatement getAssistantStatement = connection.prepareStatement(GET_ASSISTANTS_BY_LABORATORY_ID)) {
             getAssistantStatement.setLong(1, laboratoryId);
-            ResultSet resultSet = getAssistantStatement.executeQuery();
-            getAssistantsFromResultSet(assistants, resultSet);
+            try (ResultSet resultSet = getAssistantStatement.executeQuery()) {
+                getAssistantsFromResultSet(assistants, resultSet);
+            }
             LOGGER.log(Level.INFO, "findAssistantByLaboratoryId (laboratoryId = {}) found {} assistants in database", laboratoryId, assistants.size());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findAssistantByLaboratoryId method. Can't find Assistants in database. Database access error.", e);
         }
         return assistants;
@@ -569,9 +581,10 @@ public class UserDaoImpl implements UserDao {
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_BY_LOGIN_AND_PASSWORD)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, encryptedPassword);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.isBeforeFirst();
-        }catch (SQLException e){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.isBeforeFirst();
+            }
+        } catch (SQLException e) {
             throw new DaoException("Error in isExistUser method. Can't find Assistants in database. Database access error.", e);
         }
     }
@@ -617,17 +630,19 @@ public class UserDaoImpl implements UserDao {
                  PreparedStatement createAssistantStatement = connection.prepareStatement(CREATE_ASSISTANT, Statement.RETURN_GENERATED_KEYS)) {
                 setUserColumnsInStatement(assistant, createUserStatement);
                 createUserStatement.executeUpdate();
-                ResultSet userResultSet = createUserStatement.getGeneratedKeys();
                 long userId = 0;
-                if (userResultSet.next()) {
-                    userId = userResultSet.getLong(1);
-                    createAssistantStatement.setLong(1, userId);
-                    createAssistantStatement.setLong(2, assistant.getLaboratoryId());
-                    createAssistantStatement.setString(3, assistant.getImageFilePath());
-                    createAssistantStatement.executeUpdate();
-                    ResultSet managerResultSet = createAssistantStatement.getResultSet();
-                    if (managerResultSet.next()) {
-                        generatedAssistantId = managerResultSet.getLong(1);
+                try (ResultSet userResultSet = createUserStatement.getGeneratedKeys()) {
+                    if (userResultSet.next()) {
+                        userId = userResultSet.getLong(1);
+                        createAssistantStatement.setLong(1, userId);
+                        createAssistantStatement.setLong(2, assistant.getLaboratoryId());
+                        createAssistantStatement.setString(3, assistant.getImageFilePath());
+                        createAssistantStatement.executeUpdate();
+                        try (ResultSet assistantResultSet = createAssistantStatement.getResultSet()) {
+                            if (assistantResultSet.next()) {
+                                generatedAssistantId = assistantResultSet.getLong(1);
+                            }
+                        }
                     }
                 }
                 connection.commit();
@@ -656,14 +671,15 @@ public class UserDaoImpl implements UserDao {
     @Override
     public long countManagersByDegree(ManagerDegree degree) throws DaoException {
         long count = 0;
-        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_MANAGERS_BY_DEGREE)) {
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_MANAGERS_BY_DEGREE)) {
             preparedStatement.setString(1, degree.getValue());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                count = resultSet.getInt(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in countDepartments method DepartmentDao class. Unable to get access to database.", e);
         }
         return count;
@@ -680,8 +696,9 @@ public class UserDaoImpl implements UserDao {
         List<User> managers = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_MANAGERS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            getManagersFromResultSet(managers, resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                getManagersFromResultSet(managers, resultSet);
+            }
             LOGGER.log(Level.INFO, "findAllManagers found {} managers in database", managers.size());
         } catch (SQLException e) {
             throw new DaoException("Error in findAllManagers method. Can't find Managers in database. Database access error.", e);
@@ -695,8 +712,9 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGERS_BY_DEPARTMENT_ID)) {
             preparedStatement.setLong(1, departmentId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            getManagersFromResultSet(managers, resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                getManagersFromResultSet(managers, resultSet);
+            }
             LOGGER.log(Level.INFO, "findManagersById (id = {}) found {} managers in database", departmentId, managers.size());
         } catch (SQLException e) {
             throw new DaoException("Error in findManagersByDepartmentId method. Can't find Managers by departmentId. Database access error.", e);
@@ -710,8 +728,9 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGERS_BY_DEGREE)) {
             preparedStatement.setString(1, managerDegree.getValue());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            getManagersFromResultSet(managers, resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                getManagersFromResultSet(managers, resultSet);
+            }
             LOGGER.log(Level.INFO, "findManagersByDegree (degree = {}) found {} managers in database", managerDegree.getValue(), managers.size());
         } catch (SQLException e) {
             throw new DaoException("Error in findManagersByDegree method. Can't find Managers by degree. Database access error.", e);
@@ -748,11 +767,12 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGER_BY_ID)) {
             preparedStatement.setLong(1, managerId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                User user = new User();
-                UserMapper.getInstance().rowMap(user, resultSet);
-                optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    UserMapper.getInstance().rowMap(user, resultSet);
+                    optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findManagerById method. Can't find Manager by managerId. Database access error.", e);

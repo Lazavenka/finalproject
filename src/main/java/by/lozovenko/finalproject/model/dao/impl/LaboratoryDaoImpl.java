@@ -40,28 +40,31 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             SELECT laboratory_id, laboratory_name, department_id, laboratory_location,
             laboratory_photo_link, laboratory_description FROM laboratories
             WHERE NOT EXISTS(SELECT manager_id FROM managers WHERE managers.laboratory_id = laboratories.laboratory_id)""";
-    private static final String COUNT_LABORATORIES= "SELECT count(laboratory_id) from laboratories";
+    private static final String COUNT_LABORATORIES = "SELECT count(laboratory_id) from laboratories";
 
-    private LaboratoryDaoImpl(){
+    private LaboratoryDaoImpl() {
     }
-    public static LaboratoryDao getInstance(){
-        if (instance == null){
+
+    public static LaboratoryDao getInstance() {
+        if (instance == null) {
             instance = new LaboratoryDaoImpl();
         }
         return instance;
     }
+
     @Override
     public List<Laboratory> findAll() throws DaoException {
         List<Laboratory> laboratories = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_LABORATORIES)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Laboratory laboratory = new Laboratory();
-                Optional<Laboratory> optionalUser = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
-                optionalUser.ifPresent(laboratories::add);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Laboratory laboratory = new Laboratory();
+                    Optional<Laboratory> optionalUser = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
+                    optionalUser.ifPresent(laboratories::add);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findAll method LaboratoryDao class. Unable to get access to database.", e);
         }
         return laboratories;
@@ -73,15 +76,16 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORY_BY_ID)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                Laboratory laboratory = new Laboratory();
-                optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
-                String loggerResult = optionalLaboratory.isPresent() ? String.format("Laboratory with id = %d was found.", id)
-                        : String.format("Laboratory with id %d doesn't exist", id);
-                LOGGER.log(Level.INFO, "findEntityById completed successfully. {}", loggerResult);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Laboratory laboratory = new Laboratory();
+                    optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
+                    String loggerResult = optionalLaboratory.isPresent() ? String.format("Laboratory with id = %d was found.", id)
+                            : String.format("Laboratory with id %d doesn't exist", id);
+                    LOGGER.log(Level.INFO, "findEntityById completed successfully. {}", loggerResult);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findEntityById method LaboratoryDao class. Unable to get access to database.", e);
         }
         return optionalLaboratory;
@@ -101,17 +105,18 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
     public long create(Laboratory laboratory) throws DaoException {
         long laboratoryId = -1;
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement createLaboratoryStatement = connection.prepareStatement(CREATE_LABORATORY, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement createLaboratoryStatement = connection.prepareStatement(CREATE_LABORATORY, Statement.RETURN_GENERATED_KEYS)) {
             createLaboratoryStatement.setString(1, laboratory.getName());
             createLaboratoryStatement.setLong(2, laboratory.getDepartmentId());
             createLaboratoryStatement.setString(3, laboratory.getLocation());
             createLaboratoryStatement.setString(4, laboratory.getDescription());
             createLaboratoryStatement.executeUpdate();
-            ResultSet generatedIdResultSet = createLaboratoryStatement.getGeneratedKeys();
-            if (generatedIdResultSet.next()){
-                laboratoryId = generatedIdResultSet.getLong(1);
+            try(ResultSet generatedIdResultSet = createLaboratoryStatement.getGeneratedKeys()) {
+                if (generatedIdResultSet.next()) {
+                    laboratoryId = generatedIdResultSet.getLong(1);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in create method LaboratoryDao class. Unable to get access to database.", e);
         }
         return laboratoryId;
@@ -128,14 +133,14 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORIES_BY_DEPARTMENT_ID)) {
             preparedStatement.setLong(1, departmentId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            LaboratoryMapper laboratoryMapper = LaboratoryMapper.getInstance();
-            while (resultSet.next()){
-                Laboratory laboratory = new Laboratory();
-                Optional<Laboratory> optionalLaboratory = laboratoryMapper.rowMap(laboratory, resultSet);
-                optionalLaboratory.ifPresent(laboratories::add);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Laboratory laboratory = new Laboratory();
+                    Optional<Laboratory> optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
+                    optionalLaboratory.ifPresent(laboratories::add);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findAllByDepartmentId method LaboratoryDao class. Unable to get access to database.", e);
         }
         return laboratories;
@@ -147,12 +152,13 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORY_BY_MANAGER_ID)) {
             preparedStatement.setLong(1, managerId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                Laboratory laboratory = new Laboratory();
-                optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Laboratory laboratory = new Laboratory();
+                    optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findLaboratoryByManagerId method LaboratoryDao class. Unable to get access to database.", e);
         }
         return optionalLaboratory;
@@ -160,17 +166,16 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
 
     @Override
     public Optional<String> findLaboratoryNameById(Long id) throws DaoException {
-        Optional<String> optionalLaboratoryName;
+        Optional<String> optionalLaboratoryName = Optional.empty();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORY_NAME_BY_ID)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                optionalLaboratoryName = Optional.of(resultSet.getString(LaboratoryMapper.LABORATORY_NAME));
-            }else {
-                optionalLaboratoryName = Optional.empty();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    optionalLaboratoryName = Optional.of(resultSet.getString(LaboratoryMapper.LABORATORY_NAME));
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findLaboratoryNameById method LaboratoryDao class. Unable to get access to database.", e);
         }
         return optionalLaboratoryName;
@@ -181,28 +186,30 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         List<Laboratory> laboratoryList = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABS_WITHOUT_MANAGER)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Laboratory laboratory = new Laboratory();
-                Optional<Laboratory> optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory,resultSet);
-                optionalLaboratory.ifPresent(laboratoryList::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Laboratory laboratory = new Laboratory();
+                    Optional<Laboratory> optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
+                    optionalLaboratory.ifPresent(laboratoryList::add);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Error in findLaboratoriesWithoutManager method LaboratoryDao class. Unable to get access to database.", e);
         }
-    return laboratoryList;
+        return laboratoryList;
     }
 
     @Override
     public long countLaboratories() throws DaoException {
         long count = 0;
-        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_LABORATORIES)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                count = resultSet.getInt(1);
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_LABORATORIES)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in countLaboratories method LaboratoryDao class. Unable to get access to database.", e);
         }
         return count;

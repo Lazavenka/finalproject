@@ -37,13 +37,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
         List<Department> departments = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_DEPARTMENTS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                Department department = new Department();
-                Optional<Department> optionalUser = DepartmentMapper.getInstance().rowMap(department, resultSet);
-                optionalUser.ifPresent(departments::add);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Department department = new Department();
+                    Optional<Department> optionalUser = DepartmentMapper.getInstance().rowMap(department, resultSet);
+                    optionalUser.ifPresent(departments::add);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findAll method DepartmentDao class. Unable to get access to database.", e);
         }
         return departments;
@@ -55,15 +56,16 @@ public class DepartmentDaoImpl implements DepartmentDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_DEPARTMENT_BY_ID)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                Department department = new Department();
-                optionalDepartment = DepartmentMapper.getInstance().rowMap(department, resultSet);
-                String loggerResult = optionalDepartment.isPresent() ? String.format("Department with id = %d was found.", id)
-                        : String.format("Department with id %d doesn't exist", id);
-                LOGGER.log(Level.INFO, "findEntityById completed successfully. {}", loggerResult);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Department department = new Department();
+                    optionalDepartment = DepartmentMapper.getInstance().rowMap(department, resultSet);
+                    String loggerResult = optionalDepartment.isPresent() ? String.format("Department with id = %d was found.", id)
+                            : String.format("Department with id %d doesn't exist", id);
+                    LOGGER.log(Level.INFO, "findEntityById completed successfully. {}", loggerResult);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in findEntityById method DepartmentDao class. Unable to get access to database.", e);
         }
         return optionalDepartment;
@@ -83,18 +85,20 @@ public class DepartmentDaoImpl implements DepartmentDao {
     public long create(Department department) throws DaoException {
         long departmentId = -1;
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement createDepartmentStatement = connection.prepareStatement(CREATE_DEPARTMENT, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement createDepartmentStatement = connection.prepareStatement(CREATE_DEPARTMENT, Statement.RETURN_GENERATED_KEYS)) {
 
             createDepartmentStatement.setString(1, department.getName());
             createDepartmentStatement.setString(2, department.getDescription());
             createDepartmentStatement.setString(3, department.getAddress());
 
             createDepartmentStatement.executeUpdate();
-            ResultSet generatedIdResultSet = createDepartmentStatement.getGeneratedKeys();
-            if (generatedIdResultSet.next()){
-                departmentId = generatedIdResultSet.getLong(1);
+            try (ResultSet generatedIdResultSet = createDepartmentStatement.getGeneratedKeys()) {
+                if (generatedIdResultSet.next()) {
+                    departmentId = generatedIdResultSet.getLong(1);
+                }
             }
-        }catch (SQLException e){
+
+        } catch (SQLException e) {
             throw new DaoException("Error in create method DepartmentDao class. Unable to get access to database.", e);
         }
         return departmentId;
@@ -107,16 +111,16 @@ public class DepartmentDaoImpl implements DepartmentDao {
 
     @Override
     public Optional<String> findDepartmentNameById(Long id) throws DaoException {
-        Optional<String> optionalDepartmentName;
+        Optional<String> optionalDepartmentName = Optional.empty();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_DEPARTMENT_NAME_BY_ID)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                optionalDepartmentName = Optional.of(resultSet.getString(DepartmentMapper.DEPARTMENT_NAME));
-            } else {
-                optionalDepartmentName = Optional.empty();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    optionalDepartmentName = Optional.of(resultSet.getString(DepartmentMapper.DEPARTMENT_NAME));
+                }
             }
+
         } catch (SQLException e) {
             throw new DaoException("Error in findDepartmentNameById method DepartmentDao class. Unable to get access to database.", e);
         }
@@ -126,13 +130,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
     @Override
     public long countDepartments() throws DaoException {
         long count = 0;
-        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_DEPARTMENTS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                count = resultSet.getInt(1);
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_DEPARTMENTS)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in countDepartments method DepartmentDao class. Unable to get access to database.", e);
         }
         return count;
