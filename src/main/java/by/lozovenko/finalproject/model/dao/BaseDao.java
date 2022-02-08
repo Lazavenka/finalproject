@@ -25,7 +25,7 @@ public interface BaseDao<K, T extends CustomEntity> {
 
     long create(T t) throws DaoException;
 
-    T update(T t) throws DaoException;
+    long update(T t) throws DaoException;
 
     default void close(Statement statement) {
         try {

@@ -18,6 +18,8 @@ import java.util.Map;
 
 public class Main { //todo DELETE NAFIG!
     public static void main(String[] args) {
-
+        LocalTime localTime = LocalTime.of(0, 15);
+        Time time = Time.valueOf(localTime);
+        System.out.println(time);
     }
 }

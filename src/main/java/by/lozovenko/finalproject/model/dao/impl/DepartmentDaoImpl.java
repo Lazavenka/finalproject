@@ -18,6 +18,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
     private static final String GET_DEPARTMENT_BY_ID = "SELECT department_id, department_name, department_description, department_address FROM departments WHERE department_id = ?";
     private static final String GET_ALL_DEPARTMENTS = "SELECT department_id, department_name, department_description, department_address FROM departments";
     private static final String CREATE_DEPARTMENT = "INSERT INTO departments (department_name, department_description, department_address) VALUES (?, ?, ?)";
+    private static final String COUNT_DEPARTMENTS = "SELECT count(department_id) from departments";
 
     private static DepartmentDao instance;
 
@@ -100,8 +101,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     @Override
-    public Department update(Department department) throws DaoException {
-        return null;
+    public long update(Department department) throws DaoException {
+        throw new UnsupportedOperationException("update(Department department) method is not supported");
     }
 
     @Override
@@ -117,8 +118,23 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 optionalDepartmentName = Optional.empty();
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findDepartmentNameById method DepartmentDao class. Unable to get access to database.", e);
         }
         return optionalDepartmentName;
+    }
+
+    @Override
+    public long countDepartments() throws DaoException {
+        long count = 0;
+        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_DEPARTMENTS)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                count = resultSet.getInt(1);
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in countDepartments method DepartmentDao class. Unable to get access to database.", e);
+        }
+        return count;
     }
 }

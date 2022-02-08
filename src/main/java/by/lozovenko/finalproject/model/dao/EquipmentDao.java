@@ -21,4 +21,6 @@ public interface EquipmentDao extends BaseDao<Long, Equipment> {
     List<Equipment> findAllActiveEquipmentByLaboratory(Laboratory laboratory) throws DaoException;
 
     int updateEquipmentPhoto(long id, String databasePath) throws DaoException;
+
+    long countEquipment() throws DaoException;
 }

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
@@ -16,6 +17,7 @@
 <fmt:message var="department" key="common.manager_details.department"/>
 <fmt:message var="contacts" key="common.manager_details.contacts"/>
 <fmt:message var="field_not_found" key="common.details.field_not_found"/>
+<fmt:message var="manager_details_page" key="message.manager_details_page"/>
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
 <html>
@@ -26,12 +28,17 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<c:choose>
-    <c:when test="${requestScope.no_managers}">
-        <div class="alert alert-danger">${no_managers}</div>
-    </c:when>
-    <c:otherwise>
-        <c:set var="manager" value="${requestScope.manager}"/>
+<div class="container">
+    <br>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+            <p>${manager_details_page}</p>
+        </blockquote>
+    </figure>
+    <div class="w-75 mx-auto">
+        <c:choose>
+        <c:when test="${requestScope.no_managers}"><div class="alert alert-danger">${no_managers}</div></c:when>
+        <c:otherwise><c:set var="manager" value="${requestScope.manager}"/>
         <div class="d-flex position-relative">
             <img src="${abs}/${manager.imageFilePath}" width="400" class="flex-shrink-0 me-3" alt="...">
 
@@ -82,9 +89,11 @@
                 </dl>
             </div>
         </div>
-    </c:otherwise>
-</c:choose>
-<hr>
-<a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
+        </c:otherwise>
+        </c:choose>
+        <br>
+    </div>
+</div>
+<ctg:print-footer/>
 </body>
 </html>

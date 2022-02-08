@@ -1,3 +1,4 @@
+<%@ taglib prefix="ctg" uri="customtags" %>
 <%--
   Created by IntelliJ IDEA.
   User: Roger
@@ -11,6 +12,6 @@
     <title>Title</title>
 </head>
 <body>
-
+<ctg:print-footer/>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
@@ -59,7 +60,7 @@
 <br>
 <div class="container">
     <div class="row">
-        <div class="col-sm-2 justify-content-center">
+        <div class="col justify-content-center">
             <div class="btn-group-vertical">
                 <a href="${abs}/controller?command=go_add_admin_page_command" class="btn btn-primary">${add_admin}</a>
                 <br>
@@ -73,7 +74,7 @@
                 </button>
             </div>
         </div>
-        <div class="col-sm-10">
+        <div class="col">
             <div class="collapse" id="usersTable">
                 <table class="table table-striped">
                     <thead>
@@ -133,6 +134,6 @@
         </div>
     </div>
 </div>
-
+<ctg:print-footer/>
 </body>
 </html>

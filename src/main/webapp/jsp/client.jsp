@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
@@ -19,9 +20,9 @@
     <div class="card-body">
         <h5 class="card-title">${sessionScope.user.role} LOGGED</h5>
         <p class="card-text">${sessionScope.user.phone}</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <a href="/controller?command=go_about_page" class="btn btn-primary">Go somewhere</a>
     </div>
 </div>
-
+<ctg:print-footer/>
 </body>
 </html>

@@ -107,4 +107,15 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new ServiceException("Can't handle addNewDepartment request at DepartmentService", e);
         }
     }
+
+    @Override
+    public long countDepartments() throws ServiceException {
+        long departmentsCount;
+        try {
+            departmentsCount = departmentDao.countDepartments();
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countDepartments request at DepartmentService", e);
+        }
+        return departmentsCount;
+    }
 }

@@ -67,10 +67,6 @@
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_department_details_by_id_command&department_id=0">${laboratories}</a></li>
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_all_managers_command">${managers}</a></li>
                         <li><a class="dropdown-item" href="${abs}/controller?command=find_equipment_by_type_command&equipment_type_id=0">${equipment}</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
 

@@ -46,17 +46,17 @@ public class ChangePasswordCommand implements CustomCommand {
                         case INVALID_PASSWORD -> {
                             request.setAttribute(INVALID_PASSWORD, true);
                             passwordData.put(NEW_PASSWORD, EMPTY);
-                            passwordData.put(OLD_PASSWORD, EMPTY);
                         }
                         case PASSWORDS_MISMATCH -> {
                             request.setAttribute(PASSWORDS_MISMATCH, true);
                             passwordData.put(NEW_PASSWORD, EMPTY);
-                            passwordData.put(OLD_PASSWORD, EMPTY);
+                            passwordData.put(CONFIRMED_PASSWORD, EMPTY);
                         }
                     }
 
                 }
                 request.setAttribute(PASSWORD_DATA, passwordData);
+                request.setAttribute(ERROR_MESSAGE, true);
                 if (sessionUser.getRole() == UserRole.MANAGER){
                     request.setAttribute(DESCRIPTION, ((Manager)sessionUser).getDescription());
                 }

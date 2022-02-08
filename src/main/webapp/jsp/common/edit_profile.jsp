@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
@@ -20,6 +21,7 @@
 <fmt:message var="invalid_phone" key="message.invalid_phone"/>
 <fmt:message var="invalid_description" key="message.invalid_description"/>
 <fmt:message var="success_message" key="message.success_message"/>
+<fmt:message var="error_message" key="message.error_message"/>
 <fmt:message var="upload" key="buttons.upload"/>
 <fmt:message var="description" key="common.description"/>
 <fmt:message var="edit" key="button.edit"/>
@@ -30,6 +32,9 @@
 <fmt:message var="last_name" key="registration.last_name"/>
 <fmt:message var="phone" key="registration.phone"/>
 <fmt:message var="edit_managers_data" key="buttons.edit_manager"/>
+<fmt:message var="empty_image_message" key="message.empty_image_message"/>
+<fmt:message var="invalid_file_size" key="message.invalid_file_size"/>
+<fmt:message var="wrong_file_extension" key="message.wrong_file_extension"/>
 
 
 <c:set var="pass_data" value="${requestScope.change_password_data}"/>
@@ -56,7 +61,10 @@
         <blockquote class="blockquote">
             <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
             <p>${profile_edit_page}</p>
-            <c:if test="${requestScope.success_message}"><p class="alert-success">${success_message}</p></c:if>
+            <c:choose>
+                <c:when test="${requestScope.success_message}"><p class="alert-success">${success_message}</p></c:when>
+                <c:when test="${requestScope.error_message}"><p class="alert-warning">${error_message}</p></c:when>
+            </c:choose>
         </blockquote>
     </figure>
     <div class="row">
@@ -82,6 +90,7 @@
                 </c:if>
 
                 <c:if test="${sessionScope.user.role.name() eq 'MANAGER'}">
+                    <br>
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#editManager"
                             aria-expanded="false" aria-controls="editManager">
@@ -93,7 +102,7 @@
 
         <div class="col-sm-10">
             <div class="collapse" id="editProfile">
-                <form method="post" action="${abs}/controller" class="profileData"  onclick="validateProfileForm()">
+                <form method="post" action="${abs}/controller" class="profileData"  onclick="validateProfileForm()" novalidate>
                     <input type="hidden" name="command" value="update_user_profile_command" >
                     <div class="row mb-3">
                         <label for="firstName" class="col-sm-2 col-form-label">${first_name}</label>
@@ -115,7 +124,7 @@
                     <div class="row mb-3">
                         <label for="lastName" class="col-sm-2 col-form-label">${last_name}</label>
                         <div class="col-sm-10">
-                            <input type="text" name="first_name" class="form-control"
+                            <input type="text" name="last_name" class="form-control"
                                    value="<c:choose><c:when test="${!empty profile_data and profile_data.get(l_name_param) != 'invalid_name' }">${profile_data.get(l_name_param)}</c:when><c:otherwise>${sessionScope.user.lastName}</c:otherwise></c:choose>" id="lastName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
                             <c:if test="${requestScope.invalid_last_name}">
                                 <div style="color: red">${invalid_name}</div>
@@ -149,7 +158,7 @@
                 </form>
             </div>
             <div class="collapse" id="changePass">
-                <form method="post" action="${abs}/controller" id="changePasswordForm" onclick="validatePasswordForm()">
+                <form method="post" action="${abs}/controller" id="changePasswordForm" onclick="validatePasswordForm()" novalidate>
                     <input type="hidden" name="command" value="change_user_password_command">
                     <div class="row mb-3">
                         <label for="oldPass" class="col-sm-2 col-form-label">${old_password}</label>
@@ -216,6 +225,12 @@
                         <button class="btn btn-outline-secondary" type="submit"
                                 id="inputGroupFileAddon04">${upload}</button>
                     </div>
+                    <c:choose>
+                        <c:when test="${requestScope.empty_image}"><div style="color: red">${empty_image_message}</div></c:when>
+                        <c:when test="${requestScope.invalid_file_size}"><div style="color: red">${invalid_file_size}</div></c:when>
+                        <c:when test="${requestScope.wrong_file_extension}"><div style="color: red">${wrong_file_extension}</div></c:when>
+                    </c:choose>
+
                     <div id="imagePreview" class=""></div>
                     <script>
                         function fileValidation() {
@@ -248,7 +263,7 @@
                 </form>
             </div>
             <div class="collapse" id="editManager">
-                <form method="post" action="${abs}/controller" id="descriptionForm" onclick="validateDescription()">
+                <form method="post" action="${abs}/controller" id="descriptionForm" onclick="validateDescription()" novalidate>
                     <input type="hidden" name="command" value="update_manager_description_command" >
                     <input type="hidden" name="user_id" value="${sessionScope.user.id}">
                     <div class="row mb-3">
@@ -256,7 +271,7 @@
                         <div class="col-sm-10">
                             <input type="text" name="description" class="form-control"
                                    value="<c:if test="${!empty description_data}">${description_data}</c:if>"
-                                   id="description" required pattern="^[A-Za-zА-Яа-я]{2,20}">
+                                   id="description" required>
                             <c:if test="${requestScope.invalid_description}">
                                 <div style="color: red">${invalid_description}</div>
                             </c:if>
@@ -302,5 +317,6 @@
     }
 
 </script>
+<ctg:print-footer/>
 </body>
 </html>

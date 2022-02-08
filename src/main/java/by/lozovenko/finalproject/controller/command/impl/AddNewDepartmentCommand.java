@@ -29,7 +29,7 @@ public class AddNewDepartmentCommand implements CustomCommand {
         departmentData.put(DESCRIPTION, departmentDescription);
         try {
             if (departmentService.addNewDepartment(departmentData)){
-                router.setPage(ADMIN_PAGE);
+                router.setPage(SUCCESS_PAGE);
                 router.setRedirect();
             }    else {
                 for (Map.Entry<String, String> entry : departmentData.entrySet()) {

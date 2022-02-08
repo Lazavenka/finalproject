@@ -1,13 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
 </c:if>
 <fmt:setBundle basename="locale/language"/>
 
-<fmt:message var="sign_up" key="header.sign_up"/>
+<fmt:message var="add" key="buttons.add"/>
 <fmt:message var="add_admin_page" key="admin.add_admin_page"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
@@ -31,7 +32,7 @@
         <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
             <input type="hidden" name="command" value="add_admin_command">
             <%@include file="../common/fragment/register_form.jspf"%>
-            <button type="submit" class="btn btn-primary">${sign_up}</button>
+            <button type="submit" class="btn btn-primary">${add}</button>
         </form>
     </div>
 </div>
@@ -57,5 +58,6 @@
             })
     })()
 </script>
+<ctg:print-footer/>
 </body>
 </html>

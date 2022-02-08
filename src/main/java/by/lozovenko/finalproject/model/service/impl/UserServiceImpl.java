@@ -12,7 +12,9 @@ import by.lozovenko.finalproject.util.mail.Mail;
 import by.lozovenko.finalproject.util.mail.MailMessageBuilder;
 import by.lozovenko.finalproject.validator.CustomFieldValidator;
 import by.lozovenko.finalproject.validator.CustomMapDataValidator;
+import by.lozovenko.finalproject.validator.impl.AssistantMapDataValidator;
 import by.lozovenko.finalproject.validator.impl.CustomFieldValidatorImpl;
+import by.lozovenko.finalproject.validator.impl.ManagerMapDataValidator;
 import by.lozovenko.finalproject.validator.impl.UserMapDataValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -75,11 +77,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findUserById(long id) throws ServiceException {
+        Optional<User> optionalUser;
+        try {
+            optionalUser = userDao.findEntityById(id);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle findAllManagers method in UserService. ", e);
+        }
+        return optionalUser;
+    }
+
+    @Override
     public List<Manager> findAllManagers() throws ServiceException {
         try {
             return userDao.findAllManagers().stream().map(Manager.class::cast).toList();
         } catch (DaoException e) {
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle findAllManagers method in UserService. ", e);
         }
     }
 
@@ -126,7 +139,7 @@ public class UserServiceImpl implements UserService {
                 userData.put(EMAIL, NOT_UNIQUE_EMAIL);
                 return false;
             }
-            Client client = createClientFromUserData(userData);
+            Client client = createClientFromMapData(userData);
             String tokenValue = UserTokenGenerator.generateToken();
             LocalDateTime registerDateTime = LocalDateTime.now();
             Token token = new Token(tokenValue, registerDateTime);
@@ -241,8 +254,12 @@ public class UserServiceImpl implements UserService {
     public boolean updatePassword(String login, Map<String, String> passwordData) throws ServiceException {
         String oldPassword = passwordData.get(OLD_PASSWORD);
         try {
-            boolean checkResult = inputFieldValidator.isCorrectPassword(oldPassword) && userDao.isExistUser(login, PasswordEncryptor.encryptMd5Apache(oldPassword));
-            if (checkResult){
+            boolean checkResult = inputFieldValidator.isCorrectPassword(oldPassword);
+            LOGGER.log(Level.DEBUG, "checkResult oldPassword correct = {}", checkResult);
+            boolean existUser = userDao.isExistUser(login, PasswordEncryptor.encryptMd5Apache(oldPassword));
+            LOGGER.log(Level.DEBUG, "existUser login and password correct = {}", checkResult);
+
+            if (checkResult && existUser){
                 String newPassword = passwordData.get(NEW_PASSWORD);
                 if (!inputFieldValidator.isCorrectPassword(newPassword)){
                     passwordData.put(NEW_PASSWORD, INVALID_PASSWORD);
@@ -253,12 +270,13 @@ public class UserServiceImpl implements UserService {
                 if (!inputFieldValidator.isMatchesPasswords(newPassword, confirmedPassword)){
                     passwordData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
                     checkResult = false;
-                    LOGGER.log(Level.DEBUG, "Mismatching passwords was entered");
+                    LOGGER.log(Level.DEBUG, "Mismatching passwords were entered");
 
                 }
                 if (checkResult){
                     String newEncryptedPassword = PasswordEncryptor.encryptMd5Apache(newPassword);
                     checkResult = userDao.updatePasswordByLogin(newEncryptedPassword, login);
+                    LOGGER.log(Level.DEBUG, "Update user password result = {}", checkResult);
                 }
             }else {
                 passwordData.clear();
@@ -314,7 +332,104 @@ public class UserServiceImpl implements UserService {
         return checkResult;
     }
 
-    private User createUserFromData(Map<String, String> userData){
+    @Override
+    public boolean addAssistant(Map<String, String> assistantData) throws ServiceException {
+        try {
+            dataValidator = AssistantMapDataValidator.getInstance();
+            boolean isValidData = dataValidator.validateMapData(assistantData);
+            if (!isValidData) {
+                return false;
+            }
+            String login = assistantData.get(LOGIN);
+            Optional<User> existUserLogin = userDao.findUserByLogin(login);
+            if (existUserLogin.isPresent()) {
+                LOGGER.log(Level.INFO, "User with login {} found. User - {}", login, existUserLogin.get());
+                assistantData.put(LOGIN, LOGIN_EXISTS);
+                return false;
+            }
+            String email = assistantData.get(EMAIL);
+            if (userDao.isExistUserWithEmail(email)) {
+                LOGGER.log(Level.INFO, "Not unique email {}.", email);
+                assistantData.put(EMAIL, NOT_UNIQUE_EMAIL);
+                return false;
+            }
+            Assistant assistant = createAssistantFromMapData(assistantData);
+            return userDao.createAssistant(assistant) != 0;
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle addAssistant method in UserService. ", e);
+        }
+    }
+
+    @Override
+    public boolean addAdmin(Map<String, String> adminData) throws ServiceException {
+        try {
+            dataValidator = AssistantMapDataValidator.getInstance();
+            boolean isValidData = dataValidator.validateMapData(adminData);
+            if (!isValidData) {
+                return false;
+            }
+            String login = adminData.get(LOGIN);
+            Optional<User> existUserLogin = userDao.findUserByLogin(login);
+            if (existUserLogin.isPresent()) {
+                LOGGER.log(Level.INFO, "User with login {} found. User - {}", login, existUserLogin.get());
+                adminData.put(LOGIN, LOGIN_EXISTS);
+                return false;
+            }
+            String email = adminData.get(EMAIL);
+            if (userDao.isExistUserWithEmail(email)) {
+                LOGGER.log(Level.INFO, "Not unique email {}.", email);
+                adminData.put(EMAIL, NOT_UNIQUE_EMAIL);
+                return false;
+            }
+            User admin = createUserFromMapData(adminData);
+            admin.setRole(UserRole.ADMIN);
+            admin.setState(UserState.ACTIVE);
+            return userDao.create(admin) != 0;
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle addAdmin method in UserService. ", e);
+        }
+    }
+
+    @Override
+    public boolean addManager(Map<String, String> managerData) throws ServiceException {
+        try {
+            dataValidator = ManagerMapDataValidator.getInstance();
+            boolean isValidData = dataValidator.validateMapData(managerData);
+            if (!isValidData) {
+                return false;
+            }
+            String login = managerData.get(LOGIN);
+            Optional<User> existUserLogin = userDao.findUserByLogin(login);
+            if (existUserLogin.isPresent()) {
+                LOGGER.log(Level.INFO, "User with login {} found. User - {}", login, existUserLogin.get());
+                managerData.put(LOGIN, LOGIN_EXISTS);
+                return false;
+            }
+            String email = managerData.get(EMAIL);
+            if (userDao.isExistUserWithEmail(email)) {
+                LOGGER.log(Level.INFO, "Not unique email {}.", email);
+                managerData.put(EMAIL, NOT_UNIQUE_EMAIL);
+                return false;
+            }
+            Manager manager = createManagerFromMapData(managerData);
+            return userDao.createManager(manager) != 0;
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle addAssistant method in UserService. ", e);
+        }
+    }
+
+    @Override
+    public long countManagersByDegree(ManagerDegree degree) throws ServiceException {
+        long managersCount;
+        try {
+            managersCount = userDao.countManagersByDegree(degree);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countManagersByDegree request at UserService", e);
+        }
+        return managersCount;
+    }
+
+    private User createUserFromMapData(Map<String, String> userData){
         User user = new User();
         String hashedPassword = PasswordEncryptor.encryptMd5Apache(userData.get(PASSWORD));
         user.setLogin(userData.get(LOGIN));
@@ -327,15 +442,15 @@ public class UserServiceImpl implements UserService {
         user.setState(UserState.REGISTRATION);
         return user;
     }
-    private Client createClientFromUserData(Map<String, String> userData) {
-        User user = createUserFromData(userData);
+    private Client createClientFromMapData(Map<String, String> userData) {
+        User user = createUserFromMapData(userData);
         Client client = new Client(user);
         user.setRole(UserRole.CLIENT);
         user.setState(UserState.REGISTRATION);
         return client;
     }
     private Assistant createAssistantFromMapData(Map<String, String> userData){
-        User user = createUserFromData(userData);
+        User user = createUserFromMapData(userData);
         Assistant assistant = new Assistant(user);
         assistant.setState(UserState.ACTIVE);
         assistant.setRole(UserRole.ASSISTANT);
@@ -344,7 +459,7 @@ public class UserServiceImpl implements UserService {
         return assistant;
     }
     private Manager createManagerFromMapData(Map<String, String> userData){
-        User user = createUserFromData(userData);
+        User user = createUserFromMapData(userData);
         Manager manager = new Manager(user);
         manager.setState(UserState.ACTIVE);
         manager.setRole(UserRole.MANAGER);

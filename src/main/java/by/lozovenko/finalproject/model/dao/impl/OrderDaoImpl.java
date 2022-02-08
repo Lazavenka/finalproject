@@ -64,8 +64,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order update(Order order) throws DaoException {
-        return null;
+    public long update(Order order) throws DaoException {
+        throw new UnsupportedOperationException("update(Order order) method is not supported");
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.EDIT_PROFILE_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
@@ -36,6 +37,8 @@ public class UpdateUserProfileCommand implements CustomCommand {
             boolean result = userService.updateUserProfile(sessionUser.getId(), profileData);
             if (result){
                 request.setAttribute(SUCCESS_MESSAGE, true);
+                Optional<User> updatedUser = userService.findUserById(sessionUser.getId());
+                updatedUser.ifPresent(user -> session.setAttribute(USER, user));
             }else {
                 for (Map.Entry<String, String> entry : profileData.entrySet()) {
                     String value = entry.getValue();
@@ -55,6 +58,7 @@ public class UpdateUserProfileCommand implements CustomCommand {
                     }
                 }
                 request.setAttribute(PROFILE_DATA, profileData);
+                request.setAttribute(ERROR_MESSAGE, true);
             }
             if (sessionUser.getRole()== UserRole.MANAGER){
                 request.setAttribute(DESCRIPTION, ((Manager)sessionUser).getDescription());

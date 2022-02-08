@@ -31,6 +31,12 @@ public class RequestAttribute {
     public static final String LABORATORY_DATA = "laboratory_data";
     public static final String PASSWORD_DATA = "change_password_data";
     public static final String PROFILE_DATA = "profile_data";
+    public static final String DEPARTMENTS_COUNT = "departments_count";
+    public static final String LABORATORIES_COUNT = "laboratories_count";
+    public static final String EQUIPMENT_COUNT = "equipment_count";
+    public static final String DOCTORS_COUNT = "doctors_count";
+    public static final String MASTERS_COUNT = "masters_count";
+    public static final String BACHELOR_COUNT = "bachelor_count";
     public static final String EQUIPMENT_TYPE_LIST = "equipment_types";
     public static final String INCORRECT_OLD_PASSWORD = "incorrect_old_password";
     public static final String EQUIPMENT_LIST = "equipment_list";
@@ -66,12 +72,16 @@ public class RequestAttribute {
     public static final String INVALID_FILE_SIZE = "invalid_file_size";
     public static final String WRONG_FILE_EXTENSION = "wrong_file_extension";
     public static final String EMPTY = "";
+    public static final String EMPTY_IMAGE = "empty_image";
     public static final String INVALID_EMAIL = "invalid_email";
     public static final String PASSWORDS_MISMATCH = "passwords_mismatch";
     public static final String BLOCKED_USER = "blocked_user";
     public static final String UNCONFIRMED_USER = "unconfirmed_user";
     public static final String CONFIRM_FAILED = "confirm_failed";
     public static final String EXCEPTION = "exception";
+    public static final String ERROR_MESSAGE = "error_message";
+    public static final String ERROR_USER_MANAGEMENT = "error_user_management";
+    public static final String SUCCESS_USER_MANAGEMENT = "success_user_management";
     private RequestAttribute(){}
 
 }

@@ -16,4 +16,6 @@ public interface DepartmentService {
     Optional<Department> findDepartmentById(Long departmentId) throws ServiceException;
 
     boolean addNewDepartment(Map<String, String> departmentData) throws ServiceException;
+
+    long countDepartments() throws ServiceException;
 }

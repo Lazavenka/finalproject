@@ -129,4 +129,15 @@ public class LaboratoryServiceImpl implements LaboratoryService {
             throw new ServiceException("Can't handle findAll request at LaboratoryService", e);
         }
     }
+
+    @Override
+    public long countLaboratories() throws ServiceException {
+        long laboratoriesCount;
+        try {
+            laboratoriesCount = laboratoryDao.countLaboratories();
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countLaboratories request at LaboratoryService", e);
+        }
+        return laboratoriesCount;
+    }
 }

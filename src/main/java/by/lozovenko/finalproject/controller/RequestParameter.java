@@ -4,7 +4,7 @@ public class RequestParameter {
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
     public static final String OLD_PASSWORD = "old_password";
-    public static final String NEW_PASSWORD = "NEW_password";
+    public static final String NEW_PASSWORD = "new_password";
     public static final String CONFIRMED_PASSWORD = "confirmed_password";
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";

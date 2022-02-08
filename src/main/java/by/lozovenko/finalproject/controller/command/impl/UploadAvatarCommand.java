@@ -65,6 +65,11 @@ public class UploadAvatarCommand implements CustomCommand {
                 Part part = request.getPart(CONTENT);
                 inputStream = part.getInputStream();
                 String submittedFilename = part.getSubmittedFileName();
+                if (submittedFilename == null){
+                    request.setAttribute(EMPTY_IMAGE, true);
+                    request.setAttribute(ERROR_MESSAGE, true);
+                    return router;
+                }
                 String extension = submittedFilename.substring(submittedFilename.toLowerCase().lastIndexOf('.'));
                 long fileSize = part.getSize();
                 String contentType = part.getContentType();
@@ -74,6 +79,7 @@ public class UploadAvatarCommand implements CustomCommand {
                 if (!FileValidator.checkSize(fileSize)) {
                     logger.log(Level.INFO, "Invalid file size: size = {}", fileSize);
                     request.setAttribute(INVALID_FILE_SIZE, true);
+                    request.setAttribute(ERROR_MESSAGE, true);
                     return router;
                 }
                 if (FileValidator.checkContentType(contentType) && FileValidator.checkExtension(extension)) {
@@ -90,11 +96,15 @@ public class UploadAvatarCommand implements CustomCommand {
                 } else {
                     logger.log(Level.INFO, "Invalid file extension ({}) or content type ({})", extension, contentType);
                     request.setAttribute(WRONG_FILE_EXTENSION, true);
+                    request.setAttribute(ERROR_MESSAGE, true);
                     return router;
                 }
                 if (role == UserRole.MANAGER){
                     request.setAttribute(DESCRIPTION, ((Manager)user).getDescription());
                 }
+                Optional<User> updatedUser = userService.findUserById(user.getId());
+                updatedUser.ifPresent(newSessionUser -> session.setAttribute(USER, newSessionUser));
+                request.setAttribute(SUCCESS_MESSAGE, true);
             } catch (IOException | ServiceException | ServletException e) {
                 logger.log(Level.ERROR, "Error in UploadAvatarCommand", e);
                 request.setAttribute(EXCEPTION, e);
@@ -105,7 +115,7 @@ public class UploadAvatarCommand implements CustomCommand {
                     try {
                         inputStream.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.log(Level.ERROR, "IO exception during upload avatar command");
                     }
                 }
             }

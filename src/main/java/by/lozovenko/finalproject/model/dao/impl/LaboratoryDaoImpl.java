@@ -40,6 +40,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             SELECT laboratory_id, laboratory_name, department_id, laboratory_location,
             laboratory_photo_link, laboratory_description FROM laboratories
             WHERE NOT EXISTS(SELECT manager_id FROM managers WHERE managers.laboratory_id = laboratories.laboratory_id)""";
+    private static final String COUNT_LABORATORIES= "SELECT count(laboratory_id) from laboratories";
 
     private LaboratoryDaoImpl(){
     }
@@ -117,8 +118,8 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
     }
 
     @Override
-    public Laboratory update(Laboratory laboratory) throws DaoException {
-        return null;
+    public long update(Laboratory laboratory) throws DaoException {
+        throw new UnsupportedOperationException("update(Laboratory laboratory) method is not supported");
     }
 
     @Override
@@ -190,5 +191,20 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             throw new DaoException("Error in findLaboratoriesWithoutManager method LaboratoryDao class. Unable to get access to database.", e);
         }
     return laboratoryList;
+    }
+
+    @Override
+    public long countLaboratories() throws DaoException {
+        long count = 0;
+        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_LABORATORIES)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                count = resultSet.getInt(1);
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in countLaboratories method LaboratoryDao class. Unable to get access to database.", e);
+        }
+        return count;
     }
 }

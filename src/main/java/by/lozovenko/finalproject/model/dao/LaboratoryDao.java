@@ -16,4 +16,6 @@ public interface LaboratoryDao extends BaseDao<Long, Laboratory> {
     Optional<String> findLaboratoryNameById(Long id) throws DaoException;
 
     List<Laboratory> findLaboratoriesWithoutManager() throws DaoException;
+
+    long countLaboratories() throws DaoException;
 }

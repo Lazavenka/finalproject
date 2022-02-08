@@ -10,8 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
 
-import static by.lozovenko.finalproject.controller.PagePath.CLIENT_BALANCE_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.CLIENT_PAGE;
+import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.BALANCE;
 
@@ -32,7 +31,7 @@ public class AddBalanceCommand implements CustomCommand {
                 boolean success = userService.addBalance(userId, balanceString);
                 logger.log(Level.DEBUG, "AddBalanceCommand Success = {}", success);
                 if (success){
-                    router.setPage(CLIENT_PAGE);
+                    router.setPage(SUCCESS_PAGE);
                     router.setRedirect();
                 }else{
                     request.setAttribute(INVALID_BALANCE, true);

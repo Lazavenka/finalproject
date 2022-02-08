@@ -98,27 +98,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             if (!isValidData){
                 return false;
             }
-            long laboratoryId = Long.parseLong(equipmentData.get(LABORATORY_ID));
-            long equipmentTypeId = Long.parseLong(equipmentData.get(EQUIPMENT_TYPE_ID));
-            boolean needAssistant = Boolean.parseBoolean(equipmentData.get(IS_NEED_ASSISTANT));
-            String equipmentName = equipmentData.get(EQUIPMENT_NAME);
-            BigDecimal pricePerHour = new BigDecimal(equipmentData.get(PRICE_PER_HOUR));
-            String description = equipmentData.get(DESCRIPTION);
-            EquipmentState equipmentState = EquipmentState.valueOf(equipmentData.get(EQUIPMENT_STATE));
-
-            int researchTimeHours = Integer.parseInt(equipmentData.get(RESEARCH_TIME_HOUR));
-            int researchTimeMinutes = Integer.parseInt(equipmentData.get(RESEARCH_TIME_MINUTE));
-            LocalTime averageResearchTime = LocalTime.of(researchTimeHours,researchTimeMinutes);
-
-            Equipment equipment = new Equipment();
-            equipment.setLaboratoryId(laboratoryId);
-            equipment.setEquipmentTypeId(equipmentTypeId);
-            equipment.setName(equipmentName);
-            equipment.setDescription(description);
-            equipment.setState(equipmentState);
-            equipment.setPricePerHour(pricePerHour);
-            equipment.setAverageResearchTime(averageResearchTime);
-            equipment.setNeedAssistant(needAssistant);
+            Equipment equipment = createEquipmentFromMapData(equipmentData);
             return equipmentDao.create(equipment) != 0;
         }catch (DaoException e){
             throw new ServiceException("Can't handle addNewEquipment request at EquipmentService", e);
@@ -136,5 +116,59 @@ public class EquipmentServiceImpl implements EquipmentService {
         return result;
     }
 
+    @Override
+    public boolean updateEquipmentById(String equipmentToEditId, Map<String, String> equipmentData) throws ServiceException {
+        try{
+            boolean isValidData = dataValidator.validateMapData(equipmentData);
+            if (!isValidData){
+                return false;
+            }
+            if (!inputFieldValidator.isCorrectId(equipmentToEditId)){
+                return false;
+            }
+            Equipment equipment = createEquipmentFromMapData(equipmentData);
+            long equipmentId = Long.parseLong(equipmentToEditId);
+            equipment.setId(equipmentId);
+            return equipmentDao.update(equipment) != 0;
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle addNewEquipment request at EquipmentService", e);
+        }
+    }
+
+    @Override
+    public long countEquipment() throws ServiceException {
+        long equipmentCount;
+        try {
+            equipmentCount = equipmentDao.countEquipment();
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countEquipment request at EquipmentService", e);
+        }
+        return equipmentCount;
+    }
+
+    private Equipment createEquipmentFromMapData(Map<String, String> equipmentData){
+        long laboratoryId = Long.parseLong(equipmentData.get(LABORATORY_ID));
+        long equipmentTypeId = Long.parseLong(equipmentData.get(EQUIPMENT_TYPE_ID));
+        boolean needAssistant = Boolean.parseBoolean(equipmentData.get(IS_NEED_ASSISTANT));
+        String equipmentName = equipmentData.get(EQUIPMENT_NAME);
+        BigDecimal pricePerHour = new BigDecimal(equipmentData.get(PRICE_PER_HOUR));
+        String description = equipmentData.get(DESCRIPTION);
+        EquipmentState equipmentState = EquipmentState.valueOf(equipmentData.get(EQUIPMENT_STATE));
+
+        int researchTimeHours = Integer.parseInt(equipmentData.get(RESEARCH_TIME_HOUR));
+        int researchTimeMinutes = Integer.parseInt(equipmentData.get(RESEARCH_TIME_MINUTE));
+        LocalTime averageResearchTime = LocalTime.of(researchTimeHours,researchTimeMinutes);
+
+        Equipment equipment = new Equipment();
+        equipment.setLaboratoryId(laboratoryId);
+        equipment.setEquipmentTypeId(equipmentTypeId);
+        equipment.setName(equipmentName);
+        equipment.setDescription(description);
+        equipment.setState(equipmentState);
+        equipment.setPricePerHour(pricePerHour);
+        equipment.setAverageResearchTime(averageResearchTime);
+        equipment.setNeedAssistant(needAssistant);
+        return equipment;
+    }
 
 }

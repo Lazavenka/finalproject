@@ -17,12 +17,7 @@
 <fmt:message var="equipment_state" key="equipment.state"/>
 <fmt:message var="add_equipment" key="admin.add_equipment"/>
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
-<c:if test="${sessionScope.user.role.name() eq 'ADMIN' or sessionScope.user.role.name() eq 'MANAGER' }">
-    <div class="col-xs-2">
-        <a class="btn btn-primary"
-           href="${abs}/controller?command=go_add_new_equipment_page_command">${add_equipment}</a>
-    </div>
-</c:if>
+
 <div class="col-xs-10">
     <c:if test="${requestScope.empty_list}">
         <div class="justify-content-center">${not_found}</div>

@@ -38,9 +38,9 @@ public class AddNewLaboratoryCommand implements CustomCommand {
 
         try {
             if (laboratoryService.addNewLaboratory(laboratoryData)){
-                router.setPage(ADMIN_PAGE);
-                logger.log(Level.INFO, "Laboratory successfully add to database. LabName = {}", laboratoryName);
+                router.setPage(SUCCESS_PAGE);
                 router.setRedirect();
+                logger.log(Level.INFO, "Laboratory successfully add to database. LabName = {}", laboratoryName);
             }else {
                 for (Map.Entry<String, String> entry : laboratoryData.entrySet()) {
                     String value = entry.getValue();

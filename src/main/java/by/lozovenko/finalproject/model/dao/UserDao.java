@@ -56,4 +56,8 @@ public interface UserDao extends BaseDao<Long, User> {
     int updateManagerDescriptionByUserId(long id, String description) throws DaoException;
 
     int updateUserDataById(long id, String lastName, String firstName, String phone) throws DaoException;
+
+    long createAssistant(Assistant assistant) throws DaoException;
+
+    long countManagersByDegree(ManagerDegree degree) throws DaoException;
 }

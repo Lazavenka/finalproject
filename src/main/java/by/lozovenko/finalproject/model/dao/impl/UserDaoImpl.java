@@ -86,6 +86,10 @@ public class UserDaoImpl implements UserDao {
             INSERT INTO managers (user_id, department_id, laboratory_id, avatar_link, description, degree)
             VALUES (?, ?, ?, ?, ?, ?)""";
 
+    private static final String CREATE_ASSISTANT = """
+            INSERT INTO managers (user_id, department_id, laboratory_id, avatar_link, description, degree)
+            VALUES (?, ?, ?, ?, ?, ?)""";
+
     private static final String CREATE_CLIENT = "INSERT INTO clients (user_id) VALUES (?)";
     private static final String CREATE_TOKEN = "INSERT INTO user_tokens (user_id, user_token, register_timestamp) values (?, ?, ?)";
     private static final String FIND_TOKEN_BY_VALUE = "SELECT user_id, user_token, register_timestamp FROM user_tokens WHERE user_token = ?";
@@ -98,6 +102,8 @@ public class UserDaoImpl implements UserDao {
     private static final String UPDATE_MANAGER_AVATAR_BY_USER_ID = "UPDATE managers SET avatar_link = ? WHERE user_id = ?";
     private static final String UPDATE_MANAGER_DESCRIPTION_BY_USER_ID = "UPDATE managers SET description = ? WHERE user_id = ?";
     private static final String UPDATE_ASSISTANT_AVATAR_BY_USER_ID = "UPDATE assistants SET avatar_link = ? WHERE user_id = ?";
+
+    private static final String COUNT_MANAGERS_BY_DEGREE = "SELECT count(manager_id) from managers WHERE degree = ?";
 
     public static UserDao getInstance() {
         if (instance == null) {
@@ -186,8 +192,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User update(User user) throws DaoException {
-        return null;
+    public long update(User user) throws DaoException {
+        throw new UnsupportedOperationException("update(User user) method is not supported");
     }
 
     @Override
@@ -598,6 +604,69 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("Error in updateManagerDescriptionByUserId method. Database access error.", e);
         }
         return result;
+    }
+
+    @Override
+    public long createAssistant(Assistant assistant) throws DaoException {
+        long generatedAssistantId = 0;
+        Connection connection = null;
+        try {
+            connection = CustomConnectionPool.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement createUserStatement = connection.prepareStatement(CREATE_USER, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement createAssistantStatement = connection.prepareStatement(CREATE_ASSISTANT, Statement.RETURN_GENERATED_KEYS)) {
+                setUserColumnsInStatement(assistant, createUserStatement);
+                createUserStatement.executeUpdate();
+                ResultSet userResultSet = createUserStatement.getGeneratedKeys();
+                long userId = 0;
+                if (userResultSet.next()) {
+                    userId = userResultSet.getLong(1);
+                    createAssistantStatement.setLong(1, userId);
+                    createAssistantStatement.setLong(2, assistant.getLaboratoryId());
+                    createAssistantStatement.setString(3, assistant.getImageFilePath());
+                    createAssistantStatement.executeUpdate();
+                    ResultSet managerResultSet = createAssistantStatement.getResultSet();
+                    if (managerResultSet.next()) {
+                        generatedAssistantId = managerResultSet.getLong(1);
+                    }
+                }
+                connection.commit();
+                LOGGER.log(Level.INFO, "createAssistant method complete successfully. Generated userId = {}, managerId = {}. Returned managerId", userId, generatedAssistantId);
+            }
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Change cancellation error in createAssistant transaction:", throwables);
+            }
+            throw new DaoException(e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException throwables) {
+                LOGGER.log(Level.ERROR, "Database access error occurs:", throwables);
+            }
+        }
+        return generatedAssistantId;
+    }
+
+    @Override
+    public long countManagersByDegree(ManagerDegree degree) throws DaoException {
+        long count = 0;
+        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(COUNT_MANAGERS_BY_DEGREE)) {
+            preparedStatement.setString(1, degree.getValue());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                count = resultSet.getInt(1);
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in countDepartments method DepartmentDao class. Unable to get access to database.", e);
+        }
+        return count;
     }
 
 

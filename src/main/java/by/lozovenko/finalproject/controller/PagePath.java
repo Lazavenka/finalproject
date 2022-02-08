@@ -16,6 +16,7 @@ public class PagePath {
     public static final String REGISTRATION_PAGE = "jsp/common/register.jsp";
     public static final String CHECK_MAIL_PAGE = "jsp/common/check_mail.jsp";
     public static final String CONFIRM_REGISTRATION_PAGE = "jsp/common/confirm_page.jsp";
+    public static final String SUCCESS_PAGE = "jsp/common/success_page.jsp";
     public static final String GUEST_PAGE = "jsp/guest.jsp";
     public static final String ALL_MANAGERS_PAGE = "jsp/common/see_managers.jsp";
     public static final String ALL_DEPARTMENTS_PAGE = "jsp/common/see_departments.jsp";
@@ -31,6 +32,8 @@ public class PagePath {
     public static final String ADD_DEPARTMENT_PAGE = "jsp/admin/add_department_page.jsp";
     public static final String ADD_LABORATORY_PAGE = "jsp/admin/add_laboratory_page.jsp";
     public static final String ADD_MANAGER_PAGE = "jsp/admin/add_manager_page.jsp";
+    public static final String ADD_ADMIN_PAGE = "jsp/admin/add_admin_page.jsp";
+    public static final String ADD_ASSISTANT_PAGE = "jsp/manager/add_assistant_page.jsp";
     public static final String USER_MANAGEMENT_PAGE = "jsp/admin/manage_users.jsp";
     private PagePath() {
     }

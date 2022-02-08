@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
@@ -23,10 +24,15 @@
 <body>
 
 <jsp:include page="../header/header.jsp"/>
-
-<figure class="text-center">
-    <blockquote class="blockquote">
-        <p>${add_balance_message}</p>
+<div class="container">
+    <br>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+            <p>${add_balance_message}</p>
+        </blockquote>
+    </figure>
+    <br>
+    <div class="w-75 mx-auto">
         <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
             <input type="hidden" name="command" value="add_balance_command">
             <input type="text" name="balance" class="form-control" id="validationBalance"
@@ -43,32 +49,31 @@
             </div>
             <button type="submit" class="btn btn-primary" id="button-addon2">${fill_balance}</button>
         </form>
-    </blockquote>
-</figure>
+    </div>
+</div>
 <script>
 
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-            'use strict'
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            let forms = document.querySelectorAll('.needs-validation')
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        let forms = document.querySelectorAll('.needs-validation')
 
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })();
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js" integrity="sha512-jTgBq4+dMYh73dquskmUFEgMY5mptcbqSw2rmhOZZSJjZbD2wMt0H5nhqWtleVkyBEjmzid5nyERPSNBafG4GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<ctg:print-footer/>
 </body>
 </html>

@@ -3,76 +3,46 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.entity.*;
-import by.lozovenko.finalproject.model.service.DepartmentService;
+import by.lozovenko.finalproject.model.entity.Equipment;
+import by.lozovenko.finalproject.model.entity.EquipmentType;
 import by.lozovenko.finalproject.model.service.EquipmentService;
-import by.lozovenko.finalproject.model.service.EquipmentTypeService;
-import by.lozovenko.finalproject.model.service.LaboratoryService;
-import by.lozovenko.finalproject.model.service.impl.DepartmentServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
-import by.lozovenko.finalproject.model.service.impl.EquipmentTypeServiceImpl;
-import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
+import static by.lozovenko.finalproject.controller.RequestParameter.IS_NEED_ASSISTANT;
 
-public class AddNewEquipmentCommand implements CustomCommand {
+public class UpdateEquipmentCommand implements CustomCommand {
     @Override
     public Router execute(HttpServletRequest request) {
         Router router = new Router();
-        HttpSession session = request.getSession();
-
-        EquipmentTypeService equipmentTypeService = EquipmentTypeServiceImpl.getInstance();
         EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
-        LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
-
         Map<String, String> equipmentData = new HashMap<>();
-        String laboratoryIdString = request.getParameter(LABORATORY_ID);
-
         fillMapData(request, equipmentData);
-        Optional<Object> optionalCurrentUser = Optional.ofNullable(session.getAttribute(USER));
-        if (optionalCurrentUser.isPresent()){
-            User currentUser = (User) optionalCurrentUser.get();
-            if (currentUser.getRole() == UserRole.MANAGER){
-                laboratoryIdString = String.valueOf(((Manager)currentUser).getLaboratoryId());
-                equipmentData.put(LABORATORY_ID, laboratoryIdString);
-            }
-            logger.log(Level.DEBUG, equipmentData);
-            try {
-                if (equipmentService.addNewEquipment(equipmentData)){
-                    router.setPage(SUCCESS_PAGE);
-                    router.setRedirect();
-                }else {
-                    clearInvalidDataAndSetRequestAttributes(request, equipmentData);
-                    List<Laboratory> laboratories = laboratoryService.findAll();
-                    request.setAttribute(LABORATORIES, laboratories);
-
-                    Optional<Laboratory> optionalLaboratory = laboratoryService.findLaboratoryById(laboratoryIdString);
-                    optionalLaboratory.ifPresent(laboratory -> request.setAttribute(SELECTED_LABORATORY, laboratory));
-
-                    List<EquipmentType> equipmentTypes = equipmentTypeService.findAll();
-                    request.setAttribute(EQUIPMENT_TYPE_LIST, equipmentTypes);
-
-                    request.setAttribute(EQUIPMENT_DATA, equipmentData);
-                    router.setPage(ADD_EQUIPMENT_PAGE);
-                }
-            }catch (ServiceException e){
-                logger.log(Level.ERROR, "Error in AddNewEquipmentCommand", e);
-                request.setAttribute(EXCEPTION, e);
-                router.setPage(ERROR_404_PAGE);
+        String equipmentToEditId = request.getParameter(EQUIPMENT_ID);
+        try {
+            if (equipmentService.updateEquipmentById(equipmentToEditId, equipmentData)){
+                router.setPage(SUCCESS_PAGE);
                 router.setRedirect();
+            }else {
+                clearInvalidDataAndSetRequestAttributes(request, equipmentData);
+                Optional<Equipment> optionalEquipment = equipmentService.findById(equipmentToEditId);
+                optionalEquipment.ifPresent(equipment -> request.setAttribute(SELECTED_EQUIPMENT, equipment));
+                request.setAttribute(EQUIPMENT_DATA, equipmentData);
+                router.setPage(EDIT_EQUIPMENT_PAGE);
             }
-        }else {
-            router.setPage(LOGIN_PAGE);
+        }catch (ServiceException e){
+            logger.log(Level.ERROR, "Error in UpdateEquipmentCommand", e);
+            request.setAttribute(EXCEPTION, e);
+            router.setPage(ERROR_404_PAGE);
+            router.setRedirect();
         }
         return router;
     }
@@ -100,7 +70,7 @@ public class AddNewEquipmentCommand implements CustomCommand {
         mapData.put(IS_NEED_ASSISTANT, isNeedAssistant);
     }
 
-    private void clearInvalidDataAndSetRequestAttributes(HttpServletRequest request, Map<String, String> mapData){
+    private void clearInvalidDataAndSetRequestAttributes(HttpServletRequest request, Map<String, String> mapData) {
         for (Map.Entry<String, String> entry : mapData.entrySet()) {
             String value = entry.getValue();
             switch (value) {

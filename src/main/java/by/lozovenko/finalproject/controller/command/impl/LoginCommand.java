@@ -35,7 +35,8 @@ public class LoginCommand implements CustomCommand {
                     case ACTIVE -> {
                         UserRole role = user.getRole();
                         session.setAttribute(USER, user);
-                        router.setPage(ABOUT);
+                        router.setPage(INDEX);
+
                         if (role == UserRole.CLIENT){
                                 BigDecimal balance = ((Client) user).getBalance();
                                 session.setAttribute(USER_BALANCE, balance);

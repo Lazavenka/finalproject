@@ -49,6 +49,11 @@ public class UploadEquipmentPhotoCommand implements CustomCommand {
                 Part part = request.getPart(CONTENT);
                 inputStream = part.getInputStream();
                 String submittedFilename = part.getSubmittedFileName();
+                if (submittedFilename == null){
+                    request.setAttribute(EMPTY_IMAGE, true);
+                    request.setAttribute(ERROR_MESSAGE, true);
+                    return router;
+                }
                 String extension = submittedFilename.substring(submittedFilename.toLowerCase().lastIndexOf('.'));
                 long fileSize = part.getSize();
                 String contentType = part.getContentType();
@@ -92,7 +97,7 @@ public class UploadEquipmentPhotoCommand implements CustomCommand {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.ERROR, "IO exception during upload imgage command");
                 }
             }
         }

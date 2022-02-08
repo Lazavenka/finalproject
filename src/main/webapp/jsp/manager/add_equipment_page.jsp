@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
@@ -32,6 +33,8 @@
 <fmt:message var="home" key="header.home"/>
 <fmt:message var="hour" key="equipment.hours"/>
 <fmt:message var="minute" key="equipment.minute"/>
+<fmt:message var="greetings" key="message.greetings"/>
+<fmt:message var="add_equipment_page" key="message.add_equipment_page"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 <c:set var="equipment_data" value="${requestScope.equipment_data}"/>
@@ -48,145 +51,157 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container-fluid">
-    <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
-        <input type="hidden" name="command" value="add_new_equipment_command"/>
-        <div class="row mb-3">
-            <div class="col-xs-2">
-                <div class="select-form">
-                    <span>${laboratory}</span>
-                    <select id="laboratory_id" name="laboratory_id" class="form-control">
-                        <c:if test="${requestScope.selected_laboratory != null}">
-                            <option selected disabled>${requestScope.selected_laboratory.name}</option>
+<div class="container">
+    <br>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+            <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
+            <p>${add_equipment_page}</p>
+        </blockquote>
+    </figure>
+    <div class="w-75 mx-auto">
+        <div class="container-fluid">
+            <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
+                <input type="hidden" name="command" value="add_new_equipment_command"/>
+                <div class="row mb-3">
+                    <div class="col-xs-2">
+                        <div class="select-form">
+                            <span>${laboratory}</span>
+                            <select id="laboratory_id" name="laboratory_id" class="form-control">
+                                <c:if test="${requestScope.selected_laboratory != null}">
+                                    <option selected disabled>${requestScope.selected_laboratory.name}</option>
+                                </c:if>
+                                <c:if test="${requestScope.selected_laboratory == null}">
+                                    <option selected disabled>${choose_laboratory}</option>
+                                </c:if>
+                                <c:if test="${sessionScope.user.role.name() eq 'ADMIN'}">
+                                    <c:forEach var="laboratory" items="${requestScope.laboratories}">
+                                        <option value="${laboratory.id}">${laboratory.name}</option>
+                                    </c:forEach>
+                                </c:if>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="select-form">
+                            <span>${equipment_type}</span>
+                            <select id="equipment_type_id" name="equipment_type_id" class="form-control">
+                                <c:if test="${requestScope.selected_equipment_type != null}">
+                                    <option selected disabled>${requestScope.selected_equipment_type.name}</option>
+                                </c:if>
+                                <c:if test="${requestScope.selected_equipment_type == null}">
+                                    <option selected disabled>${choose_equipment_type}</option>
+                                </c:if>
+                                <c:forEach var="equipmentType" items="${requestScope.equipment_types}">
+                                    <option value="${equipmentType.id}">${equipmentType.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="validationEquipmentName" class="col-sm-2 col-form-label">${equipment_name}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="equipment_name" class="form-control"
+                               value="<c:if test="${!empty equipment_data and equipment_data.get(name_param) != 'invalid_equipment_name' }">${equipment_data.get(name_param)}</c:if>"
+                               id="validationEquipmentName" required pattern="[A-Za-zА-Яа-я0-9]{2,255}">
+                        <c:if test="${requestScope.invalid_equipment_name}">
+                            <div style="color: red">${invalid_equipment_name}</div>
                         </c:if>
-                        <c:if test="${requestScope.selected_laboratory == null}">
-                            <option selected disabled>${choose_laboratory}</option>
+                        <div class="valid-feedback">
+                            ${correct}
+                        </div>
+                        <div class="invalid-feedback">
+                            ${invalid_equipment_name}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="validationDescription" class="col-sm-2 col-form-label">${description}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="description" class="form-control" height="100"
+                               value="<c:if test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(description_param)}</c:if>"
+                               id="validationDescription" required>
+                        <c:if test="${requestScope.invalid_description}">
+                            <div style="color: red">${invalid_description}</div>
                         </c:if>
-                        <c:if test="${sessionScope.user.role.name() eq 'ADMIN'}">
-                            <c:forEach var="laboratory" items="${requestScope.laboratories}">
-                                <option value="${laboratory.id}">${laboratory.name}</option>
-                            </c:forEach>
+                        <div class="valid-feedback">
+                            ${correct}
+                        </div>
+                        <div class="invalid-feedback">
+                            ${invalid_description}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="validationPrice" class="col-sm-2 col-form-label">${price_per_hour}</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="price_per_hour" class="form-control"
+                               value="<c:if test="${!empty equipment_data and equipment_data.get(price_param) != 'invalid_price'}">${equipment_data.get(price_param)}</c:if>"
+                               id="validationPrice" placeholder="1.00" required pattern="^\d{1,4}(\.\d{0,2})?$">
+                        <c:if test="${requestScope.invalid_price}">
+                            <div style="color: red">${invalid_price}</div>
                         </c:if>
-                    </select>
+                        <div class="valid-feedback">
+                            ${correct}
+                        </div>
+                        <div class="invalid-feedback">
+                            ${invalid_price}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-2">
-                <div class="select-form">
-                    <span>${equipment_type}</span>
-                    <select id="equipment_type_id" name="equipment_type_id" class="form-control">
-                        <c:if test="${requestScope.selected_equipment_type != null}">
-                            <option selected disabled>${requestScope.selected_equipment_type.name}</option>
-                        </c:if>
-                        <c:if test="${requestScope.selected_equipment_type == null}">
-                            <option selected disabled>${choose_equipment_type}</option>
-                        </c:if>
-                        <c:forEach var="equipmentType" items="${requestScope.equipment_types}">
-                            <option value="${equipmentType.id}">${equipmentType.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label for="validationEquipmentName" class="col-sm-2 col-form-label">${equipment_name}</label>
-            <div class="col-sm-10">
-                <input type="text" name="equipment_name" class="form-control"
-                       value="<c:if test="${!empty equipment_data and equipment_data.get(name_param) != 'invalid_equipment_name' }">${equipment_data.get(name_param)}</c:if>"
-                       id="validationEquipmentName" required pattern="[A-Za-zА-Яа-я0-9]{2,255}">
-                <c:if test="${requestScope.invalid_equipment_name}">
-                    <div style="color: red">${invalid_equipment_name}</div>
-                </c:if>
-                <div class="valid-feedback">
-                    ${correct}
-                </div>
-                <div class="invalid-feedback">
-                    ${invalid_equipment_name}
-                </div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label for="validationDescription" class="col-sm-2 col-form-label">${description}</label>
-            <div class="col-sm-10">
-                <input type="text" name="description" class="form-control" height="100"
-                       value="<c:if test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(description_param)}</c:if>"
-                       id="validationDescription" required>
-                <c:if test="${requestScope.invalid_description}">
-                    <div style="color: red">${invalid_description}</div>
-                </c:if>
-                <div class="valid-feedback">
-                    ${correct}
-                </div>
-                <div class="invalid-feedback">
-                    ${invalid_description}
-                </div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label for="validationPrice" class="col-sm-2 col-form-label">${price_per_hour}</label>
-            <div class="col-sm-10">
-                <input type="text" name="price_per_hour" class="form-control"
-                       value="<c:if test="${!empty equipment_data and equipment_data.get(price_param) != 'invalid_price'}">${equipment_data.get(price_param)}</c:if>"
-                       id="validationPrice" placeholder="1.00" required pattern="^\d{1,4}(\.\d{0,2})?$">
-                <c:if test="${requestScope.invalid_price}">
-                    <div style="color: red">${invalid_price}</div>
-                </c:if>
-                <div class="valid-feedback">
-                    ${correct}
-                </div>
-                <div class="invalid-feedback">
-                    ${invalid_price}
-                </div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label for="fallbackTimePicker" class="col-sm-2 col-form-label">${average_research_time}</label>
-            <div class="col-sm-10">
-                <div class="hstack gap-1" id="fallbackTimePicker">
-                    <div>
+                <div class="row mb-3">
+                    <label for="fallbackTimePicker" class="col-sm-2 col-form-label">${average_research_time}</label>
+                    <div class="col-sm-10">
+                        <div class="hstack gap-1" id="fallbackTimePicker">
+                            <div>
                             <span>
                                 <label for="hour">${hour}</label>
                                 <select id="hour" name="research_time_h">
                                 </select>
                             </span>
-                    </div>
-                    <div>
+                            </div>
+                            <div>
                             <span>
                                 <label for="minute">${minute}</label>
                                 <select id="minute" name="research_time_m">
                                 </select>
                             </span>
+                            </div>
+                        </div>
+                        <c:if test="${requestScope.invalid_research_time}">
+                            <div style="color: red">${invalid_research_time}</div>
+                        </c:if>
                     </div>
                 </div>
-                <c:if test="${requestScope.invalid_research_time}">
-                    <div style="color: red">${invalid_research_time}</div>
-                </c:if>
-            </div>
+                <div class="row mb-3">
+                    <div class="select-form">
+                        <label for="equipment_state">${equipment_state}</label>
+                        <select id="equipment_state" name="equipment_state" class="form-control">
+                            <option value="ACTIVE">${state_active}</option>
+                            <option value="INACTIVE">${state_inactive}</option>
+                        </select>
+                        <c:if test="${requestScope.invalid_enum}">
+                            <div class="alert alert-danger">${invalid_enum_message}</div>
+                        </c:if>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-check-label" for="needAssistant">
+                        ${necessary_assistant}
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="needAssistant" name="is_need_assistant"
+                           value="true">
+                </div>
+                <div class="col-sm-5">
+                    <input type="submit" value="${add}"/>
+                </div>
+            </form>
         </div>
-        <div class="row mb-3">
-            <div class="select-form">
-                <label for="equipment_state">${equipment_state}</label>
-                <select id="equipment_state" name="equipment_state" class="form-control">
-                    <option value="ACTIVE">${state_active}</option>
-                    <option value="INACTIVE">${state_inactive}</option>
-                </select>
-                <c:if test="${requestScope.invalid_enum}">
-                    <div class="alert alert-danger">${invalid_enum_message}</div>
-                </c:if>
-            </div>
+        <div>
+            <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
         </div>
-        <div class="col-sm-5">
-            <label class="form-check-label" for="needAssistant">
-                ${necessary_assistant}
-            </label>
-            <input class="form-check-input" type="checkbox" id="needAssistant" name="is_need_assistant" value="true">
-        </div>
-        <div class="col-sm-5">
-            <input type="submit" value="${add}"/>
-        </div>
-    </form>
-</div>
-<div>
-    <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
+    </div>
 </div>
 <script type="text/javascript">
     // define variables
@@ -223,6 +238,6 @@
     minuteSelect.onchange = setMinutesToZero;
 
 </script>
-
+<ctg:print-footer/>
 </body>
 </html>

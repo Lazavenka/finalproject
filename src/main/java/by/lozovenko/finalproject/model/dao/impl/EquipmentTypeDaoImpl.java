@@ -98,7 +98,7 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
     }
 
     @Override
-    public EquipmentType update(EquipmentType equipmentType) throws DaoException {
-        return null;
+    public long update(EquipmentType equipmentType) throws DaoException {
+        throw new UnsupportedOperationException("update(EquipmentType equipmentType) method is not supported");
     }
 }

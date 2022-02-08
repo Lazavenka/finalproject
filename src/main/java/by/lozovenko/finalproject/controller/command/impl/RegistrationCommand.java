@@ -34,7 +34,6 @@ public class RegistrationCommand implements CustomCommand {
             if (userService.registerUser(userData)) {
                 router.setPage(CHECK_MAIL_PAGE);
                 router.setRedirect();
-
             } else {
                 for (Map.Entry<String, String> entry : userData.entrySet()) {
                     String value = entry.getValue();

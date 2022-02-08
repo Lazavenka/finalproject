@@ -3,12 +3,16 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
+import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.EquipmentTypeService;
+import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.EquipmentTypeServiceImpl;
+import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
@@ -27,7 +31,7 @@ public class AddEquipmentTypeCommand implements CustomCommand {
         equipmentTypeData.put(EQUIPMENT_TYPE_DESCRIPTION, equipmentTypeDescription);
         try {
             if (equipmentTypeService.addNewEquipmentType(equipmentTypeData)){
-                router.setPage(ADMIN_PAGE);
+                router.setPage(SUCCESS_PAGE);
                 router.setRedirect();
             }    else {
                 for (Map.Entry<String, String> entry : equipmentTypeData.entrySet()) {

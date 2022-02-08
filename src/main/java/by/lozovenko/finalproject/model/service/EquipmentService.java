@@ -10,8 +10,11 @@ import java.util.Optional;
 
 public interface EquipmentService {
     List<Equipment> findAll() throws ServiceException;
+
     List<Equipment> findAllByType(EquipmentType equipmentType) throws ServiceException;
+
     Optional<Equipment> findById(long equipmentId) throws ServiceException;
+
     Optional<Equipment> findById(String equipmentIdString) throws ServiceException;
 
     List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws ServiceException;
@@ -19,4 +22,8 @@ public interface EquipmentService {
     boolean addNewEquipment(Map<String, String> equipmentData) throws ServiceException;
 
     boolean updateImageByEquipmentId(long id, String databasePath) throws ServiceException;
+
+    boolean updateEquipmentById(String equipmentToEditId, Map<String, String> equipmentData) throws ServiceException;
+
+    long countEquipment() throws ServiceException;
 }

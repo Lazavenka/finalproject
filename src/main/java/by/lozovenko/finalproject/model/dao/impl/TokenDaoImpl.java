@@ -2,13 +2,11 @@ package by.lozovenko.finalproject.model.dao.impl;
 
 import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.dao.TokenDao;
-import by.lozovenko.finalproject.model.entity.CustomEntity;
 import by.lozovenko.finalproject.model.entity.Token;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
 import org.apache.logging.log4j.Level;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,7 +74,7 @@ public class TokenDaoImpl implements TokenDao {
     }
 
     @Override
-    public Token update(Token token) throws DaoException {
+    public long update(Token token) throws DaoException {
         throw new UnsupportedOperationException("update(Token token) method is not supported");
     }
 

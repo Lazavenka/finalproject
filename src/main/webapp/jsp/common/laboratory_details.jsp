@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
 
 <c:if test="${not empty sessionScope.locale}">
     <fmt:setLocale value="${sessionScope.locale}"/>
@@ -17,6 +18,7 @@
 <fmt:message var="manager" key="common.manager"/>
 <fmt:message var="location" key="common.location"/>
 <fmt:message var="equipment_list" key="equipment.all_equipment"/>
+<fmt:message var="laboratory_details_page" key="message.laboratory_details_page"/>
 
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
@@ -29,7 +31,14 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 
-<div class="container-fluid">
+<div class="container">
+    <br>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+            <p>${laboratory_details_page}</p>
+        </blockquote>
+    </figure>
+    <br>
     <div class="col-xs-2">
         <form action="${abs}/controller" method="get">
             <div>
@@ -104,6 +113,6 @@
     <%@include file="fragment/equipment_table.jspf"%>
 </div>
 
-<a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
+<ctg:print-footer/>
 </body>
 </html>

@@ -21,4 +21,6 @@ public interface LaboratoryService {
     List<Laboratory> findAll() throws ServiceException;
 
     List<Laboratory> findLaboratoriesWithoutManager() throws ServiceException;
+
+    long countLaboratories() throws ServiceException;
 }
