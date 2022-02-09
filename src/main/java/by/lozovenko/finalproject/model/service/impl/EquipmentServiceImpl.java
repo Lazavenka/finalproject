@@ -6,23 +6,33 @@ import by.lozovenko.finalproject.model.dao.EquipmentDao;
 import by.lozovenko.finalproject.model.dao.impl.EquipmentDaoImpl;
 import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.EquipmentService;
+import by.lozovenko.finalproject.model.service.EquipmentTimeTableService;
+import by.lozovenko.finalproject.model.service.OrderService;
+import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.validator.CustomFieldValidator;
 import by.lozovenko.finalproject.validator.CustomMapDataValidator;
 import by.lozovenko.finalproject.validator.impl.CustomFieldValidatorImpl;
 import by.lozovenko.finalproject.validator.impl.EquipmentMapDataValidator;
-import by.lozovenko.finalproject.validator.impl.LaboratoryMapDataValidator;
-import by.lozovenko.finalproject.validator.impl.UserMapDataValidator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.RequestAttribute.LABORATORY_NAME;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
+import static by.lozovenko.finalproject.model.service.impl.EquipmentTimeTableServiceImpl.ONE_DAY;
 
 public class EquipmentServiceImpl implements EquipmentService {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private static EquipmentService instance;
 
     private final EquipmentDao equipmentDao = EquipmentDaoImpl.getInstance();
@@ -144,6 +154,45 @@ public class EquipmentServiceImpl implements EquipmentService {
             throw new ServiceException("Can't handle countEquipment request at EquipmentService", e);
         }
         return equipmentCount;
+    }
+
+    @Override
+    public Optional<EquipmentTimeTable> provideEquipmentTimeTable(String equipmentIdString, String date) throws ServiceException {
+        Optional<EquipmentTimeTable> optionalEquipmentTimeTable = Optional.empty();
+        if(!inputFieldValidator.isCorrectId(equipmentIdString) && !inputFieldValidator.isCorrectDate(date)){
+            LOGGER.log(Level.DEBUG, "Incorrect id={} or date={}", equipmentIdString, date);
+            return optionalEquipmentTimeTable;
+        }
+        LocalDate selectedDay = LocalDate.parse(date);
+        if (selectedDay.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                selectedDay.getDayOfWeek() == DayOfWeek.SUNDAY ||
+                selectedDay.isBefore(LocalDate.now())){
+            LOGGER.log(Level.DEBUG, "Selected date={} is before now() or the day is SATURDAY or SUNDAY", selectedDay);
+            return optionalEquipmentTimeTable;
+        }
+        OrderService orderService = OrderServiceImpl.getInstance();
+        UserService userService = UserServiceImpl.getInstance();
+        Optional<Equipment> optionalEquipment = findById(equipmentIdString);
+        if (optionalEquipment.isPresent()){
+            Equipment equipment = optionalEquipment.get();
+            List<Assistant> laboratoryAssistants = userService.findAssistantsByLaboratoryId(equipment.getLaboratoryId());
+            EquipmentTimeTable equipmentTimeTable = new EquipmentTimeTable(equipment);
+            List<Order> equipmentOrdersOnSelectedDay = orderService.findOrdersByEquipmentIdAtPeriod(equipment.getEquipmentTypeId(), selectedDay, selectedDay.plusDays(ONE_DAY));
+            Map<Long, List<Order>> assistantsOrders = new HashMap<>();
+            for (Assistant assistant: laboratoryAssistants) {
+                long assistantId = assistant.getAssistantId();
+                List<Order> assistantOrdersOnSelectedDay = orderService.findOrdersByAssistantIdAtPeriod(assistantId, selectedDay, selectedDay.plusDays(ONE_DAY));
+                assistantsOrders.put(assistantId, assistantOrdersOnSelectedDay);
+            }
+
+            EquipmentTimeTableService timeTableService = EquipmentTimeTableServiceImpl.getInstance();
+            timeTableService.buildTimeTable(laboratoryAssistants, equipmentTimeTable, selectedDay, ONE_DAY);
+            timeTableService.setAvailability(equipmentTimeTable,equipmentOrdersOnSelectedDay,assistantsOrders);
+            optionalEquipmentTimeTable = Optional.of(equipmentTimeTable);
+        }else {
+            LOGGER.log(Level.DEBUG, "Equipment with id={} not found", equipmentIdString);
+        }
+        return optionalEquipmentTimeTable;
     }
 
     private Equipment createEquipmentFromMapData(Map<String, String> equipmentData){

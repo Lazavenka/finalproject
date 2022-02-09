@@ -34,12 +34,23 @@ public class LoginCommand implements CustomCommand {
                 switch (userState){
                     case ACTIVE -> {
                         UserRole role = user.getRole();
-                        session.setAttribute(USER, user);
                         router.setPage(INDEX);
-
-                        if (role == UserRole.CLIENT){
+                        switch (role){
+                            case ADMIN -> session.setAttribute(USER, user);
+                            case MANAGER -> {
+                                Manager manager = (Manager) user;
+                                session.setAttribute(USER, manager);
+                            }
+                            case ASSISTANT -> {
+                                Assistant assistant = (Assistant) user;
+                                session.setAttribute(USER, assistant);
+                            }
+                            case CLIENT -> {
+                                Client client = (Client)user;
+                                session.setAttribute(USER, client);
                                 BigDecimal balance = ((Client) user).getBalance();
                                 session.setAttribute(USER_BALANCE, balance);
+                            }
                         }
                     }
                     case BLOCKED -> request.setAttribute(BLOCKED_USER, true);

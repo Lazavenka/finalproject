@@ -38,12 +38,16 @@ public enum CommandType {
     ADD_EQUIPMENT_TO_CART_COMMAND(new AddEquipmentToCartCommand(), EnumSet.of(CLIENT)),
     GO_BALANCE_PAGE_COMMAND(new GoBalancePageCommand(), EnumSet.of(CLIENT)),
     ADD_BALANCE_COMMAND(new AddBalanceCommand(), EnumSet.of(CLIENT)),
+    GO_BOOK_EQUIPMENT_DETAILS_PAGE_COMMAND(new GoBookEquipmentDetailsPageCommand(), EnumSet.of(CLIENT)),
+    SHOW_EQUIPMENT_TIMETABLE_COMMAND(new ShowEquipmentTimeTableCommand(), EnumSet.of(CLIENT)),
 
     SHOW_SCHEDULE_COMMAND(new ShowScheduleCommand(), EnumSet.of(ASSISTANT)),
     UPLOAD_AVATAR_COMMAND(new UploadAvatarCommand(), EnumSet.of(ASSISTANT, MANAGER)),
 
     GO_MANAGERS_LAB_COMMAND(new GoManagersLabCommand(), EnumSet.of(MANAGER)),
     UPDATE_MANAGER_DESCRIPTION_COMMAND(new UpdateManagerDescriptionCommand(), EnumSet.of(MANAGER)),
+    UPDATE_LABORATORY_COMMAND(new UpdateLaboratoryCommand(), EnumSet.of(MANAGER)),
+    UPDATE_LABORATORY_PHOTO_COMMAND(new UploadLaboratoryPhotoCommand(), EnumSet.of(MANAGER)),
     ADD_ASSISTANT_COMMAND(new AddAssistantCommand(), EnumSet.of(MANAGER)),
     GO_ADD_ASSISTANT_PAGE_COMMAND(new GoAddAssistantPageCommand(), EnumSet.of(MANAGER)),
 
@@ -56,6 +60,9 @@ public enum CommandType {
     UPLOAD_EQUIPMENT_PHOTO_COMMAND(new UploadEquipmentPhotoCommand(), EnumSet.of(ADMIN, MANAGER)),
 
     GO_USER_MANAGEMENT_PAGE_COMMAND(new GoUserManagementPageCommand(), EnumSet.of(ADMIN)),
+    DELETE_USER_COMMAND(new DeleteUserCommand(), EnumSet.of(ADMIN)),
+    UPDATE_USER_STATE_COMMAND(new UpdateUserStateCommand(), EnumSet.of(ADMIN)),
+
     GO_ADD_NEW_DEPARTMENT_PAGE_COMMAND(new GoAddNewDepartmentPageCommand(), EnumSet.of(ADMIN)),
     GO_ADD_NEW_LABORATORY_PAGE_COMMAND(new GoAddNewLaboratoryPageCommand(), EnumSet.of(ADMIN)),
     GO_ADD_NEW_EQUIPMENT_TYPE_PAGE_COMMAND(new GoAddNewEquipmentTypePageCommand(), EnumSet.of(ADMIN)),

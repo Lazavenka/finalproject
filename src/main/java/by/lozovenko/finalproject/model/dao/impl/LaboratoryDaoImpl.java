@@ -35,6 +35,10 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
     private static final String CREATE_LABORATORY = """
             INSERT INTO laboratories (laboratory_name, department_id, laboratory_location, laboratory_description) 
             VALUES (?, ?, ?, ?)""";
+    private static final String UPDATE_LABORATORY = """
+            UPDATE laboratories SET laboratory_name = ?, department_id = ?, laboratory_location = ?, laboratory_description = ?
+            WHERE laboratory_id = ?""";
+    private static final String UPDATE_LABORATORY_PHOTO_BY_ID = "UPDATE laboratories SET laboratory_photo_link = ? WHERE laboratory_id = ?";
 
     private static final String GET_LABS_WITHOUT_MANAGER = """
             SELECT laboratory_id, laboratory_name, department_id, laboratory_location,
@@ -124,7 +128,23 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
 
     @Override
     public long update(Laboratory laboratory) throws DaoException {
-        throw new UnsupportedOperationException("update(Laboratory laboratory) method is not supported");
+        long result = -1;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_LABORATORY, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, laboratory.getName());
+            preparedStatement.setLong(2, laboratory.getDepartmentId());
+            preparedStatement.setString(3, laboratory.getLocation());
+            preparedStatement.setString(4, laboratory.getDescription());
+            preparedStatement.setLong(5, laboratory.getId());
+            preparedStatement.executeUpdate();
+            ResultSet generatedKey = preparedStatement.getGeneratedKeys();
+            if (generatedKey.next()) {
+                result = generatedKey.getLong(1);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in update method LaboratoryDao class. Unable to update entity into database.", e);
+        }
+        return result;
     }
 
     @Override
@@ -213,5 +233,19 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             throw new DaoException("Error in countLaboratories method LaboratoryDao class. Unable to get access to database.", e);
         }
         return count;
+    }
+
+    @Override
+    public int updateLaboratoryPhoto(long id, String databasePath) throws DaoException {
+        int result;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_LABORATORY_PHOTO_BY_ID)) {
+            preparedStatement.setString(1, databasePath);
+            preparedStatement.setLong(2, id);
+            result = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error in updateLaboratoryPhoto method. Database access error.", e);
+        }
+        return result;
     }
 }

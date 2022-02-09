@@ -27,6 +27,7 @@ public class RequestAttribute {
     public static final String USER_REGISTRATION_DATA = "user_registration_data";
     public static final String EQUIPMENT_TYPE_DATA = "equipment_type_data";
     public static final String EQUIPMENT_DATA = "equipment_data";
+    public static final String EQUIPMENT_TIMETABLE = "equipment_timetable";
     public static final String DEPARTMENT_DATA = "department_data";
     public static final String LABORATORY_DATA = "laboratory_data";
     public static final String PASSWORD_DATA = "change_password_data";
@@ -82,6 +83,8 @@ public class RequestAttribute {
     public static final String ERROR_MESSAGE = "error_message";
     public static final String ERROR_USER_MANAGEMENT = "error_user_management";
     public static final String SUCCESS_USER_MANAGEMENT = "success_user_management";
+    public static final String AVERAGE_RESEARCH_TIME = "average_research_time";
+
     private RequestAttribute(){}
 
 }

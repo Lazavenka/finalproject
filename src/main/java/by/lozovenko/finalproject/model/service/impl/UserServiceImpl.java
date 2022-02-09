@@ -429,6 +429,33 @@ public class UserServiceImpl implements UserService {
         return managersCount;
     }
 
+    @Override
+    public boolean deleteUserById(String userId) throws ServiceException {
+        if (!inputFieldValidator.isCorrectId(userId)){
+            return false;
+        }
+        try {
+            long id = Long.parseLong(userId);
+            return userDao.deleteById(id);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle deleteUserById request at UserService", e);
+        }
+    }
+
+    @Override
+    public boolean updateUserStateById(String userStateString, String userId) throws ServiceException {
+        if (!inputFieldValidator.isCorrectId(userId) || !inputFieldValidator.isCorrectUserState(userStateString)){
+            return false;
+        }
+        try {
+            UserState userState = UserState.valueOf(userStateString);
+            long id = Long.parseLong(userId);
+            return userDao.updateUserStateById(userState, id);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updateUserStateById request at UserService", e);
+        }
+    }
+
     private User createUserFromMapData(Map<String, String> userData){
         User user = new User();
         String hashedPassword = PasswordEncryptor.encryptMd5Apache(userData.get(PASSWORD));

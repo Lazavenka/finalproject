@@ -45,8 +45,8 @@ public class EquipmentDaoImpl implements EquipmentDao {
     private static final String UPDATE_EQUIPMENT_PHOTO_BY_ID = "UPDATE equipment SET equipment_photo_link = ? WHERE equipment_id = ?";
     private static final String UPDATE_EQUIPMENT = """
             UPDATE equipment SET equipment_type_id = ?, laboratory_id = ?, equipment_name = ?, equipment_description = ?,
-            price_per_hour = ?, average_research_time = ?, is_need_assistant = ?, equipment_state = ?,
-            equipment_photo_link = ? WHERE equipment_id = ?""";
+            price_per_hour = ?, average_research_time = ?, is_need_assistant = ?, equipment_state = ?
+            WHERE equipment_id = ?""";
     private static final String COUNT_EQUIPMENT = "SELECT count(equipment_id) from equipment";
 
     private EquipmentDaoImpl() {
@@ -147,8 +147,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
             preparedStatement.setTime(6, Time.valueOf(equipment.getAverageResearchTime()));
             preparedStatement.setBoolean(7, equipment.isNeedAssistant());
             preparedStatement.setString(8, String.valueOf(equipment.getState()));
-            preparedStatement.setString(9, equipment.getImageFilePath());
-            preparedStatement.setLong(10, equipment.getId());
+            preparedStatement.setLong(9, equipment.getId());
             preparedStatement.executeUpdate();
             ResultSet generatedKey = preparedStatement.getGeneratedKeys();
             if (generatedKey.next()) {

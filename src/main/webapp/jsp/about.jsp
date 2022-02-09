@@ -39,25 +39,25 @@
             <div class="carousel-item active">
                 <img src="${abs}/static/images/about/researchCenter.jpg" class="d-block w-100" alt="Research Center">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>${research_center_message}</h5>
-                    <p>${departments} - ${requestScope.departments_count}</p>
+                    <h5 class="bg-light text-dark">${research_center_message}</h5>
+                    <p class="bg-light text-dark">${departments} - ${requestScope.departments_count}</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="${abs}/static/images/about/laboratory.jpg" class="d-block w-100" alt="Laboratories">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>${quality}</h5>
-                    <p>${laboratories} - ${requestScope.laboratories_count}</p>
-                    <p>${equipment} - ${requestScope.equipment_count}</p>
+                    <h5 class="bg-light text-dark">${quality}</h5>
+                    <p class="bg-light text-dark">${laboratories} - ${requestScope.laboratories_count}</p>
+                    <p class="bg-light text-dark">${equipment} - ${requestScope.equipment_count}</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="${abs}/static/images/about/managers.jpg" class="d-block w-100" alt="Managers">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>${personal}</h5>
-                    <p>${doctors} - ${requestScope.doctors_count}</p>
-                    <p>${masters} - ${requestScope.masters_count}</p>
-                    <p>${bachelors} - ${requestScope.bachelor_count}</p>
+                    <h5 class="bg-light text-dark">${personal}</h5>
+                    <p class="bg-light text-dark">${doctors} - ${requestScope.doctors_count}</p>
+                    <p class="bg-light text-dark">${masters} - ${requestScope.masters_count}</p>
+                    <p class="bg-light text-dark">${bachelors} - ${requestScope.bachelor_count}</p>
                 </div>
             </div>
         </div>

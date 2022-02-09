@@ -18,6 +18,7 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     private static final String ID_PATTERN = "^\\d{1,18}$";
     private static final String BALANCE_PATTERN = "^\\d{1,3}(\\.\\d{0,2})?$";
     private static final String MANAGER_DEGREE_PATTERN = "B\\.Sc\\.|M\\.Sc\\.|Ph\\.D\\.";
+    private static final String USER_STATE_PATTERN = "ACTIVE|BLOCKED|REGISTRATION";
     private static final String EQUIPMENT_PRICE_PER_HOUR_PATTERN = "^\\d{1,4}(\\.\\d{0,2})?$";
     private static final int LABORATORY_LOCATION_STRING_LENGTH = 255;
     private static final int LABORATORY_NAME_STRING_LENGTH = 255;
@@ -162,6 +163,11 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     }
 
     @Override
+    public boolean isCorrectUserState(String userState) {
+        return notNullOrEmpty(userState) && userState.matches(USER_STATE_PATTERN);
+    }
+
+    @Override
     public boolean isCorrectMinutes(String researchTimeMinute) {
         return notNullOrEmpty(researchTimeMinute) && researchTimeMinute.matches(MINUTES_PATTERN);
     }
@@ -169,6 +175,11 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     @Override
     public boolean isCorrectHours(String researchTimeHours) {
         return notNullOrEmpty(researchTimeHours) && researchTimeHours.matches(TEN_HOURS_PATTERN);
+    }
+
+    @Override
+    public boolean isCorrectDate(String date) {
+        return notNullOrEmpty(date);
     }
 
 

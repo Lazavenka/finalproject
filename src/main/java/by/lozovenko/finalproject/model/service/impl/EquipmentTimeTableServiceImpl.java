@@ -11,7 +11,17 @@ import java.util.List;
 import java.util.Map;
 
 public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService {
+    public static final int ONE_DAY = 1;
 
+    private static EquipmentTimeTableService instance;
+    private EquipmentTimeTableServiceImpl(){
+    }
+    public static EquipmentTimeTableService getInstance(){
+        if (instance == null){
+            instance = new EquipmentTimeTableServiceImpl();
+        }
+        return instance;
+    }
     @Override
     public void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable) throws ServiceException {
         if (equipmentTimeTable.getEquipment() == null) {

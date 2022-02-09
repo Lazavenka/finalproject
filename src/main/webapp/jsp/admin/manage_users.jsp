@@ -36,42 +36,50 @@
     <title>Manage users page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/styles.css">
+
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
 
 <c:choose>
     <c:when test="${requestScope.success_user_management}">
-        <figure class="text-center">
-            <blockquote class="blockquote">
-                <p class="alert-success">${success_message}</p>
-            </blockquote>
-        </figure>
+        <div class="spaced">
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p class="alert-success">${success_message}</p>
+                </blockquote>
+            </figure>
+        </div>
     </c:when>
     <c:when test="${requestScope.error_user_management}">
-        <figure class="text-center">
-            <blockquote class="blockquote">
-                <p class="alert-warning">${error_message}</p>
-                <p class="alert-warning">${requestScope.exception.message}</p>
-            </blockquote>
-        </figure>
+        <div class="spaced">
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p class="alert-warning">${error_message}</p>
+                    <p class="alert-warning">${requestScope.exception.message}</p>
+                </blockquote>
+            </figure>
+        </div>
     </c:when>
 </c:choose>
-<br>
+
 <div class="container">
     <div class="row">
         <div class="col justify-content-center">
             <div class="btn-group-vertical">
+                <div class="spaced">
                 <a href="${abs}/controller?command=go_add_admin_page_command" class="btn btn-primary">${add_admin}</a>
-                <br>
+                </div>
                 <a href="${abs}/controller?command=go_add_manager_page_command"
                    class="btn btn-primary">${add_manager}</a>
-                <br>
+                <div class="spaced">
                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                         data-bs-target="#usersTable"
                         aria-expanded="false" aria-controls="usersTable">
                     ${show_users}
                 </button>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -116,15 +124,16 @@
                                         <c:if test="${requestScope.invalid_enum}">
                                             <div class="alert alert-danger">${invalid_enum_message}</div>
                                         </c:if>
-                                        <a role="button" class="btn btn-primary" <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>
-                                        href="${abs}/controller?command=update_user_state_command&user_id=${user.id}">${update}</a>
-
+                                        <button type="submit" class="btn btn-primary" <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>>${update}</button>
                                     </div>
                                 </form>
                             </td>
-                            <td><a role="button"
-                                   class="btn btn-primary" <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>
-                                   href="${abs}/controller?command=delete_user_command&user_id=${user.id}">${delete}</a>
+                            <td>
+                                <form action="${abs}/controller" method="post" class="form-control">
+                                <input type="hidden" name="command" value="delete_user_command"/>
+                                <input type="hidden" name="user_id" value="${user.id}">
+                                    <button type="submit" class="btn btn-primary" <c:if test="${sessionScope.user.id eq user.id}">disabled</c:if>>${delete}</button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>

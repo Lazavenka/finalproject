@@ -6,10 +6,10 @@ import by.lozovenko.finalproject.exception.DaoException;
 import by.lozovenko.finalproject.model.mapper.impl.OrderMapper;
 import by.lozovenko.finalproject.model.pool.CustomConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +27,14 @@ public class OrderDaoImpl implements OrderDao {
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
             order_assistant_id FROM orders
             JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ?""";
+
+    private static final String GET_ORDERS_BY_EQUIPMENT_ID_AT_PERIOD = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
+            order_assistant_id FROM orders WHERE order_equipment_id = ? AND order_rent_start BETWEEN ? AND ?""";
+    private static final String GET_ORDERS_BY_ASSISTANT_ID_AT_PERIOD = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
+            order_assistant_id FROM orders WHERE order_assistant_id = ? AND order_rent_start BETWEEN ? AND ?""";
+
 
     private OrderDaoImpl() {
     }
@@ -82,7 +90,7 @@ public class OrderDaoImpl implements OrderDao {
                 }
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findAllOrdersByClientId method OrderDao class. Unable to get access to database.", e);
         }
         return orderList;
     }
@@ -106,7 +114,7 @@ public class OrderDaoImpl implements OrderDao {
                 }
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findOrdersByLaboratoryId method OrderDao class. Unable to get access to database.", e);
         }
         return orderList;
     }
@@ -126,7 +134,53 @@ public class OrderDaoImpl implements OrderDao {
                 }
             }
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Error in findOrderByStateAndAssistantId method OrderDao class. Unable to get access to database.", e);
+        }
+        return orderList;
+    }
+
+    @Override
+    public List<Order> findOrdersByEquipmentIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws DaoException {
+        List<Order> orderList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_EQUIPMENT_ID_AT_PERIOD)) {
+            preparedStatement.setLong(1, equipmentId);
+            LocalDateTime startDateTime = LocalDateTime.of(startPeriod, LocalTime.MIN);
+            LocalDateTime endDateTime = LocalDateTime.of(endPeriod, LocalTime.MIN);
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(startDateTime));
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(endDateTime));
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()){
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order,resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in findOrdersByEquipmentIdAtPeriod method OrderDao class. Unable to get access to database.", e);
+        }
+        return orderList;
+    }
+
+    @Override
+    public List<Order> findOrdersByAssistantIdAtPeriod(long assistantId, LocalDate startPeriod, LocalDate endPeriod) throws DaoException {
+        List<Order> orderList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_ASSISTANT_ID_AT_PERIOD)) {
+            preparedStatement.setLong(1, assistantId);
+            LocalDateTime startDateTime = LocalDateTime.of(startPeriod, LocalTime.MIN);
+            LocalDateTime endDateTime = LocalDateTime.of(endPeriod, LocalTime.MIN);
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(startDateTime));
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(endDateTime));
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()){
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order,resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
+            }
+        }catch (SQLException e){
+            throw new DaoException("Error in findOrdersByEquipmentIdAtPeriod method OrderDao class. Unable to get access to database.", e);
         }
         return orderList;
     }

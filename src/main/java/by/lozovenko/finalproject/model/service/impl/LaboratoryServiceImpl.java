@@ -140,4 +140,43 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         }
         return laboratoriesCount;
     }
+
+    @Override
+    public boolean updateLaboratoryById(String laboratoryToEditId, Map<String, String> laboratoryData) throws ServiceException {
+        try {
+            boolean isValidData = dataValidator.validateMapData(laboratoryData);
+            if (!isValidData) {
+                return false;
+            }
+            if (!inputFieldValidator.isCorrectId(laboratoryToEditId)){
+                return false;
+            }
+            long laboratoryId = Long.parseLong(laboratoryToEditId);
+            long departmentId = Long.parseLong(laboratoryData.get(DEPARTMENT_ID));
+            String laboratoryName = laboratoryData.get(LABORATORY_NAME);
+            String laboratoryLocation = laboratoryData.get(LABORATORY_LOCATION);
+            String description = laboratoryData.get(DESCRIPTION);
+            Laboratory laboratory = new Laboratory();
+            laboratory.setId(laboratoryId);
+            laboratory.setDepartmentId(departmentId);
+            laboratory.setName(laboratoryName);
+            laboratory.setLocation(laboratoryLocation);
+            laboratory.setDescription(description);
+
+            return laboratoryDao.update(laboratory) != 0;
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updateLaboratoryById request at LaboratoryService", e);
+        }
+    }
+
+    @Override
+    public boolean updateImageByLaboratoryId(long id, String databasePath) throws ServiceException {
+        boolean result;
+        try {
+            result = laboratoryDao.updateLaboratoryPhoto(id, databasePath) != 0;
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle updateImageByLaboratoryId request at LaboratoryService", e);
+        }
+        return result;
+    }
 }

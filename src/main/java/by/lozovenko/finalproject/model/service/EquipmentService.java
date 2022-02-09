@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.model.service;
 
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Equipment;
+import by.lozovenko.finalproject.model.entity.EquipmentTimeTable;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface EquipmentService {
     boolean updateEquipmentById(String equipmentToEditId, Map<String, String> equipmentData) throws ServiceException;
 
     long countEquipment() throws ServiceException;
+
+    Optional<EquipmentTimeTable> provideEquipmentTimeTable(String equipmentIdString, String date) throws ServiceException;
 }

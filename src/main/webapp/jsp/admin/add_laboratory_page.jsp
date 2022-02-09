@@ -33,17 +33,19 @@
     <title>Add new laboratory page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/styles.css">
+
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
 <div class="container">
-    <br>
+    <div class="spaced">
     <figure class="text-center">
         <blockquote class="blockquote">
             <p>${add_laboratory_page}</p>
         </blockquote>
     </figure>
-
+    </div>
     <div class="w-75 mx-auto">
         <div class="container-fluid">
             <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
@@ -117,13 +119,13 @@
                         </div>
                     </div>
                 </div>
-                <div>
-                    <input type="submit" value="${add}"/>
+                <div class="spaced">
+                    <input type="submit" class="btn btn-primary" value="${add}"/>
                 </div>
             </form>
         </div>
-        <div>
-            <a class="btn btn-primary" href="${abs}/controller?command=go_home_command" role="button">${home}</a>
+        <div class="spaced">
+            <a class="btn btn-primary" href="${abs}/controller?command=go_about_page_command" role="button">${home}</a>
         </div>
     </div>
 </div>

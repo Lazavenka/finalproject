@@ -20,6 +20,7 @@ public class RequestParameter {
     public static final String LABORATORY_ID = "laboratory_id";
     public static final String CURRENT_LABORATORY_ID = "current_laboratory_id";
     public static final String USER_ID = "user_id";
+    public static final String USER_STATE = "user_state";
     public static final String COMMAND = "command";
     public static final String LOCALE = "locale";
     public static final String MANAGER_ID = "manager_id";
@@ -28,6 +29,7 @@ public class RequestParameter {
     public static final String EQUIPMENT_TYPE_NAME = "equipment_type_name";
     public static final String EQUIPMENT_TYPE_DESCRIPTION ="equipment_type_description";
     public static final String EQUIPMENT_ID ="equipment_id";
+    public static final String DATE ="date";
     public static final String MANAGER_DEGREE = "manager_degree";
     public static final String LABORATORY_LOCATION = "lab_location";
     public static final String DEPARTMENT_ADDRESS = "department_address";

@@ -49,7 +49,7 @@ public class UploadEquipmentPhotoCommand implements CustomCommand {
                 Part part = request.getPart(CONTENT);
                 inputStream = part.getInputStream();
                 String submittedFilename = part.getSubmittedFileName();
-                if (submittedFilename == null){
+                if (submittedFilename == null || submittedFilename.isEmpty()){
                     request.setAttribute(EMPTY_IMAGE, true);
                     request.setAttribute(ERROR_MESSAGE, true);
                     return router;
@@ -86,6 +86,7 @@ public class UploadEquipmentPhotoCommand implements CustomCommand {
                     return router;
                 }
                 request.setAttribute(SELECTED_EQUIPMENT, selectedEquipment);
+                request.setAttribute(SUCCESS_MESSAGE, true);
             }
         } catch (IOException | ServiceException | ServletException e) {
             logger.log(Level.ERROR, "Error in UploadEquipmentPhotoCommand", e);

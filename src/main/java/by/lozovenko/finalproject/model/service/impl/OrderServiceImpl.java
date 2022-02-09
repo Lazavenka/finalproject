@@ -9,6 +9,7 @@ import by.lozovenko.finalproject.model.entity.OrderState;
 import by.lozovenko.finalproject.model.service.OrderService;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 public class OrderServiceImpl implements OrderService {
@@ -30,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             return orderDao.findAllOrdersByClientId(clientId);
         }catch (DaoException e){
-            throw new ServiceException(e);
+            throw new ServiceException("Can't handle findOrdersByClientId method in OrderService. ", e);
         }
 
     }
@@ -42,12 +43,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findOrdersByEquipmentIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws ServiceException {
-        return null;
+        try {
+            if (startPeriod.isAfter(endPeriod)){
+                return Collections.emptyList();
+            }
+            return orderDao.findOrdersByEquipmentIdAtPeriod(equipmentId, startPeriod, endPeriod);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle findOrdersByEquipmentIdAtPeriod method in OrderService. ", e);
+        }
     }
 
     @Override
     public List<Order> findOrdersByAssistantIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws ServiceException {
-        return null;
+        try {
+            if (startPeriod.isAfter(endPeriod)){
+                return Collections.emptyList();
+            }
+            return orderDao.findOrdersByAssistantIdAtPeriod(equipmentId, startPeriod, endPeriod);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle findOrdersByAssistantIdAtPeriod method in OrderService. ", e);
+        }
     }
 
     @Override

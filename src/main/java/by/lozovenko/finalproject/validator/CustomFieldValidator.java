@@ -47,7 +47,9 @@ public interface CustomFieldValidator {
     boolean isCorrectLaboratoryDescription(String laboratoryDescription);
 
     boolean isCorrectLaboratoryLocation(String laboratoryLocation);
-
+    boolean isCorrectUserState(String userState);
     boolean isCorrectMinutes(String researchTimeMinute);
     boolean isCorrectHours(String researchTimeHours);
+
+    boolean isCorrectDate(String date);
 }

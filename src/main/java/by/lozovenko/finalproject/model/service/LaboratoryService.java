@@ -23,4 +23,8 @@ public interface LaboratoryService {
     List<Laboratory> findLaboratoriesWithoutManager() throws ServiceException;
 
     long countLaboratories() throws ServiceException;
+
+    boolean updateLaboratoryById(String laboratoryToEditId, Map<String, String> laboratoryData) throws ServiceException;
+
+    boolean updateImageByLaboratoryId(long id, String databasePath) throws ServiceException;
 }

@@ -18,4 +18,6 @@ public interface LaboratoryDao extends BaseDao<Long, Laboratory> {
     List<Laboratory> findLaboratoriesWithoutManager() throws DaoException;
 
     long countLaboratories() throws DaoException;
+
+    int updateLaboratoryPhoto(long id, String databasePath) throws DaoException;
 }

@@ -52,4 +52,8 @@ public interface UserService {
 
 
     long countManagersByDegree(ManagerDegree degree) throws ServiceException;
+
+    boolean deleteUserById(String userId) throws ServiceException;
+
+    boolean updateUserStateById(String userStateString, String userId) throws ServiceException;
 }

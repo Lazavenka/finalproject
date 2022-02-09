@@ -65,7 +65,7 @@ public class UploadAvatarCommand implements CustomCommand {
                 Part part = request.getPart(CONTENT);
                 inputStream = part.getInputStream();
                 String submittedFilename = part.getSubmittedFileName();
-                if (submittedFilename == null){
+                if (submittedFilename == null || submittedFilename.isEmpty()){
                     request.setAttribute(EMPTY_IMAGE, true);
                     request.setAttribute(ERROR_MESSAGE, true);
                     return router;

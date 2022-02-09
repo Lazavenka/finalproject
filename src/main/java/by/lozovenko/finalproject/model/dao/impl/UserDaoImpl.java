@@ -87,13 +87,14 @@ public class UserDaoImpl implements UserDao {
             VALUES (?, ?, ?, ?, ?, ?)""";
 
     private static final String CREATE_ASSISTANT = """
-            INSERT INTO managers (user_id, department_id, laboratory_id, avatar_link, description, degree)
-            VALUES (?, ?, ?, ?, ?, ?)""";
+            INSERT INTO assistants (user_id, laboratory_id, avatar_link)
+            VALUES (?, ?, ?)""";
 
     private static final String CREATE_CLIENT = "INSERT INTO clients (user_id) VALUES (?)";
     private static final String CREATE_TOKEN = "INSERT INTO user_tokens (user_id, user_token, register_timestamp) values (?, ?, ?)";
     private static final String FIND_TOKEN_BY_VALUE = "SELECT user_id, user_token, register_timestamp FROM user_tokens WHERE user_token = ?";
     private static final String DELETE_TOKEN_BY_ID = "DELETE FROM user_tokens WHERE user_id = ?";
+    private static final String DELETE_USER_BY_ID = "DELETE FROM users WHERE user_id = ?";
 
     private static final String UPDATE_USER_STATE_BY_ID = "UPDATE users SET user_state = ? WHERE user_id = ?";
     private static final String UPDATE_USER_PASSWORD_BY_LOGIN = "UPDATE users SET password = ? WHERE login = ?";
@@ -162,7 +163,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_BY_ID)){
+            preparedStatement.setLong(1, id);
+            return preparedStatement.executeUpdate() != 0;
+        }catch (SQLException e){
+            throw new DaoException("Error in deleteById method UserDao class. Unable to get access to database.", e);
+        }
     }
 
     @Override
@@ -233,9 +240,10 @@ public class UserDaoImpl implements UserDao {
                         createManagerStatement.setString(5, manager.getDescription());
                         createManagerStatement.setString(6, manager.getManagerDegree().getValue());
                         createManagerStatement.executeUpdate();
-                        ResultSet managerResultSet = createManagerStatement.getResultSet();
-                        if (managerResultSet.next()) {
-                            generatedManagerId = managerResultSet.getLong(1);
+                        try(ResultSet managerResultSet = createManagerStatement.getGeneratedKeys()) {
+                            if (managerResultSet.next()) {
+                                generatedManagerId = managerResultSet.getLong(1);
+                            }
                         }
                     }
                 }
@@ -281,9 +289,10 @@ public class UserDaoImpl implements UserDao {
                         userId = resultSet.getLong(1);
                         createClientStatement.setLong(1, userId);
                         createClientStatement.executeUpdate();
-                        ResultSet clientResultSet = createClientStatement.getGeneratedKeys();
-                        if (clientResultSet.next()) {
-                            generatedClientId = clientResultSet.getLong(1);
+                        try(ResultSet clientResultSet = createClientStatement.getGeneratedKeys()) {
+                            if (clientResultSet.next()) {
+                                generatedClientId = clientResultSet.getLong(1);
+                            }
                         }
                         createTokenStatement.setLong(1, userId);
                         createTokenStatement.setString(2, token.getValue());
@@ -292,7 +301,7 @@ public class UserDaoImpl implements UserDao {
 
                         try (ResultSet tokenResultSet = createTokenStatement.getGeneratedKeys()) {
                             if (tokenResultSet.next()) {
-                                tokenId = clientResultSet.getLong(1);
+                                tokenId = tokenResultSet.getLong(1);
                             }
                         }
                     }
@@ -638,7 +647,7 @@ public class UserDaoImpl implements UserDao {
                         createAssistantStatement.setLong(2, assistant.getLaboratoryId());
                         createAssistantStatement.setString(3, assistant.getImageFilePath());
                         createAssistantStatement.executeUpdate();
-                        try (ResultSet assistantResultSet = createAssistantStatement.getResultSet()) {
+                        try (ResultSet assistantResultSet = createAssistantStatement.getGeneratedKeys()) {
                             if (assistantResultSet.next()) {
                                 generatedAssistantId = assistantResultSet.getLong(1);
                             }

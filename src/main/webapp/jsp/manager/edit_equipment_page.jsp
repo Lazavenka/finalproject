@@ -43,41 +43,54 @@
 <fmt:message var="empty_image_message" key="message.empty_image_message"/>
 <fmt:message var="invalid_file_size" key="message.invalid_file_size"/>
 <fmt:message var="wrong_file_extension" key="message.wrong_file_extension"/>
+<fmt:message var="success_message" key="message.success_message"/>
+<fmt:message var="error_message" key="message.error_message"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 <c:set var="equipment_data" value="${requestScope.equipment_data}"/>
-<c:set var="name_param" value="equipment_name"/>
+<c:set var="name_param" value="laboratory_name"/>
 <c:set var="description_param" value="description"/>
-<c:set var="price_param" value="price_per_hour"/>
+<c:set var="location_param" value="lab_location"/>
 <c:set var="average_time_param" value="average_research_time"/>
+<c:set var="price_param" value="price_per_hour"/>
+
 
 <html>
 <head>
     <title>Edit equipment page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/styles.css">
+
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
 
 <div class="container">
-    <br>
-    <figure class="text-center">
-        <blockquote class="blockquote">
-            <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
-            <p>${equipment_edit_page} ${requestScope.selected_equipment.name}</p>
-        </blockquote>
-    </figure>
+    <div class="spaced">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
+                <p>${equipment_edit_page} ${requestScope.selected_equipment.name}</p>
+                <c:choose>
+                    <c:when test="${requestScope.success_message}"><p
+                            class="alert-success">${success_message}</p></c:when>
+                    <c:when test="${requestScope.error_message}"><p class="alert-warning">${error_message}</p></c:when>
+                </c:choose>
+            </blockquote>
+        </figure>
+    </div>
     <div class="w-75 mx-auto">
         <div class="row">
             <div class="col-sm-2 justify-content-center">
                 <div class="btn-group-vertical">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#editEquipment"
-                            aria-expanded="false" aria-controls="editEquipment">
-                        ${edit_equipment}
-                    </button>
-                    <br>
+                    <div class="monospace">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#editEquipment"
+                                aria-expanded="false" aria-controls="editEquipment">
+                            ${edit_equipment}
+                        </button>
+                    </div>
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#uploadPhoto"
                             aria-expanded="false" aria-controls="uploadPhoto">
@@ -89,18 +102,15 @@
                 <div class="collapse" id="editEquipment">
                     <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
                         <input type="hidden" name="command" value="update_equipment_command">
-                        <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
-                        <input type="hidden" name="laboratory_id"
-                               value="${requestScope.selected_equipment.laboratoryId}">
-                        <input type="hidden" name="equipment_type_id"
-                               value="${requestScope.selected_equipment.equipmentTypeId}">
+                        <input type="hidden" name="laboratory_id" value="${requestScope.selected_equipment.laboratoryId}">
+                        <input type="hidden" name="equipment_type_id" value="${requestScope.selected_equipment.equipmentTypeId}">
                         <div class="row mb-3">
-                            <label for="validationEquipmentName"
+                            <label for="validationLaboratoryName"
                                    class="col-sm-2 col-form-label">${equipment_name}</label>
                             <div class="col-sm-10">
                                 <input type="text" name="equipment_name" class="form-control"
                                        value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(equipment_name) != 'invalid_equipment_name' }">${equipment_data.get(equipment_name)}</c:when><c:otherwise>${requestScope.selected_equipment.name}</c:otherwise></c:choose>"
-                                       id="validationEquipmentName" required pattern="[A-Za-zА-Яа-я0-9]{2,255}">
+                                       id="validationLaboratoryName" required pattern="[A-Za-zА-Яа-я0-9]{2,255}">
                                 <c:if test="${requestScope.invalid_equipment_name}">
                                     <div style="color: red">${invalid_equipment_name}</div>
                                 </c:if>
@@ -116,7 +126,7 @@
                             <label for="validationDescription" class="col-sm-2 col-form-label">${description}</label>
                             <div class="col-sm-10">
                                 <input type="text" name="description" class="form-control" height="100"
-                                       value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(equipment_name)}</c:when><c:otherwise>${requestScope.selected_equipment.description}</c:otherwise></c:choose>"
+                                       value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(description_param)}</c:when><c:otherwise>${requestScope.selected_equipment.description}</c:otherwise></c:choose>"
                                        id="validationDescription" required>
                                 <c:if test="${requestScope.invalid_description}">
                                     <div style="color: red">${invalid_description}</div>
@@ -193,7 +203,9 @@
                             <label class="form-check-label" for="flexSwitchCheckChecked">${necessary_assistant}</label>
                         </div>
                         <div class="col-sm-5">
-                            <button type="submit" class="btn btn-primary">${update}</button>
+                            <div class="spaced">
+                                <button type="submit" class="btn btn-primary">${update}</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -206,15 +218,23 @@
                             <input type="file" class="form-control" id="inputGroupFile04" name="content"
                                    aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
                                    onchange="fileValidation()">
-                            <button class="btn btn-outline-secondary" type="submit"
-                                    id="inputGroupFileAddon04">${upload}</button>
+                            <div class="spaced">
+                                <button class="btn btn-outline-secondary" type="submit"
+                                        id="inputGroupFileAddon04">${upload}</button>
+                            </div>
                         </div>
                         <c:choose>
-                            <c:when test="${requestScope.empty_image}"><div style="color: red">${empty_image_message}</div></c:when>
-                            <c:when test="${requestScope.invalid_file_size}"><div style="color: red">${invalid_file_size}</div></c:when>
-                            <c:when test="${requestScope.wrong_file_extension}"><div style="color: red">${wrong_file_extension}</div></c:when>
+                            <c:when test="${requestScope.empty_image}">
+                                <div style="color: red">${empty_image_message}</div>
+                            </c:when>
+                            <c:when test="${requestScope.invalid_file_size}">
+                                <div style="color: red">${invalid_file_size}</div>
+                            </c:when>
+                            <c:when test="${requestScope.wrong_file_extension}">
+                                <div style="color: red">${wrong_file_extension}</div>
+                            </c:when>
                         </c:choose>
-                        <div id="imagePreview" class=""></div>
+                        <div id="imagePreview" class="spaced"></div>
                         <script>
                             function fileValidation() {
                                 const fileInput = document.getElementById('inputGroupFile04');
@@ -236,7 +256,7 @@
                                             document.getElementById(
                                                 'imagePreview').innerHTML =
                                                 '<img src="' + e.target.result
-                                                + '"width="300" alt="Preview image"/>';
+                                                + '" width="300" alt="Preview image"/>';
                                         };
                                         reader.readAsDataURL(fileInput.files[0]);
                                     }

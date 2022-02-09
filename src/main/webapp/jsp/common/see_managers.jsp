@@ -17,27 +17,32 @@
     <title>Managers page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/styles.css">
+
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
 <div class="container">
-    <br>
-    <figure class="text-center">
-        <blockquote class="blockquote">
-            <p>${all_managers_page}</p>
-        </blockquote>
-    </figure>
+    <div class="spaced">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>${all_managers_page}</p>
+            </blockquote>
+        </figure>
+    </div>
     <div class="w-75 mx-auto">
         <c:forEach var="manager" items="${requestScope.managers}">
-        <div class="d-flex position-relative">
-            <img src="${abs}/${manager.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="...">
-            <div>
-                <h5 class="mt-0">${manager.lastName} ${manager.firstName}</h5>
-                <p class="card-text">${manager.description}</p>
-                <a href="${abs}/controller?command=find_manager_details_by_id_command&manager_id=${manager.managerId}"
-                   class="stretched-link">${details}</a>
+            <div class="monospace">
+                <div class="d-flex position-relative">
+                    <img src="${abs}/${manager.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="...">
+                    <div>
+                        <h5 class="mt-0">${manager.lastName} ${manager.firstName}</h5>
+                        <p class="card-text">${manager.description}</p>
+                        <a href="${abs}/controller?command=find_manager_details_by_id_command&manager_id=${manager.managerId}"
+                           class="stretched-link">${details}</a>
+                    </div>
+                </div>
             </div>
-        </div>
         </c:forEach>
     </div>
 </div>

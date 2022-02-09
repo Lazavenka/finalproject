@@ -50,47 +50,55 @@
     <title>Edit profile page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/styles.css">
+
 </head>
 <body>
 
 <jsp:include page="../header/header.jsp"/>
 
 <div class="container">
-    <br>
-    <figure class="text-center">
-        <blockquote class="blockquote">
-            <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
-            <p>${profile_edit_page}</p>
-            <c:choose>
-                <c:when test="${requestScope.success_message}"><p class="alert-success">${success_message}</p></c:when>
-                <c:when test="${requestScope.error_message}"><p class="alert-warning">${error_message}</p></c:when>
-            </c:choose>
-        </blockquote>
-    </figure>
+    <div class="space">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
+                <p>${profile_edit_page}</p>
+                <c:choose>
+                    <c:when test="${requestScope.success_message}"><p
+                            class="alert-success">${success_message}</p></c:when>
+                    <c:when test="${requestScope.error_message}"><p class="alert-warning">${error_message}</p></c:when>
+                </c:choose>
+            </blockquote>
+        </figure>
+    </div>
     <div class="row">
         <div class="col-sm-2 justify-content-center">
             <div class="btn-group-vertical">
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editProfile"
-                        aria-expanded="false" aria-controls="editProfile">
-                    ${edit_priofile}
-                </button>
-                <br>
+                <div class="space">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#editProfile"
+                            aria-expanded="false" aria-controls="editProfile">
+                        ${edit_priofile}
+                    </button>
+                </div>
                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#changePass"
                         aria-expanded="false" aria-controls="changePass">
                     ${change_pass}
                 </button>
-                <br>
+
 
                 <c:if test="${sessionScope.user.role.name() eq 'MANAGER' or sessionScope.user.role.name() eq 'ASSISTANT'}">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#uploadAvatarTab"
-                            aria-expanded="false" aria-controls="uploadAvatarTab">
-                            ${upload_avatar}
-                    </button>
+                    <div class="space">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#uploadAvatarTab"
+                                aria-expanded="false" aria-controls="uploadAvatarTab">
+                                ${upload_avatar}
+                        </button>
+                    </div>
                 </c:if>
 
                 <c:if test="${sessionScope.user.role.name() eq 'MANAGER'}">
-                    <br>
+                    <div class="space"></div>
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#editManager"
                             aria-expanded="false" aria-controls="editManager">
@@ -102,8 +110,9 @@
 
         <div class="col-sm-10">
             <div class="collapse" id="editProfile">
-                <form method="post" action="${abs}/controller" class="profileData"  onclick="validateProfileForm()" novalidate>
-                    <input type="hidden" name="command" value="update_user_profile_command" >
+                <form method="post" action="${abs}/controller" class="profileData" onclick="validateProfileForm()"
+                      novalidate>
+                    <input type="hidden" name="command" value="update_user_profile_command">
                     <div class="row mb-3">
                         <label for="firstName" class="col-sm-2 col-form-label">${first_name}</label>
                         <div class="col-sm-10">
@@ -125,7 +134,8 @@
                         <label for="lastName" class="col-sm-2 col-form-label">${last_name}</label>
                         <div class="col-sm-10">
                             <input type="text" name="last_name" class="form-control"
-                                   value="<c:choose><c:when test="${!empty profile_data and profile_data.get(l_name_param) != 'invalid_name' }">${profile_data.get(l_name_param)}</c:when><c:otherwise>${sessionScope.user.lastName}</c:otherwise></c:choose>" id="lastName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
+                                   value="<c:choose><c:when test="${!empty profile_data and profile_data.get(l_name_param) != 'invalid_name' }">${profile_data.get(l_name_param)}</c:when><c:otherwise>${sessionScope.user.lastName}</c:otherwise></c:choose>"
+                                   id="lastName" required pattern="^[A-Za-zА-Яа-я]{2,20}">
                             <c:if test="${requestScope.invalid_last_name}">
                                 <div style="color: red">${invalid_name}</div>
                             </c:if>
@@ -154,11 +164,14 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">${edit}</button>
+                    <div class="spaced">
+                        <button type="submit" class="btn btn-primary">${edit}</button>
+                    </div>
                 </form>
             </div>
             <div class="collapse" id="changePass">
-                <form method="post" action="${abs}/controller" id="changePasswordForm" onclick="validatePasswordForm()" novalidate>
+                <form method="post" action="${abs}/controller" id="changePasswordForm" onclick="validatePasswordForm()"
+                      novalidate>
                     <input type="hidden" name="command" value="change_user_password_command">
                     <div class="row mb-3">
                         <label for="oldPass" class="col-sm-2 col-form-label">${old_password}</label>
@@ -213,7 +226,9 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">${change_pass}</button>
+                    <div class="spaced">
+                        <button type="submit" class="btn btn-primary">${change_pass}</button>
+                    </div>
                 </form>
             </div>
             <div class="collapse" id="uploadAvatarTab">
@@ -221,17 +236,26 @@
                     <input type="hidden" name="command" value="upload_avatar_command">
                     <div class="input-group">
                         <input type="file" class="form-control" id="inputGroupFile04" name="content"
-                               aria-describedby="inputGroupFileAddon04" aria-label="${upload}" onchange="fileValidation()">
-                        <button class="btn btn-outline-secondary" type="submit"
-                                id="inputGroupFileAddon04">${upload}</button>
+                               aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
+                               onchange="fileValidation()">
+                        <div class="spaced align-self-center">
+                            <button class="btn btn-outline-secondary" type="submit"
+                                    id="inputGroupFileAddon04">${upload}</button>
+                        </div>
                     </div>
                     <c:choose>
-                        <c:when test="${requestScope.empty_image}"><div style="color: red">${empty_image_message}</div></c:when>
-                        <c:when test="${requestScope.invalid_file_size}"><div style="color: red">${invalid_file_size}</div></c:when>
-                        <c:when test="${requestScope.wrong_file_extension}"><div style="color: red">${wrong_file_extension}</div></c:when>
+                        <c:when test="${requestScope.empty_image}">
+                            <div style="color: red">${empty_image_message}</div>
+                        </c:when>
+                        <c:when test="${requestScope.invalid_file_size}">
+                            <div style="color: red">${invalid_file_size}</div>
+                        </c:when>
+                        <c:when test="${requestScope.wrong_file_extension}">
+                            <div style="color: red">${wrong_file_extension}</div>
+                        </c:when>
                     </c:choose>
 
-                    <div id="imagePreview" class=""></div>
+                    <div id="imagePreview" class="spaced"></div>
                     <script>
                         function fileValidation() {
                             const fileInput = document.getElementById('inputGroupFile04');
@@ -263,8 +287,9 @@
                 </form>
             </div>
             <div class="collapse" id="editManager">
-                <form method="post" action="${abs}/controller" id="descriptionForm" onclick="validateDescription()" novalidate>
-                    <input type="hidden" name="command" value="update_manager_description_command" >
+                <form method="post" action="${abs}/controller" id="descriptionForm" onclick="validateDescription()"
+                      novalidate>
+                    <input type="hidden" name="command" value="update_manager_description_command">
                     <input type="hidden" name="user_id" value="${sessionScope.user.id}">
                     <div class="row mb-3">
                         <label for="description" class="col-sm-2 col-form-label">${description}</label>
@@ -283,7 +308,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="spaced">
                     <button type="submit" class="btn btn-primary">${edit}</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -292,26 +319,29 @@
 
 
 <script>
-    function validateData (form){
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
+    function validateData(form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
 
-                form.classList.add('was-validated')
-            }, false)
+            form.classList.add('was-validated')
+        }, false)
 
     }
-    function validatePasswordForm(){
+
+    function validatePasswordForm() {
         const form = document.querySelector("#changePasswordForm")
         validateData(form)
     }
-    function validateProfileForm(){
+
+    function validateProfileForm() {
         const form = document.querySelector("#profileData")
         validateData(form)
     }
-    function validateDescription(){
+
+    function validateDescription() {
         const form = document.querySelector("#descriptionForm")
         validateData(form)
     }

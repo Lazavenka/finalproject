@@ -37,18 +37,20 @@
     <title>Manager page. Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/styles.css">
+
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
 <div class="container">
-    <br>
-    <figure class="text-center">
-        <blockquote class="blockquote">
-            <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
-            <p>${manager_lab_page} ${requestScope.selected_laboratory.name}</p>
-        </blockquote>
-    </figure>
-    <br>
+    <div class="spaced">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
+                <p>${manager_lab_page} ${requestScope.selected_laboratory.name}</p>
+            </blockquote>
+        </figure>
+    </div>
     <div class="w-75 mx-auto">
         <div class="d-flex position-relative">
             <img src="${abs}/${requestScope.manager.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="...">
@@ -65,7 +67,8 @@
     </div>
     <div class="w-75 mx-auto">
         <div class="d-flex position-relative">
-            <img src="${abs}/${requestScope.selected_laboratory.imageFilePath}" class="flex-shrink-0 me-3" alt="...">
+            <img src="${abs}/${requestScope.selected_laboratory.imageFilePath}" class="flex-shrink-0 me-3"
+                 alt="${requestScope.selected_laboratory.name}">
             <div>
                 <h5 class="card-title">${requestScope.selected_laboratory.name}</h5>
                 <dl class="row">
@@ -85,48 +88,59 @@
         </div>
     </div>
     <div class="container">
-        <br>
-        <figure class="text-center">
-            <blockquote class="blockquote">
-                <p>${my_lab}</p>
-            </blockquote>
-        </figure>
+        <div class="spaced">
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>${my_lab}</p>
+                </blockquote>
+            </figure>
+        </div>
         <div class="row">
             <div class="col-sm-2 justify-content-center">
                 <div class="btn-group-vertical">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#show_equipment_table"
-                            aria-expanded="false" aria-controls="show_equipment_table">
-                        ${show_equipment}
-                    </button>
-                    <br>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#show_assistants"
-                            aria-expanded="false" aria-controls="show_assistants">
-                        ${show_assistants}
-                    </button>
-                    <br>
+                    <div class="monospace">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#show_equipment_table"
+                                aria-expanded="false" aria-controls="show_equipment_table">
+                            ${show_equipment}
+                        </button>
+                    </div>
+                    <div class="monospace">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#show_assistants"
+                                aria-expanded="false" aria-controls="show_assistants">
+                            ${show_assistants}
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-10">
                 <div class="collapse" id="show_equipment_table">
-                    <div class="justify-content-center">${equipment_list}</div>
+                    <div class="monospace">
+                        <h4 class="h4 align-self-center">${equipment_list}</h4>
+                    </div>
                     <c:if test="${requestScope.manager.laboratoryId eq requestScope.selected_laboratory.id}">
                         <div class="col-xs-2">
-                            <a class="btn btn-primary"
-                               href="${abs}/controller?command=go_add_new_equipment_page_command">${add_equipment}</a>
+                            <div class="monospace">
+                                <a class="btn btn-primary"
+                                   href="${abs}/controller?command=go_add_new_equipment_page_command">${add_equipment}</a>
+                            </div>
                         </div>
                     </c:if>
                     <%@include file="../common/fragment/equipment_table.jspf" %>
                 </div>
                 <div class="collapse" id="show_assistants">
-                    <div class="justify-content-center">${assistants}</div>
+                    <div class="monospace">
+                        <h4 class="h4 align-self-center">${assistants}</h4>
+                    </div>
                     <div class="col-xs-2">
-                        <a class="btn btn-primary"
-                           href="${abs}/controller?command=go_add_assistant_page_command">${add_assistant}</a>
+                        <div class="monospace align-self-center">
+                            <a class="btn btn-primary"
+                               href="${abs}/controller?command=go_add_assistant_page_command">${add_assistant}</a>
+                        </div>
                     </div>
                     <c:if test="${requestScope.empty_assistant_list}">
-                        <div class="justify-content-center">${not_found}</div>
+                        <div class="align-self-center">${not_found}</div>
                     </c:if>
                     <c:forEach var="assistant" items="${requestScope.assistant_list}">
                         <div class="d-flex position-relative">
@@ -136,8 +150,6 @@
                                 <h5 class="mt-0">${assistant.lastName} ${assistant.firstName}</h5>
                                 <p class="card-text">+${assistant.phone}</p>
                                 <p class="card-text">${assistant.email}</p>
-                                <a href="${abs}/controller?command=delete_assistant_command&user_id=${assistant.id}"
-                                   class="btn btn-primary">${edit}</a>
                             </div>
                         </div>
                     </c:forEach>
