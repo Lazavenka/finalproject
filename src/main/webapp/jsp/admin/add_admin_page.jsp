@@ -23,7 +23,7 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
+<div class="container" style="margin-top: 10px">
     <figure class="text-center">
         <blockquote class="blockquote">
             <p>${add_admin_page}</p>

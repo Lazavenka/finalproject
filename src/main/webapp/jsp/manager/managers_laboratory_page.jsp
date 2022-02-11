@@ -52,9 +52,11 @@
         </figure>
     </div>
     <div class="w-75 mx-auto">
-        <div class="d-flex position-relative">
-            <img src="${abs}/${requestScope.manager.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="...">
-            <div>
+        <div class="row g-0" style="margin-bottom: 10px">
+            <div class="col-sm-5">
+            <img src="${abs}/${requestScope.manager.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="${requestScope.manager.lastName}">
+            </div>
+            <div class="col-sm-7">
                 <h5 class="mt-0">${requestScope.manager.lastName} ${requestScope.manager.firstName}</h5>
                 <p class="card-text">${requestScope.manager.managerDegree.value}</p>
                 <p class="card-text">${requestScope.manager.description}</p>
@@ -66,10 +68,12 @@
         </div>
     </div>
     <div class="w-75 mx-auto">
-        <div class="d-flex position-relative">
-            <img src="${abs}/${requestScope.selected_laboratory.imageFilePath}" class="flex-shrink-0 me-3"
+        <div class="row g-0" style="margin-bottom: 10px">
+            <div class="col-sm-5">
+            <img src="${abs}/${requestScope.selected_laboratory.imageFilePath}" width="300" class="flex-shrink-0 me-3"
                  alt="${requestScope.selected_laboratory.name}">
-            <div>
+            </div>
+            <div class="col-sm-7">
                 <h5 class="card-title">${requestScope.selected_laboratory.name}</h5>
                 <dl class="row">
                     <dt class="col-sm-3">${description}</dt>
@@ -88,7 +92,7 @@
         </div>
     </div>
     <div class="container">
-        <div class="spaced">
+        <div style="margin-top: 10px; margin-bottom: 10px">
             <figure class="text-center">
                 <blockquote class="blockquote">
                     <p>${my_lab}</p>
@@ -98,14 +102,14 @@
         <div class="row">
             <div class="col-sm-2 justify-content-center">
                 <div class="btn-group-vertical">
-                    <div class="monospace">
+                    <div style="margin-bottom: 10px">
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#show_equipment_table"
                                 aria-expanded="false" aria-controls="show_equipment_table">
                             ${show_equipment}
                         </button>
                     </div>
-                    <div class="monospace">
+                    <div style="margin-bottom: 30px">
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#show_assistants"
                                 aria-expanded="false" aria-controls="show_assistants">
@@ -116,25 +120,27 @@
             </div>
             <div class="col-sm-10">
                 <div class="collapse" id="show_equipment_table">
-                    <div class="monospace">
+                    <div style="margin-bottom: 10px">
                         <h4 class="h4 align-self-center">${equipment_list}</h4>
                     </div>
                     <c:if test="${requestScope.manager.laboratoryId eq requestScope.selected_laboratory.id}">
                         <div class="col-xs-2">
-                            <div class="monospace">
+                            <div style="margin-bottom: 10px">
                                 <a class="btn btn-primary"
                                    href="${abs}/controller?command=go_add_new_equipment_page_command">${add_equipment}</a>
                             </div>
                         </div>
                     </c:if>
+                    <div style="margin-bottom: 20px">
                     <%@include file="../common/fragment/equipment_table.jspf" %>
+                    </div>
                 </div>
                 <div class="collapse" id="show_assistants">
-                    <div class="monospace">
+                    <div style="margin-bottom: 10px">
                         <h4 class="h4 align-self-center">${assistants}</h4>
                     </div>
                     <div class="col-xs-2">
-                        <div class="monospace align-self-center">
+                        <div style="margin-bottom: 10px">
                             <a class="btn btn-primary"
                                href="${abs}/controller?command=go_add_assistant_page_command">${add_assistant}</a>
                         </div>
@@ -142,17 +148,21 @@
                     <c:if test="${requestScope.empty_assistant_list}">
                         <div class="align-self-center">${not_found}</div>
                     </c:if>
-                    <c:forEach var="assistant" items="${requestScope.assistant_list}">
-                        <div class="d-flex position-relative">
-                            <img src="${abs}/${assistant.imageFilePath}" width="300" class="flex-shrink-0 me-3"
-                                 alt="${assistant.lastName} ${assistant.firstName}">
-                            <div>
-                                <h5 class="mt-0">${assistant.lastName} ${assistant.firstName}</h5>
-                                <p class="card-text">+${assistant.phone}</p>
-                                <p class="card-text">${assistant.email}</p>
+                    <div style="margin-bottom: 20px">
+                    <c:forEach var="availableAssistant" items="${requestScope.assistant_list}">
+                        <div class="row g-0" style="margin-bottom: 10px">
+                            <div class="col-lg-5">
+                            <img src="${abs}/${availableAssistant.imageFilePath}" width="300" class="flex-shrink-0 me-3"
+                                 alt="${availableAssistant.lastName} ${availableAssistant.firstName}">
+                            </div>
+                                <div class="col-lg-5">
+                                <h5 class="mt-0">${availableAssistant.lastName} ${availableAssistant.firstName}</h5>
+                                <p class="card-text">+${availableAssistant.phone}</p>
+                                <p class="card-text">${availableAssistant.email}</p>
                             </div>
                         </div>
                     </c:forEach>
+                    </div>
                 </div>
             </div>
         </div>

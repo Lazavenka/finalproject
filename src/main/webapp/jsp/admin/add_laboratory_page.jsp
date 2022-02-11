@@ -124,9 +124,6 @@
                 </div>
             </form>
         </div>
-        <div class="spaced">
-            <a class="btn btn-primary" href="${abs}/controller?command=go_about_page_command" role="button">${home}</a>
-        </div>
     </div>
 </div>
 

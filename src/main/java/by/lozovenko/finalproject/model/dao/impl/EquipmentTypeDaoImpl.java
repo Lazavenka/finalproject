@@ -15,7 +15,7 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
     private static EquipmentTypeDao instance;
 
     private static final String GET_ALL_EQUIPMENT_TYPES = """
-            SELECT equipment_type_id, equipment_type_name, equipment_type_description FROM equipment_types
+            SELECT equipment_type_id, equipment_type_name, equipment_type_description FROM equipment_types ORDER BY equipment_type_name
             """;
     private static final String GET_EQUIPMENT_TYPE_BY_ID = """
             SELECT equipment_type_id, equipment_type_name, equipment_type_description FROM equipment_types

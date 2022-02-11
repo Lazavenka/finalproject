@@ -40,8 +40,8 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${equipment_page}</p>
@@ -52,8 +52,8 @@
     <div class="w-75 mx-auto">
         <div class="row">
             <div class="col-xs-8">
-                <div class="spaced">
-                    <div class="justify-content-center">
+                <div style="margin-bottom: 10px">
+                    <div class="d-flex justify-content-center">
                         <h4 class="h4">${all_items}</h4>
                     </div>
                 </div>
@@ -66,10 +66,10 @@
                     <input type="hidden" name="current_equipment_type_id"
                            value="${requestScope.selected_equipment_type.id}">
                     <div class="select-form">
-                        <div class="justify-content-center">
+                        <div class="d-flex justify-content-center">
                             <h4 class="h4">${equipment_type}</h4>
                         </div>
-                        <div class="spaced">
+                        <div style="margin-top: 10px; margin-bottom: 10px">
                             <select id="equipment_type_id" name="equipment_type_id" class="form-control">
                                 <c:if test="${requestScope.selected_equipment_type != null}">
                                     <option selected disabled>${requestScope.selected_equipment_type.name}</option>
@@ -84,8 +84,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="spaced">
-                        <div class="justify-content-center">
+                    <div style="margin-top: 10px; margin-bottom: 10px">
+                        <div class="d-flex justify-content-center">
                             <input type="submit" class="btn btn-primary" value="${search}"/>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                    href="${abs}/controller?command=go_add_new_equipment_page_command">${add_equipment}</a>
             </div>
         </c:if>
-        <div class="spaced">
+        <div style="margin-bottom: 10px; margin-top: 10px">
             <%@include file="fragment/equipment_table.jspf" %>
         </div>
     </div>

@@ -3,12 +3,15 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
+import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
+
+import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.EDIT_PROFILE_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
@@ -28,6 +31,8 @@ public class UpdateManagerDescriptionCommand implements CustomCommand {
             if (result){
                 request.setAttribute(SUCCESS_MESSAGE, true);
                 request.setAttribute(DESCRIPTION, description);
+                Optional<User> optionalUpdatedUser = userService.findUserById(sessionUser.getId());
+                optionalUpdatedUser.ifPresent(user -> session.setAttribute(USER, user));
             }else {
                 request.setAttribute(INVALID_DESCRIPTION, true);
             }

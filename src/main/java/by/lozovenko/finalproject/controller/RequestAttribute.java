@@ -19,6 +19,9 @@ public class RequestAttribute {
     public static final String LABORATORY_NOT_FOUND = "laboratory_not_found";
     public static final String DEPARTMENT_NOT_FOUND = "department_not_found";
     public static final String MANAGER_NOT_FOUND = "manager_not_found";
+    public static final String ORDER_NOT_FOUND = "order_not_found";
+    public static final String EQUIPMENT_NOT_FOUND = "equipment_not_found";
+    public static final String ASSISTANT_NOT_FOUND = "assistant_not_found";
     public static final String NO_MANAGERS_FOUND = "no_managers";
     public static final String USER_ROLE = "role";
     public static final String UPLOAD_SUCCESS = "upload_success";
@@ -47,6 +50,8 @@ public class RequestAttribute {
     public static final String SELECTED_DEPARTMENT = "selected_department";
     public static final String SELECTED_LABORATORY = "selected_laboratory";
     public static final String SELECTED_EQUIPMENT = "selected_equipment";
+    public static final String SELECTED_ORDER = "selected_order";
+    public static final String SELECTED_ASSISTANT = "selected_assistant";
     public static final String DEPARTMENT_LABORATORIES = "department_laboratories";
     public static final String EMPTY_LIST = "empty_list";
     public static final String EMPTY_ASSISTANT_LIST = "empty_assistant_list";
@@ -81,6 +86,7 @@ public class RequestAttribute {
     public static final String CONFIRM_FAILED = "confirm_failed";
     public static final String EXCEPTION = "exception";
     public static final String ERROR_MESSAGE = "error_message";
+    public static final String LACK_OF_MONEY_ERROR = "lack_of_money";
     public static final String ERROR_USER_MANAGEMENT = "error_user_management";
     public static final String SUCCESS_USER_MANAGEMENT = "success_user_management";
     public static final String AVERAGE_RESEARCH_TIME = "average_research_time";

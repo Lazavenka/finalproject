@@ -57,7 +57,7 @@ public class GoManagersLabCommand implements CustomCommand {
                 router.setRedirect();
             }
         }else {
-            router.setPage(ERROR_403_PAGE); //todo????
+            router.setPage(LOGIN_PAGE);
         }
         return router;
     }

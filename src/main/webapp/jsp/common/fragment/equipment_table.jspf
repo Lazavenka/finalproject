@@ -8,14 +8,17 @@
 <fmt:setBundle basename="locale/language"/>
 
 
+
+<fmt:message var="not_found" key="common.not_found"/>
 <fmt:message var="equipment_price" key="equipment.price"/>
 <fmt:message var="equipment_avg_research_time" key="equipment.avg_time"/>
-<fmt:message var="not_found" key="common.not_found"/>
-<fmt:message var="booking_details" key="equipment.booking_details"/>
 <fmt:message var="description" key="common.description"/>
-<fmt:message var="edit" key="button.edit"/>
 <fmt:message var="equipment_state" key="equipment.state"/>
+<fmt:message var="edit" key="button.edit"/>
+<fmt:message var="booking_details" key="equipment.booking_details"/>
 <fmt:message var="add_equipment" key="admin.add_equipment"/>
+<fmt:message var="equipment_id" key="equipment.id"/>
+
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
 <div class="col-xs-10">
@@ -23,7 +26,7 @@
         <div class="justify-content-center">${not_found}</div>
     </c:if>
     <c:forEach var="equipmentItem" items="${requestScope.equipment_list}">
-        <div class="monospace">
+
             <div class="row g-0" style="margin-bottom: 10px">
                 <div class="col-sm-5">
                     <img src="${abs}/${equipmentItem.imageFilePath}" width="300" alt="${equipmentItem.name}">
@@ -40,7 +43,10 @@
 
                             <dt class="col-sm-3">${equipment_avg_research_time}</dt>
                             <dd class="col-sm-9">${equipmentItem.averageResearchTime.toString()}</dd>
-
+                            <c:if test="${sessionScope.user.role.name() eq 'MANAGER'}">
+                                <dt class="col-sm-3">${equipment_id}</dt>
+                                <dd class="col-sm-9">${equipmentItem.id}</dd>
+                            </c:if>
                             <dt class="col-sm-3 <c:if test="${equipmentItem.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${equipmentItem.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipment_state}</dt>
                             <dd class="col-sm-9 <c:if test="${equipmentItem.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${equipmentItem.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipmentItem.state.name()}</dd>
 
@@ -63,6 +69,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+
     </c:forEach>
 </div>

@@ -8,6 +8,7 @@ public class PagePath {
     public static final String ASSISTANT_PAGE = "jsp/assistant.jsp";
     public static final String CLIENT_PAGE = "jsp/client.jsp";
     public static final String CLIENT_BALANCE_PAGE = "jsp/client/client_balance.jsp";
+    public static final String CLIENT_ORDERS_PAGE = "jsp/client/client_orders.jsp";
     public static final String BOOK_ITEM_DETAILS_PAGE = "jsp/client/book_item_details.jsp";
     public static final String ERROR_403_PAGE = "jsp/error/error403.jsp";
     public static final String ERROR_404_PAGE = "jsp/error/error404.jsp";
@@ -27,7 +28,10 @@ public class PagePath {
     public static final String MANAGER_DETAILS_PAGE = "jsp/common/manager_details.jsp";
     public static final String DEPARTMENT_DETAILS_PAGE = "jsp/common/department_details.jsp";
     public static final String LABORATORY_DETAILS_PAGE = "jsp/common/laboratory_details.jsp";
-    public static final String ASSISTANT_SCHEDULE_PAGE = "jsp/assistant/assistant_schedule.jsp";
+    public static final String EQUIPMENT_DETAILS_PAGE = "jsp/assistant/equipment_details_page.jsp";
+    public static final String LABORATORY_ORDERS_PAGE = "jsp/manager/laboratory_orders_page.jsp";
+    public static final String ORDER_DETAILS_PAGE = "jsp/client/order_details.jsp";
+    public static final String ASSISTANT_SCHEDULE_PAGE = "jsp/assistant/assistant_sсhedule.jsp";
     public static final String ADD_EQUIPMENT_TYPE_PAGE = "jsp/admin/add_equipment_type_page.jsp";
     public static final String ADD_EQUIPMENT_PAGE = "jsp/manager/add_equipment_page.jsp";
     public static final String ADD_DEPARTMENT_PAGE = "jsp/admin/add_department_page.jsp";

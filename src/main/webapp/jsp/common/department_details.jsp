@@ -32,14 +32,14 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 <div class="container">
-    <div class="spaced">
+    <div style="margin-top: 20px; margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${department_details_page}</p>
             </blockquote>
         </figure>
     </div>
-    <div class="space"></div>
+
     <div class="w-75 mx-auto">
         <div class="col-xs-2">
             <form action="${abs}/controller" method="get">
@@ -47,7 +47,7 @@
                     <input type="hidden" name="command" value="find_department_details_by_id_command"/>
                     <input type="hidden" name="current_department_id" value="${requestScope.selected_department.id}"/>
                     <div class="select-form">
-                        <h4 class="h4 align-self-center">${department}</h4>
+                        <h4 class="h4 justify-content-center" style="margin-bottom: 20px">${department}</h4>
                         <select id="department_id" name="department_id" class="form-control">
                             <c:if test="${requestScope.selected_department != null}">
                                 <option selected disabled>${requestScope.selected_department.name}</option>
@@ -60,7 +60,7 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <div class="spaced">
+                    <div style="margin-top: 20px; margin-bottom: 20px">
                         <input type="submit" class="btn btn-primary" value="${search}"/>
                     </div>
                 </div>
@@ -83,16 +83,19 @@
                     <h4 class="h4">${laboratories}</h4>
                 </div>
                 <c:forEach var="laboratory" items="${requestScope.laboratories}">
-                        <div class="d-flex position-relative">
-                            <img src="${laboratory.imageFilePath}" class="flex-shrink-0 me-3" alt="${laboratory.name}">
-                            <div>
-                                <h5 class="mt-0">${laboratory.name}</h5>
-                                <p class="card-text">${laboratory.description}</p>
-                                <p class="card-text">${laboratory.location}</p>
-                                <a href="${abs}/controller?command=find_laboratory_details_by_id_command&laboratory_id=${laboratory.id}"
-                                   class="stretched-link">${details}</a>
-                            </div>
+                    <div class="row g-0" style="margin-top: 20px; margin-bottom: 10px">
+                        <div class="col-sm-5">
+                            <img src="${laboratory.imageFilePath}" width="300" class="flex-shrink-0 me-3"
+                                 alt="${laboratory.name}">
                         </div>
+                        <div class="col-sm-7">
+                            <h5 class="mt-0">${laboratory.name}</h5>
+                            <p class="card-text">${laboratory.description}</p>
+                            <p class="card-text">${laboratory.location}</p>
+                            <a href="${abs}/controller?command=find_laboratory_details_by_id_command&laboratory_id=${laboratory.id}"
+                               class="btn btn-primary">${details}</a>
+                        </div>
+                    </div>
                 </c:forEach>
             </c:otherwise>
         </c:choose>

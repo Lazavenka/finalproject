@@ -25,8 +25,8 @@
 <body>
 
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${add_balance_message}</p>
@@ -49,7 +49,7 @@
             <div class="invalid-feedback">
                 ${invalid_balance}
             </div>
-            <div class="space align-self-center">
+            <div class="justify-content-center" style="margin-top: 30px">
                 <button type="submit" class="btn btn-primary" id="button-addon2">${fill_balance}</button>
             </div>
         </form>

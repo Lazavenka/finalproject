@@ -33,21 +33,19 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px">
     <figure class="text-center">
         <blockquote class="blockquote">
             <p>${laboratory_details_page}</p>
         </blockquote>
     </figure>
-    </div>
     <div class="col-xs-2">
         <form action="${abs}/controller" method="get">
             <div>
                 <input type="hidden" name="command" value="find_laboratory_details_by_id_command"/>
                 <input type="hidden" name="current_laboratory_id" value="${requestScope.selected_laboratory.id}">
                 <div class="select-form">
-                    <h4 class="h4 align-self-center">${laboratory}</h4>
+                    <h4 class="h4 justify-content-center">${laboratory}</h4>
                     <select id="laboratory_id" name="laboratory_id" class="form-control">
                         <c:if test="${requestScope.selected_laboratory!= null}">
                             <option selected disabled
@@ -61,15 +59,13 @@
                         </c:forEach>
                     </select>
                 </div>
-                <div class="spaced align-self-center">
-
-                    <input type="submit" class="btn btn-primary" style="margin-top: 10px" value="${search}"/>
+                <div class="justify-content-center">
+                    <input type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px" value="${search}"/>
                 </div>
 
             </div>
         </form>
     </div>
-    <div class="space"></div>
     <div class="row g-0">
         <div class="col-md-4">
         <img src="${abs}/${requestScope.selected_laboratory.imageFilePath}" width="300" class="flex-shrink-0 me-3 rounded"
@@ -105,17 +101,19 @@
                     </c:when>
                     <c:otherwise>
                         <dd class="col-sm-9">
-                            <div class="d-flex position-relative">
+                            <div class="row g-0" style="margin-top: 20px; margin-bottom: 10px">
+                                <div class="col-lg-5">
                                 <img src="${abs}/${requestScope.manager.imageFilePath}" width="200"
                                      class="flex-shrink-0 me-3" alt="...">
-                                <div>
+                                </div>
+                                <div class="col-lg-5">
                                     <h5 class="mt-0">${requestScope.manager.lastName} ${requestScope.manager.firstName}</h5>
                                     <p class="card-text">${requestScope.manager.managerDegree.value}</p>
                                     <p class="card-text">${requestScope.manager.description}</p>
                                     <p class="card-text">+${requestScope.manager.phone}</p>
                                     <p class="card-text">${requestScope.manager.email}</p>
                                     <a href="${abs}/controller?command=find_manager_details_by_id_command&manager_id=${requestScope.manager.managerId}"
-                                       class="stretched-link">${details}</a>
+                                       class="btn btn-primary">${details}</a>
                                 </div>
                             </div>
                         </dd>
@@ -124,8 +122,8 @@
             </dl>
         </div>
     </div>
-    <h4 class="h4 align-self-center">${equipment_list}</h4>
-    <div class="spaced">
+    <h4 class="h4 justify-content-center">${equipment_list}</h4>
+    <div style="margin-bottom: 20px; margin-top: 20px">
     <%@include file="fragment/equipment_table.jspf" %>
     </div>
 </div>

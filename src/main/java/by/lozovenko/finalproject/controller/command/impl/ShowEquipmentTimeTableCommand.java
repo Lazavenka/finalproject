@@ -10,7 +10,6 @@ import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.BOOK_ITEM_DETAILS_PAGE;
@@ -41,7 +40,6 @@ public class ShowEquipmentTimeTableCommand implements CustomCommand {
                 optionalEquipment.ifPresent(equipment -> request.setAttribute(SELECTED_EQUIPMENT, equipment));
                 request.setAttribute(ERROR_MESSAGE, true);
             }
-
 
 
         }catch (ServiceException e){

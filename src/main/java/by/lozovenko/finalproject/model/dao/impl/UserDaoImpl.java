@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,12 +49,8 @@ public class UserDaoImpl implements UserDao {
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
             m.description, m.degree FROM users AS u
-            JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER'""";
-    private static final String GET_MANAGERS_BY_DEPARTMENT_ID = """
-            SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
-            u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
-            m.description, m.degree FROM users AS u
-            JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.department_id = ?""";
+            JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' ORDER BY u.last_name""";
+
     private static final String GET_MANAGER_BY_LABORATORY_ID = """
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
@@ -66,17 +61,15 @@ public class UserDaoImpl implements UserDao {
             u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
             m.description, m.degree FROM users AS u
             JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.manager_id = ?""";
-    private static final String GET_MANAGERS_BY_DEGREE = """
+
+    private static final String GET_ASSISTANT_BY_ID = """
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
-            u.user_state, m.manager_id, m.department_id, m.laboratory_id, m.avatar_link,
-            m.description, m.degree FROM users AS u
-            JOIN managers AS m ON m.user_id = u.user_id WHERE u.user_role = 'MANAGER' and m.degree = ?""";
+            u.user_state, a.assistant_id, a.laboratory_id, a.avatar_link FROM users u JOIN assistants a on u.user_id = a.user_id WHERE assistant_id = ?""";
+
     private static final String GET_ASSISTANTS_BY_LABORATORY_ID = """
             SELECT u.user_id, login, password, first_name, last_name, email, phone_number, user_role,
             user_state, a.avatar_link, a.laboratory_id, a.assistant_id FROM users AS u
             JOIN assistants AS a ON u.user_id = a.user_id WHERE a.laboratory_id = ?""";
-
-    private static final String GET_USER_ROLE_BY_LOGIN = "SELECT user_role FROM users WHERE (login = ?)";
 
     private static final String CREATE_USER = """
             INSERT INTO users (login, password, first_name, last_name, email, phone_number, user_role, user_state)
@@ -164,10 +157,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean deleteById(Long id) throws DaoException {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_BY_ID)){
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_BY_ID)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() != 0;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in deleteById method UserDao class. Unable to get access to database.", e);
         }
     }
@@ -240,7 +233,7 @@ public class UserDaoImpl implements UserDao {
                         createManagerStatement.setString(5, manager.getDescription());
                         createManagerStatement.setString(6, manager.getManagerDegree().getValue());
                         createManagerStatement.executeUpdate();
-                        try(ResultSet managerResultSet = createManagerStatement.getGeneratedKeys()) {
+                        try (ResultSet managerResultSet = createManagerStatement.getGeneratedKeys()) {
                             if (managerResultSet.next()) {
                                 generatedManagerId = managerResultSet.getLong(1);
                             }
@@ -289,7 +282,7 @@ public class UserDaoImpl implements UserDao {
                         userId = resultSet.getLong(1);
                         createClientStatement.setLong(1, userId);
                         createClientStatement.executeUpdate();
-                        try(ResultSet clientResultSet = createClientStatement.getGeneratedKeys()) {
+                        try (ResultSet clientResultSet = createClientStatement.getGeneratedKeys()) {
                             if (clientResultSet.next()) {
                                 generatedClientId = clientResultSet.getLong(1);
                             }
@@ -385,25 +378,6 @@ public class UserDaoImpl implements UserDao {
             }
         }
         return result;
-    }
-
-    @Override
-    public UserRole findUserRoleByLogin(String login) throws DaoException {
-        UserRole role;
-        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_ROLE_BY_LOGIN)) {
-            preparedStatement.setString(1, login);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    role = UserRole.valueOf(resultSet.getString(UserMapper.USER_ROLE));
-                } else {
-                    role = UserRole.GUEST;
-                }
-            }
-        } catch (SQLException e) {
-            throw new DaoException("Error in findUserRoleByLogin method. Can't find userRole by login.", e);
-        }
-        return role;
     }
 
     @Override
@@ -694,12 +668,6 @@ public class UserDaoImpl implements UserDao {
         return count;
     }
 
-
-    @Override
-    public Optional<User> findUserByLoginAndPassword(String login, String password) throws DaoException {
-        return Optional.empty();
-    }
-
     @Override
     public List<User> findAllManagers() throws DaoException {
         List<User> managers = new ArrayList<>();
@@ -711,38 +679,6 @@ public class UserDaoImpl implements UserDao {
             LOGGER.log(Level.INFO, "findAllManagers found {} managers in database", managers.size());
         } catch (SQLException e) {
             throw new DaoException("Error in findAllManagers method. Can't find Managers in database. Database access error.", e);
-        }
-        return managers;
-    }
-
-    @Override
-    public List<User> findManagersByDepartmentId(Long departmentId) throws DaoException {
-        List<User> managers = new ArrayList<>();
-        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGERS_BY_DEPARTMENT_ID)) {
-            preparedStatement.setLong(1, departmentId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                getManagersFromResultSet(managers, resultSet);
-            }
-            LOGGER.log(Level.INFO, "findManagersById (id = {}) found {} managers in database", departmentId, managers.size());
-        } catch (SQLException e) {
-            throw new DaoException("Error in findManagersByDepartmentId method. Can't find Managers by departmentId. Database access error.", e);
-        }
-        return managers;
-    }
-
-    @Override
-    public List<User> findManagersByDegree(ManagerDegree managerDegree) throws DaoException {
-        List<User> managers = new ArrayList<>();
-        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGERS_BY_DEGREE)) {
-            preparedStatement.setString(1, managerDegree.getValue());
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                getManagersFromResultSet(managers, resultSet);
-            }
-            LOGGER.log(Level.INFO, "findManagersByDegree (degree = {}) found {} managers in database", managerDegree.getValue(), managers.size());
-        } catch (SQLException e) {
-            throw new DaoException("Error in findManagersByDegree method. Can't find Managers by degree. Database access error.", e);
         }
         return managers;
     }
@@ -766,11 +702,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findManagerByName(String patternName) throws DaoException {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<User> findManagerById(Long managerId) throws DaoException {
         Optional<User> optionalUser = Optional.empty();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
@@ -789,32 +720,24 @@ public class UserDaoImpl implements UserDao {
         return optionalUser;
     }
 
-
-    @Override
-    public List<User> findAllAssistants() throws DaoException {
-        return null;
-    }
-
     @Override
     public Optional<User> findAssistantById(Long assistantId) throws DaoException {
-        return Optional.empty();
+        Optional<User> optionalUser = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ASSISTANT_BY_ID)) {
+            preparedStatement.setLong(1, assistantId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    UserMapper.getInstance().rowMap(user, resultSet);
+                    optionalUser = AssistantMapper.getInstance().rowMap(user, resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in findAssistantById method. Can't find Manager by managerId. Database access error.", e);
+        }
+        return optionalUser;
     }
-
-    @Override
-    public List<User> findAssistantsByEquipmentType(EquipmentType equipmentType) throws DaoException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Optional<User> findAssistantByOrderEquipment(Order order) throws DaoException {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<User> findAssistantByOrder(Order order) throws DaoException {
-        return null;
-    }
-
 
     private Optional<User> addColumnsByUserRole(User user, UserRole role, Connection connection) throws DaoException {
         Optional<User> userOptional;
@@ -832,15 +755,15 @@ public class UserDaoImpl implements UserDao {
 
     private Optional<User> addClientColumns(Connection connection, User user) throws DaoException {
         Optional<User> optionalUser = Optional.empty();
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_COLUMNS_BY_USER_ID)) {
             long userId = user.getId();
             preparedStatement.setLong(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                optionalUser = ClientMapper.getInstance().rowMap(user, resultSet);
-            } else {
-                LOGGER.log(Level.INFO, "No columns for Client with user id = {} found", userId);
+            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+                if (resultSet.next()) {
+                    optionalUser = ClientMapper.getInstance().rowMap(user, resultSet);
+                } else {
+                    LOGGER.log(Level.INFO, "No columns for Client with user id = {} found", userId);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Database access error. Can't handle with addClientColumns method.", e);
@@ -853,11 +776,12 @@ public class UserDaoImpl implements UserDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(GET_MANAGER_COLUMNS_BY_USER_ID)) {
             long userId = user.getId();
             preparedStatement.setLong(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
-            } else {
-                LOGGER.log(Level.INFO, "No columns for Manager with user id = {} found", userId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    optionalUser = ManagerMapper.getInstance().rowMap(user, resultSet);
+                } else {
+                    LOGGER.log(Level.INFO, "No columns for Manager with user id = {} found", userId);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Database access error. Can't handle with addManagersColumns method.", e);
@@ -870,11 +794,12 @@ public class UserDaoImpl implements UserDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(GET_ASSISTANT_COLUMNS_BY_USER_ID)) {
             long userId = user.getId();
             preparedStatement.setLong(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                optionalUser = AssistantMapper.getInstance().rowMap(user, resultSet);
-            } else {
-                LOGGER.log(Level.INFO, "No columns for Assistant with user id = {} found", userId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    optionalUser = AssistantMapper.getInstance().rowMap(user, resultSet);
+                } else {
+                    LOGGER.log(Level.INFO, "No columns for Assistant with user id = {} found", userId);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException("Database access error. Can't handle with addAssistantColumns method.", e);

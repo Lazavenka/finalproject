@@ -56,4 +56,6 @@ public interface UserService {
     boolean deleteUserById(String userId) throws ServiceException;
 
     boolean updateUserStateById(String userStateString, String userId) throws ServiceException;
+
+    Optional<Assistant> findAssistantById(long assistantId) throws ServiceException;
 }

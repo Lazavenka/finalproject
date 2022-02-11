@@ -19,7 +19,6 @@ public enum CommandType {
 
     LOGOUT_COMMAND(new LogoutCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
 
-    GO_HOME_COMMAND(new GoHomeCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
     GO_ABOUT_PAGE_COMMAND(new GoAboutPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
     GO_SIGN_IN_PAGE_COMMAND(new GoSignInPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
     GO_EQUIPMENT_PAGE_COMMAND(new GoEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT, GUEST)),
@@ -40,9 +39,15 @@ public enum CommandType {
     ADD_BALANCE_COMMAND(new AddBalanceCommand(), EnumSet.of(CLIENT)),
     GO_BOOK_EQUIPMENT_DETAILS_PAGE_COMMAND(new GoBookEquipmentDetailsPageCommand(), EnumSet.of(CLIENT)),
     SHOW_EQUIPMENT_TIMETABLE_COMMAND(new ShowEquipmentTimeTableCommand(), EnumSet.of(CLIENT)),
+    BOOK_EQUIPMENT_COMMAND(new BookEquipmentCommand(), EnumSet.of(CLIENT)),
+    PAY_ORDER_COMMAND(new PayOrderCommand(), EnumSet.of(CLIENT)),
+    CANCEL_ORDER_COMMAND(new CancelOrderCommand(), EnumSet.of(CLIENT)),
+    GO_CLIENT_ORDERS_PAGE_COMMAND(new GoClientOrdersCommand(), EnumSet.of(CLIENT)),
+    GO_ORDER_DETAILS_PAGE_COMMAND(new GoOrderDetailsPageCommand(), EnumSet.of(CLIENT, MANAGER)),
 
     SHOW_SCHEDULE_COMMAND(new ShowScheduleCommand(), EnumSet.of(ASSISTANT)),
     UPLOAD_AVATAR_COMMAND(new UploadAvatarCommand(), EnumSet.of(ASSISTANT, MANAGER)),
+    GO_EQUIPMENT_DETAILS_PAGE_COMMAND(new GoEquipmentDetailsPageCommand(), EnumSet.of(ASSISTANT, MANAGER)),
 
     GO_MANAGERS_LAB_COMMAND(new GoManagersLabCommand(), EnumSet.of(MANAGER)),
     UPDATE_MANAGER_DESCRIPTION_COMMAND(new UpdateManagerDescriptionCommand(), EnumSet.of(MANAGER)),
@@ -50,6 +55,8 @@ public enum CommandType {
     UPDATE_LABORATORY_PHOTO_COMMAND(new UploadLaboratoryPhotoCommand(), EnumSet.of(MANAGER)),
     ADD_ASSISTANT_COMMAND(new AddAssistantCommand(), EnumSet.of(MANAGER)),
     GO_ADD_ASSISTANT_PAGE_COMMAND(new GoAddAssistantPageCommand(), EnumSet.of(MANAGER)),
+    GO_LABORATORY_ORDERS_COMMAND(new GoLaboratoryOrdersCommand(), EnumSet.of(MANAGER)),
+    COMPLETE_ORDER_COMMAND(new CompleteOrderCommand(), EnumSet.of(MANAGER)),
 
     GO_ADD_NEW_EQUIPMENT_PAGE_COMMAND(new GoAddNewEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),
     GO_EDIT_EQUIPMENT_PAGE_COMMAND(new GoEditEquipmentPageCommand(), EnumSet.of(ADMIN, MANAGER)),

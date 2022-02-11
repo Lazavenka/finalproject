@@ -22,11 +22,11 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
 
     private static final String GET_LABORATORIES_BY_DEPARTMENT_ID = """
             SELECT laboratory_id, laboratory_name, department_id, laboratory_location, laboratory_photo_link, laboratory_description
-            FROM laboratories WHERE department_id = ?""";
+            FROM laboratories WHERE department_id = ? ORDER BY laboratory_name""";
 
     private static final String GET_ALL_LABORATORIES = """
             SELECT laboratory_id, laboratory_name, department_id, laboratory_location, laboratory_photo_link, laboratory_description
-            FROM laboratories""";
+            FROM laboratories ORDER BY laboratory_name""";
 
     private static final String GET_LABORATORY_BY_MANAGER_ID = """
             SELECT l.laboratory_name, l.laboratory_id, l.department_id, l.laboratory_location,
@@ -44,6 +44,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             SELECT laboratory_id, laboratory_name, department_id, laboratory_location,
             laboratory_photo_link, laboratory_description FROM laboratories
             WHERE NOT EXISTS(SELECT manager_id FROM managers WHERE managers.laboratory_id = laboratories.laboratory_id)""";
+
     private static final String COUNT_LABORATORIES = "SELECT count(laboratory_id) from laboratories";
 
     private LaboratoryDaoImpl() {
@@ -61,7 +62,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         List<Laboratory> laboratories = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_LABORATORIES)) {
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Laboratory laboratory = new Laboratory();
                     Optional<Laboratory> optionalUser = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
@@ -80,7 +81,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORY_BY_ID)) {
             preparedStatement.setLong(1, id);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Laboratory laboratory = new Laboratory();
                     optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
@@ -115,7 +116,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
             createLaboratoryStatement.setString(3, laboratory.getLocation());
             createLaboratoryStatement.setString(4, laboratory.getDescription());
             createLaboratoryStatement.executeUpdate();
-            try(ResultSet generatedIdResultSet = createLaboratoryStatement.getGeneratedKeys()) {
+            try (ResultSet generatedIdResultSet = createLaboratoryStatement.getGeneratedKeys()) {
                 if (generatedIdResultSet.next()) {
                     laboratoryId = generatedIdResultSet.getLong(1);
                 }
@@ -153,7 +154,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORIES_BY_DEPARTMENT_ID)) {
             preparedStatement.setLong(1, departmentId);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Laboratory laboratory = new Laboratory();
                     Optional<Laboratory> optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);
@@ -172,7 +173,7 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_LABORATORY_BY_MANAGER_ID)) {
             preparedStatement.setLong(1, managerId);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Laboratory laboratory = new Laboratory();
                     optionalLaboratory = LaboratoryMapper.getInstance().rowMap(laboratory, resultSet);

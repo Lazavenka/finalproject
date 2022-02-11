@@ -57,8 +57,8 @@
 
 <jsp:include page="../header/header.jsp"/>
 
-<div class="container">
-    <div class="space">
+<div class="container" style="margin-top: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
@@ -74,7 +74,7 @@
     <div class="row">
         <div class="col-sm-2 justify-content-center">
             <div class="btn-group-vertical">
-                <div class="space">
+                <div style="margin-bottom: 20px">
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#editProfile"
                             aria-expanded="false" aria-controls="editProfile">
@@ -88,7 +88,7 @@
 
 
                 <c:if test="${sessionScope.user.role.name() eq 'MANAGER' or sessionScope.user.role.name() eq 'ASSISTANT'}">
-                    <div class="space">
+                    <div style="margin-top: 20px; margin-bottom: 20px" >
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#uploadAvatarTab"
                                 aria-expanded="false" aria-controls="uploadAvatarTab">
@@ -98,7 +98,6 @@
                 </c:if>
 
                 <c:if test="${sessionScope.user.role.name() eq 'MANAGER'}">
-                    <div class="space"></div>
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#editManager"
                             aria-expanded="false" aria-controls="editManager">
@@ -255,7 +254,7 @@
                         </c:when>
                     </c:choose>
 
-                    <div id="imagePreview" class="spaced"></div>
+                    <div id="imagePreview" style="margin-top: 20px; margin-bottom: 20px"></div>
                     <script>
                         function fileValidation() {
                             const fileInput = document.getElementById('inputGroupFile04');

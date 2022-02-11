@@ -10,24 +10,21 @@
 </c:if>
 <fmt:setBundle basename="locale/language"/>
 
-<fmt:message var="success_message" key="message.success_message"/>
-<fmt:message var="laboratory_orders_page" key="message.laboratory_orders_page"/>
+<fmt:message var="assistant_sсhedule_page" key="message.assistant_sсhedule_page"/>
 <fmt:message var="details" key="buttons.details"/>
-<fmt:message var="complete" key="buttons.complete"/>
 <fmt:message var="date" key="order.date"/>
-<fmt:message var="price" key="order.price"/>
 <fmt:message var="time_start" key="equipment.time_start"/>
 <fmt:message var="time_end" key="equipment.time_end"/>
-<fmt:message var="error_message" key="message.error_message"/>
+<fmt:message var="orders_not_found" key="common.not_found"/>
 <fmt:message var="state" key="equipment.state"/>
 <fmt:message var="equipment" key="header.equipment"/>
 
 
-<c:set var="laboratory_orders" value="${requestScope.order_list}"/>
+<c:set var="assistant_orders" value="${requestScope.order_list}"/>
 
 <html>
 <head>
-    <title>${laboratory_orders_page} Research center.</title>
+    <title>${assistant_sсhedule_page} Research center.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../../css/styles.css">
@@ -36,11 +33,11 @@
 <body>
 
 <jsp:include page="../header/header.jsp"/>
-<div class="container" style="margin-top: 20px; margin-bottom: 20px">
+<div class="container" style="margin-top: 20px">
     <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
-                <p>${laboratory_orders_page}</p>
+                <p>${assistant_sсhedule_page}</p>
             </blockquote>
         </figure>
     </div>
@@ -49,9 +46,11 @@
         <div style="margin-top: 10px; margin-bottom: 10px">
             <figure class="text-center">
                 <blockquote class="blockquote">
-                        <c:if test="${requestScope.error_message}">
-                            <p class="alert-warning">${error_message}</p>
-                        </c:if>
+                    <c:choose>
+                        <c:when test="${requestScope.empty_list}">
+                            <p class="alert-success">${orders_not_found}</p>
+                        </c:when>
+                    </c:choose>
                 </blockquote>
             </figure>
         </div>
@@ -61,30 +60,18 @@
                 <th scope="col">${date}</th>
                 <th scope="col">${time_start}</th>
                 <th scope="col">${time_end}</th>
-                <th scope="col">${price}</th>
                 <th scope="col">${equipment}</th>
-                <th scope="col">${state}</th>
-                <th scope="col">${complete}</th>
-                <th scope="col">${details}</th>
+
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="order" items="${laboratory_orders}">
+            <c:forEach var="order" items="${assistant_orders}">
                 <tr>
                     <th scope="row">${order.rentStartTime.toLocalDate()}</th>
                     <td>${order.rentStartTime.toLocalTime()}</td>
                     <td>${order.rentEndTime.toLocalTime()}</td>
-                    <td>${order.totalCost.toString()}</td>
-                    <td>${order.equipmentId}</td>
-                    <td>${order.state.name()}</td>
-                    <td><form action="${abs}/controller" method="post">
-                        <input type="hidden" name="command" value="complete_order_command">
-                        <input type="hidden" name="order_id" value="${order.id}">
-                        <button type="submit" class="btn btn-success"
-                                <c:if test="${order.state.name() != 'PAYED'}">disabled</c:if> >${complete}</button>
-                    </form></td>
-                    <td><a class="btn btn-success" role="button" href="${abs}/controller?command=go_order_details_page_command&order_id=${order.id}">${details}</a></td>
-                </tr>
+                    <td><a class="btn btn-primary" role="button" href="${abs}/controller?command=go_equipment_details_page_command&equipment_id=${order.equipmentId}">${details}</a></td>
+                    </tr>
             </c:forEach>
             </tbody>
         </table>

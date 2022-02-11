@@ -159,7 +159,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public Optional<EquipmentTimeTable> provideEquipmentTimeTable(String equipmentIdString, String date) throws ServiceException {
         Optional<EquipmentTimeTable> optionalEquipmentTimeTable = Optional.empty();
-        if(!inputFieldValidator.isCorrectId(equipmentIdString) && !inputFieldValidator.isCorrectDate(date)){
+        if(!inputFieldValidator.isCorrectId(equipmentIdString) || !inputFieldValidator.isCorrectDate(date)){
             LOGGER.log(Level.DEBUG, "Incorrect id={} or date={}", equipmentIdString, date);
             return optionalEquipmentTimeTable;
         }
@@ -177,7 +177,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             Equipment equipment = optionalEquipment.get();
             List<Assistant> laboratoryAssistants = userService.findAssistantsByLaboratoryId(equipment.getLaboratoryId());
             EquipmentTimeTable equipmentTimeTable = new EquipmentTimeTable(equipment);
-            List<Order> equipmentOrdersOnSelectedDay = orderService.findOrdersByEquipmentIdAtPeriod(equipment.getEquipmentTypeId(), selectedDay, selectedDay.plusDays(ONE_DAY));
+            List<Order> equipmentOrdersOnSelectedDay = orderService.findOrdersByEquipmentIdAtPeriod(equipment.getId(), selectedDay, selectedDay.plusDays(ONE_DAY));
             Map<Long, List<Order>> assistantsOrders = new HashMap<>();
             for (Assistant assistant: laboratoryAssistants) {
                 long assistantId = assistant.getAssistantId();

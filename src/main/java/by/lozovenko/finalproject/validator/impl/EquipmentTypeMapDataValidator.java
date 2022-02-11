@@ -26,7 +26,7 @@ public class EquipmentTypeMapDataValidator extends CustomMapDataValidator {
         boolean result = true;
 
         String name = mapData.get(EQUIPMENT_TYPE_NAME);
-        String description = mapData.get(DESCRIPTION);
+        String description = mapData.get(EQUIPMENT_TYPE_DESCRIPTION);
 
 
 
@@ -36,7 +36,7 @@ public class EquipmentTypeMapDataValidator extends CustomMapDataValidator {
         }
 
         if (!customFieldValidator.isCorrectEquipmentTypeDescription(description)){
-            mapData.put(DESCRIPTION, INVALID_DESCRIPTION);
+            mapData.put(EQUIPMENT_TYPE_DESCRIPTION, INVALID_DESCRIPTION);
             result = false;
         }
 

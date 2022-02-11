@@ -21,7 +21,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     private static final String GET_ALL_EQUIPMENT = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
-            price_per_hour, average_research_time, is_need_assistant, equipment_state, equipment_photo_link FROM equipment""";
+            price_per_hour, average_research_time, is_need_assistant, equipment_state, equipment_photo_link FROM equipment ORDER BY equipment_name""";
     private static final String GET_EQUIPMENT_BY_ID = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
@@ -30,12 +30,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
     private static final String GET_EQUIPMENT_BY_TYPE = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
-            equipment_photo_link FROM equipment WHERE equipment_type_id = (?)""";
+            equipment_photo_link FROM equipment WHERE equipment_type_id = (?) ORDER BY equipment_name""";
 
     private static final String GET_EQUIPMENT_BY_LABORATORY_ID = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
-            equipment_photo_link FROM equipment WHERE laboratory_id = (?)""";
+            equipment_photo_link FROM equipment WHERE laboratory_id = (?) ORDER BY equipment_name""";
 
     private static final String CREATE_NEW_EQUIPMENT_ITEM = """
             INSERT INTO equipment(equipment_type_id, laboratory_id, equipment_name, equipment_description,

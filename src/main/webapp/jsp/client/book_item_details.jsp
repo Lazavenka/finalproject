@@ -21,6 +21,11 @@
 <fmt:message var="time_start" key="equipment.time_start"/>
 <fmt:message var="time_end" key="equipment.time_end"/>
 <fmt:message var="assistants" key="equipment.assistants"/>
+<fmt:message var="necessary_assistant" key="equipment.necessary_assistant"/>
+<fmt:message var="not_found" key="common.not_found"/>
+<fmt:message var="to_equipment" key="buttons.to_equipment"/>
+<fmt:message var="book_equipment" key="buttons.book_equipment"/>
+<fmt:message var="selected_date" key="message.selected_date"/>
 
 <c:set var="timetable" value="${requestScope.equipment_timetable}"/>
 
@@ -69,7 +74,7 @@
             </div>
         </div>
     </div>
-    <div class="spaced">
+    <div style="margin-top: 10px; margin-bottom: 20px">
         <div class="row">
             <div class="col-sm-2">
                 <form action="${abs}/controller" method="get">
@@ -81,18 +86,27 @@
                     </div>
                     <button type="submit" class="btn btn-primary" style="margin-top: 10px">${show_timetable}</button>
                 </form>
+                <div style="margin-bottom: 25px">
+                    <a class="btn btn-primary" role="button"
+                       href="${abs}/controller?command=find_equipment_by_type_command&equipment_type_id=0">${to_equipment}</a>
+                </div>
             </div>
             <div class="col-sm-10">
                 <c:choose>
                     <c:when test="${requestScope.error_message}">${wrong_date}</c:when>
                 </c:choose>
                 <c:if test="${timetable != null}">
+                    <div class="text-center">${selected_date} ${requestScope.date}</div>
                     <form action="${abs}/controller" method="post">
                         <input type="hidden" name="command" value="book_equipment_command">
                         <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
-                        <input type="hidden" name="date" value="${requestScope.date}">
-                        <input type="hidden" name="average_research_time"
-                               value="${requestScope.average_research_time.toString()}">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="need_assistant"
+                                   name="is_need_assistant" value="true"
+                                   <c:if test="${requestScope.selected_equipment.needAssistant}">checked
+                                   disabled</c:if> >
+                            <label class="form-check-label" for="need_assistant">${necessary_assistant}</label>
+                        </div>
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -103,24 +117,66 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach var="timePeriod" items="${timetable.timeTable}">
-                                <tr>
-                                    <th scope="row"><input type="checkbox" name="date_time_start"
-                                                           value="${timePeriod.startOfPeriod}"></th>
-                                    <td>${timePeriod.startOfPeriod.toLocalTime()}</td>
-                                    <td>${timePeriod.endOfPeriod.toLocalTime()}</td>
-                                    <td>${timePeriod.availableAssistantInPeriod}</td>
-                                </tr>
-                            </c:forEach>
+                            <c:choose>
+                                <c:when test="${!empty timetable.workTimePeriods }">
+                                    <c:forEach var="timePeriod" items="${timetable.workTimePeriods}">
+                                        <c:if test="${timePeriod.availability.name() eq 'AVAILABLE_WITHOUT_ASSISTANT' or timePeriod.availability.name() eq 'FULL_AVAILABLE'}">
+                                            <c:set var="assistant_id"/>
+                                            <c:set var="assistant_name"/>
+                                            <c:choose>
+                                                <c:when test="${timePeriod.availability.name() eq 'FULL_AVAILABLE'}">
+                                                    <c:set var="availableAssistant"
+                                                           value="${timePeriod.availableAssistantInPeriod}"/>
+                                                    <c:set var="assistant_id"
+                                                           value="${availableAssistant.get().assistantId}"/>
+                                                    <c:set var="assistant_name"
+                                                           value="${availableAssistant.get().lastName} ${availableAssistant.get().firstName}"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:set var="assistant_id" value="0"/>
+                                                    <c:set var="assistant_name" value="${not_found}"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <tr
+                                                    <c:if test="${timePeriod.availability.name() eq 'AVAILABLE_WITHOUT_ASSISTANT'}">class="without_assistant"</c:if>
+                                                    <c:if test="${timePeriod.availability.name() eq 'AVAILABLE_WITHOUT_ASSISTANT' and requestScope.selected_equipment.needAssistant}">style="display: none"</c:if>>
+                                                <th scope="row" class="for_assistant_id">
+                                                    <input type="checkbox" name="order_date_assistant"
+                                                           value="${timePeriod.startOfPeriod}|${assistant_id}">
+                                                </th>
+                                                <td>${timePeriod.startOfPeriod.toLocalTime()}</td>
+                                                <td>${timePeriod.endOfPeriod.toLocalTime()}</td>
+                                                <td>${assistant_name}</td>
+                                            </tr>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr>
+                                        <th></th>
+                                        <td>${not_found}</td>
+                                    </tr>
+                                </c:otherwise>
+                            </c:choose>
+
                             </tbody>
                         </table>
+                        <button type="submit" class="btn btn-primary">${book_equipment}</button>
                     </form>
                 </c:if>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    function toggle() {
+        Array.from(document.querySelectorAll('.without_assistant')).forEach(e => {
+            e.style.display = this.checked ? 'none' : 'table-row';
+        });
+    }
 
+    document.getElementById('need_assistant').onchange = toggle;
+</script>
 <ctg:print-footer/>
 </body>
 </html>

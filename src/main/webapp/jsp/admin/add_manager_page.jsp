@@ -44,7 +44,7 @@
     </div>
     <div class="w-75 mx-auto">
         <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
-            <input type="hidden" name="command" value="add_manager_command">
+            <input type="hidden" name="command" value="add_new_manager_command">
             <br>
             <%@ include file="../common/fragment/register_form.jspf" %>
             <br>

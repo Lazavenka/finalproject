@@ -3,13 +3,10 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.entity.Equipment;
-import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.entity.Manager;
-import by.lozovenko.finalproject.model.service.EquipmentService;
-import by.lozovenko.finalproject.model.service.LaboratoryService;
-import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
-import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
+import by.lozovenko.finalproject.model.entity.Order;
+import by.lozovenko.finalproject.model.service.OrderService;
+import by.lozovenko.finalproject.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -26,32 +23,25 @@ public class GoLaboratoryOrdersCommand implements CustomCommand {
         HttpSession session = request.getSession();
         Optional<Object> optionalManager = Optional.ofNullable(session.getAttribute(USER));
         if (optionalManager.isPresent()){
-            router.setPage(MANAGER_PAGE);
-            LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
-            EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
+            router.setPage(LABORATORY_ORDERS_PAGE);
+            OrderService orderService = OrderServiceImpl.getInstance();
             try {
                 Manager loggedManager = (Manager) optionalManager.get();
                 long laboratoryId = loggedManager.getLaboratoryId();
-                Optional<Laboratory> optionalLaboratory = laboratoryService.findLaboratoryById(laboratoryId);
-                List<Equipment> equipmentList = equipmentService.findEquipmentByLaboratoryId(laboratoryId);
-                request.setAttribute(EQUIPMENT_LIST, equipmentList);
-                if (optionalLaboratory.isPresent()){
-                    request.setAttribute(SELECTED_LABORATORY, optionalLaboratory.get());
-                }else {
-                    request.setAttribute(LABORATORY_NOT_FOUND, true);
-                }
-                request.setAttribute(MANAGER, loggedManager);
-                if (equipmentList.isEmpty()){
+                List<Order> orderList = orderService.findOrdersByLaboratoryId(laboratoryId);
+                request.setAttribute(ORDER_LIST, orderList);
+
+                if (orderList.isEmpty()){
                     request.setAttribute(EMPTY_LIST, true);
                 }
             }catch (ServiceException e){
-                logger.error("Error at SignInCommand", e);
+                logger.error("Error at GoLaboratoryOrdersCommand", e);
                 request.setAttribute(EXCEPTION, e);
                 router.setPage(ERROR_404_PAGE);
                 router.setRedirect();
             }
         }else {
-            router.setPage(ERROR_403_PAGE); //todo????
+            router.setPage(LOGIN_PAGE);
         }
         return router;
     }

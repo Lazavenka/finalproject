@@ -27,7 +27,7 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
         if (equipmentTimeTable.getEquipment() == null) {
             throw new ServiceException("Error in EquipmentTimeTableService. Equipment parameter can't be null!");
         }
-        int dayCount = EquipmentTimeTable.COUNT_OF_DAYS;
+        int dayCount = EquipmentTimeTable.SEVEN_DAYS;
         LocalDate currentDate = LocalDate.now();
         buildTimeTable(laboratoryAssistants, equipmentTimeTable, currentDate, dayCount);
     }
@@ -57,7 +57,7 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
                     }
                     LocalDateTime endDateTimePeriod = currentDate.atTime(endCurrentTimePeriod);
                     EquipmentWorkTimePeriod currentPeriod = new EquipmentWorkTimePeriod(startDateTimePeriod, endDateTimePeriod, availability, laboratoryAssistants);
-                    equipmentTimeTable.getTimeTable().add(currentPeriod);
+                    equipmentTimeTable.getWorkTimePeriods().add(currentPeriod);
                 }
                 startCurrentPeriod = endCurrentTimePeriod;
             }
@@ -70,7 +70,7 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
 
     @Override
     public void setAvailability(EquipmentTimeTable equipmentTimeTable, List<Order> equipmentOrders, Map<Long, List<Order>> assistantsOrders) {
-        List<EquipmentWorkTimePeriod> timeTable = equipmentTimeTable.getTimeTable();
+        List<EquipmentWorkTimePeriod> timeTable = equipmentTimeTable.getWorkTimePeriods();
         for (Map.Entry<Long, List<Order>> currentAssistantOrders : assistantsOrders.entrySet()) {
             List<Order> currentOrders = currentAssistantOrders.getValue();
             Long currentAssistantId = currentAssistantOrders.getKey();

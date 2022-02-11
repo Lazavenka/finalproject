@@ -30,8 +30,8 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 10px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${manager_details_page}</p>
@@ -43,55 +43,59 @@
             <c:when test="${requestScope.no_managers}">
                 <div class="alert alert-danger">${no_managers}</div>
             </c:when>
-            <c:otherwise><c:set var="manager" value="${requestScope.manager}"/>
-                <div class="d-flex position-relative">
-                    <img src="${abs}/${manager.imageFilePath}" width="400" class="flex-shrink-0 me-3" alt="...">
+            <c:otherwise>
+                <c:set var="manager" value="${requestScope.manager}"/>
+                <div class="row g-0" style="margin-bottom: 10px">
+                    <div class="col-sm-5">
+                        <img src="${abs}/${manager.imageFilePath}" width="300" class="flex-shrink-0 me-3" alt="...">
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="card-body">
+                            <h5 class="card-title">${manager.lastName} ${manager.firstName}</h5>
+                            <dl class="row">
+                                <dt class="col-sm-3">${degree}</dt>
+                                <dd class="col-sm-9">${manager.managerDegree.value}</dd>
 
-                    <div class="card-body">
-                        <h5 class="card-title">${manager.lastName} ${manager.firstName}</h5>
-                        <dl class="row">
-                            <dt class="col-sm-3">${degree}</dt>
-                            <dd class="col-sm-9">${manager.managerDegree.value}</dd>
+                                <dt class="col-sm-3">${department}</dt>
+                                <c:choose>
+                                    <c:when test="${requestScope.department_not_found}">
+                                        <dd class="col-sm-9">${field_not_found}</dd>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <dd class="col-sm-9"><a
+                                                href="${abs}/controller?command=find_department_details_by_id_command&department_id=${manager.departmentId}">${requestScope.department_name}</a>
+                                        </dd>
+                                    </c:otherwise>
+                                </c:choose>
 
-                            <dt class="col-sm-3">${department}</dt>
-                            <c:choose>
-                                <c:when test="${requestScope.department_not_found}">
-                                    <dd class="col-sm-9">${field_not_found}</dd>
-                                </c:when>
-                                <c:otherwise>
-                                    <dd class="col-sm-9"><a
-                                            href="${abs}/controller?command=find_department_details_by_id_command&department_id=${manager.departmentId}">${requestScope.department_name}</a>
-                                    </dd>
-                                </c:otherwise>
-                            </c:choose>
+                                <dt class="col-sm-3">${laboratory}</dt>
+                                <c:choose>
+                                    <c:when test="${requestScope.laboratory_not_found}">
+                                        <dd class="col-sm-9">${field_not_found}</dd>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <dd class="col-sm-9"><a
+                                                href="${abs}/controller?command=find_laboratory_details_by_id_command&laboratory_id=${manager.laboratoryId}">${requestScope.laboratory_name}</a>
+                                        </dd>
+                                    </c:otherwise>
+                                </c:choose>
 
-                            <dt class="col-sm-3">${laboratory}</dt>
-                            <c:choose>
-                                <c:when test="${requestScope.laboratory_not_found}">
-                                    <dd class="col-sm-9">${field_not_found}</dd>
-                                </c:when>
-                                <c:otherwise>
-                                    <dd class="col-sm-9"><a
-                                            href="${abs}/controller?command=find_laboratory_details_by_id_command&laboratory_id=${manager.laboratoryId}">${requestScope.laboratory_name}</a>
-                                    </dd>
-                                </c:otherwise>
-                            </c:choose>
+                                <dt class="col-sm-3">${description}</dt>
+                                <dd class="col-sm-9">${manager.description}</dd>
 
-                            <dt class="col-sm-3">${description}</dt>
-                            <dd class="col-sm-9">${manager.description}</dd>
-
-                            <dt class="col-sm-3">${contacts}</dt>
-                            <dd class="col-sm-9">
-                                <dl class="row">
-                                    <dt class="col-sm-4">${phone}</dt>
-                                    <dd class="col-sm-8">${manager.phone}</dd>
-                                </dl>
-                                <dl class="row">
-                                    <dt class="col-sm-4">${email}</dt>
-                                    <dd class="col-sm-8">${manager.email}</dd>
-                                </dl>
-                            </dd>
-                        </dl>
+                                <dt class="col-sm-3">${contacts}</dt>
+                                <dd class="col-sm-9">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">${phone}</dt>
+                                        <dd class="col-sm-8">${manager.phone}</dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-sm-4">${email}</dt>
+                                        <dd class="col-sm-8">${manager.email}</dd>
+                                    </dl>
+                                </dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </c:otherwise>

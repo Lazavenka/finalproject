@@ -16,7 +16,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
 
     private static final String GET_DEPARTMENT_NAME_BY_ID = "SELECT department_name FROM departments WHERE department_id = ?";
     private static final String GET_DEPARTMENT_BY_ID = "SELECT department_id, department_name, department_description, department_address FROM departments WHERE department_id = ?";
-    private static final String GET_ALL_DEPARTMENTS = "SELECT department_id, department_name, department_description, department_address FROM departments";
+    private static final String GET_ALL_DEPARTMENTS = "SELECT department_id, department_name, department_description, department_address FROM departments ORDER BY department_name";
     private static final String CREATE_DEPARTMENT = "INSERT INTO departments (department_name, department_description, department_address) VALUES (?, ?, ?)";
     private static final String COUNT_DEPARTMENTS = "SELECT count(department_id) from departments";
 

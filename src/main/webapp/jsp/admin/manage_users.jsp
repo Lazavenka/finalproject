@@ -44,7 +44,7 @@
 
 <c:choose>
     <c:when test="${requestScope.success_user_management}">
-        <div class="spaced">
+        <div style="margin-top: 10px; margin-bottom: 10px">
             <figure class="text-center">
                 <blockquote class="blockquote">
                     <p class="alert-success">${success_message}</p>
@@ -53,7 +53,7 @@
         </div>
     </c:when>
     <c:when test="${requestScope.error_user_management}">
-        <div class="spaced">
+        <div style="margin-top: 10px; margin-bottom: 10px">
             <figure class="text-center">
                 <blockquote class="blockquote">
                     <p class="alert-warning">${error_message}</p>
@@ -67,18 +67,14 @@
 <div class="container">
     <div class="row">
         <div class="col justify-content-center">
-            <div class="btn-group-vertical">
-                <div class="spaced">
-                <a href="${abs}/controller?command=go_add_admin_page_command" class="btn btn-primary">${add_admin}</a>
-                </div>
+            <div class="btn-group-vertical" style="margin-top: 40px">
+                <a href="${abs}/controller?command=go_add_admin_page_command" class="btn btn-primary" style="margin-bottom: 10px">${add_admin}</a>
                 <a href="${abs}/controller?command=go_add_manager_page_command"
-                   class="btn btn-primary">${add_manager}</a>
-                <div class="spaced">
+                   class="btn btn-primary" style="margin-top: 10px">${add_manager}</a>
                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                         data-bs-target="#usersTable"
                         aria-expanded="false" aria-controls="usersTable">
                     ${show_users}
-                </button>
                 </div>
             </div>
         </div>

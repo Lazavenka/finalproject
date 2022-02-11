@@ -149,7 +149,7 @@
 
                 <div class="collapse" id="uploadPhoto">
                     <form method="post" action="${abs}/controller" enctype="multipart/form-data" id="fileForm">
-                        <input type="hidden" name="command" value="upload_laboratory_photo_command">
+                        <input type="hidden" name="command" value="update_laboratory_photo_command">
                         <input type="hidden" name="laboratory_id" value="${requestScope.selected_laboratory.id}">
                         <div class="input-group">
                             <input type="file" class="form-control" id="inputGroupFile04" name="content"

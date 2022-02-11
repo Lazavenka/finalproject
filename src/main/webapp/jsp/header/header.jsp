@@ -85,7 +85,7 @@
                                 <c:if test="${user.role eq 'CLIENT'}">
                                     <li><a class="dropdown-item" href="${abs}/controller?command=check_balance_command">${balance}<c:if test="${sessionScope.user_balance != null}">: ${sessionScope.user_balance.floatValue()}</c:if></a></li>
                                     <li><a class="dropdown-item" href="${abs}/controller?command=go_balance_page_command">${add_balance}</a></li>
-                                    <li><a class="dropdown-item" href="${abs}/controller?command=show_client_orders_command&userId=${user.id}">${client_orders}</a></li>
+                                    <li><a class="dropdown-item" href="${abs}/controller?command=go_client_orders_page_command">${client_orders}</a></li>
                                 </c:if>
                                 <li role="separator" class="divider"></li>
                                 <li><a class="dropdown-item" href="${abs}/controller?command=logout_command">${sign_out}</a></li>

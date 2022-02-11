@@ -27,15 +27,12 @@
 <header>
     <jsp:include page="/jsp/header/header.jsp"/>
 </header>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 10px">
     <figure class="text-center">
         <blockquote class="blockquote">
             <p>${sign_in}</p>
         </blockquote>
     </figure>
-    </div>
-
     <div class="w-50 mx-auto">
         <form class="form-floating mb-3" action="${pageContext.request.contextPath}/controller" method="post"
               name="LoginForm">
@@ -60,7 +57,7 @@
                        placeholder=${locale_password}>
                 <label for="floatingPassword">${locale_password}</label>
             </div>
-            <div class="spaced align-self-center">
+            <div class="justify-content-center" style="margin-top: 25px">
                 <button class="btn btn-primary" type="submit">${sign_in}</button>
             </div>
         </form>

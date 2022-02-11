@@ -11,4 +11,6 @@
 
 <fmt:message var="schedule" key="assistant.schedule"/>
 
+<c:set var="abs">${pageContext.request.contextPath}</c:set>
+
 <li><a class="nav-link active" href="${abs}/controller?command=show_schedule_command">${schedule}</a></li>
