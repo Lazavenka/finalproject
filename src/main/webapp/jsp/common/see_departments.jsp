@@ -39,7 +39,7 @@
                         <p class="card-text">${department.description}</p>
                         <p class="card-text">${department.address}</p>
                         <a href="${abs}/controller?command=find_department_details_by_id_command&department_id=${department.id}"
-                           class="stretched-link">${details}</a>
+                           class="btn btn-primary">${details}</a>
                     </div>
                 </div>
             </div>

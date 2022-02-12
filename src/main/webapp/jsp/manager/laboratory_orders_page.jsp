@@ -62,7 +62,6 @@
                 <th scope="col">${time_start}</th>
                 <th scope="col">${time_end}</th>
                 <th scope="col">${price}</th>
-                <th scope="col">${equipment}</th>
                 <th scope="col">${state}</th>
                 <th scope="col">${complete}</th>
                 <th scope="col">${details}</th>
@@ -75,7 +74,6 @@
                     <td>${order.rentStartTime.toLocalTime()}</td>
                     <td>${order.rentEndTime.toLocalTime()}</td>
                     <td>${order.totalCost.toString()}</td>
-                    <td>${order.equipmentId}</td>
                     <td>${order.state.name()}</td>
                     <td><form action="${abs}/controller" method="post">
                         <input type="hidden" name="command" value="complete_order_command">

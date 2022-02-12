@@ -41,7 +41,7 @@ public class OrderDaoImpl implements OrderDao {
             order_assistant_id FROM orders WHERE order_assistant_id = ? AND order_rent_start BETWEEN ? AND ?""";
     private static final String GET_ORDERS_BY_STATE_ASSISTANT_ID_SINCE = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
-            order_assistant_id FROM orders WHERE order_state = ? AND order_assistant_id = ? AND order_rent_start > ?""";
+            order_assistant_id FROM orders WHERE order_state = ? AND order_assistant_id = ? AND order_rent_start > ? ORDER BY order_rent_start""";
 
     private static final String CREATE_ORDER = """
             INSERT INTO orders (client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id) 

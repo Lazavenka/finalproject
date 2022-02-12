@@ -18,6 +18,9 @@
 <fmt:message var="booking_details" key="equipment.booking_details"/>
 <fmt:message var="add_equipment" key="admin.add_equipment"/>
 <fmt:message var="equipment_id" key="equipment.id"/>
+<fmt:message var="assistant" key="details.assistant"/>
+<fmt:message var="necessary" key="assistant.necessary"/>
+<fmt:message var="not_necessary" key="assistant.not_necessary"/>
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
@@ -43,6 +46,13 @@
 
                             <dt class="col-sm-3">${equipment_avg_research_time}</dt>
                             <dd class="col-sm-9">${equipmentItem.averageResearchTime.toString()}</dd>
+
+                            <dt class="col-sm-3">${assistant}</dt>
+                            <dd class="col-sm-9"><c:choose>
+                                <c:when test="${equipmentItem.needAssistant}"><div class="text-decoration-underline">${necessary}</div></c:when>
+                                <c:otherwise><div class="text-decoration-underline">${not_necessary}</div></c:otherwise>
+                            </c:choose></dd>
+                            
                             <c:if test="${sessionScope.user.role.name() eq 'MANAGER'}">
                                 <dt class="col-sm-3">${equipment_id}</dt>
                                 <dd class="col-sm-9">${equipmentItem.id}</dd>

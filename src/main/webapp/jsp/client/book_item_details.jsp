@@ -21,11 +21,14 @@
 <fmt:message var="time_start" key="equipment.time_start"/>
 <fmt:message var="time_end" key="equipment.time_end"/>
 <fmt:message var="assistants" key="equipment.assistants"/>
+<fmt:message var="assistant_label" key="details.assistant"/>
 <fmt:message var="necessary_assistant" key="equipment.necessary_assistant"/>
 <fmt:message var="not_found" key="common.not_found"/>
 <fmt:message var="to_equipment" key="buttons.to_equipment"/>
 <fmt:message var="book_equipment" key="buttons.book_equipment"/>
 <fmt:message var="selected_date" key="message.selected_date"/>
+<fmt:message var="necessary" key="assistant.necessary"/>
+<fmt:message var="not_necessary" key="assistant.not_necessary"/>
 
 <c:set var="timetable" value="${requestScope.equipment_timetable}"/>
 
@@ -66,6 +69,12 @@
 
                         <dt class="col-sm-3">${equipment_avg_research_time}</dt>
                         <dd class="col-sm-9">${requestScope.selected_equipment.averageResearchTime.toString()}</dd>
+
+                        <dt class="col-sm-3">${assistant}</dt>
+                        <dd class="col-sm-9"><c:choose>
+                            <c:when test="${equipmentItem.needAssistant}"><div class="text-decoration-underline">${necessary}</div></c:when>
+                            <c:otherwise><div class="text-decoration-underline">${not_necessary}</div></c:otherwise>
+                        </c:choose></dd>
 
                         <dt class="col-sm-3 <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipment_state}</dt>
                         <dd class="col-sm-9 <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">text-warning</c:if>">${requestScope.selected_equipment.state.name()}</dd>

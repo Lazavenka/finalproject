@@ -37,7 +37,7 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="${abs}/static/images/about/researchCenter.jpg" class="d-block w-auto" alt="Research Center">
+                <img src="${abs}/static/images/about/researchCenter.jpg" class="d-block w-100" alt="Research Center">
                 <div class="carousel-caption d-none d-md-block mx-auto">
                     <h5 class="bg-light text-dark">${research_center_message}</h5>
                     <p class="bg-light text-dark">${departments} - ${requestScope.departments_count}</p>
