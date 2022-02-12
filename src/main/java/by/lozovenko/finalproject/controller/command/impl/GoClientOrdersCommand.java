@@ -1,5 +1,6 @@
 package by.lozovenko.finalproject.controller.command.impl;
 
+import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
@@ -17,10 +18,17 @@ import java.util.List;
 import static by.lozovenko.finalproject.controller.PagePath.CLIENT_ORDERS_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
+import static by.lozovenko.finalproject.controller.RequestParameter.PAGE;
 
 public class GoClientOrdersCommand implements CustomCommand {
     @Override
     public Router execute(HttpServletRequest request) {
+        int page = PaginationConstants.START_PAGE;
+        int recordsPerPage = PaginationConstants.ORDERS_PER_PAGE;
+        String pageParameter = request.getParameter(PAGE);
+        if (pageParameter != null ){
+            page = Integer.parseInt(pageParameter);
+        }
         Router router = new Router(CLIENT_ORDERS_PAGE, Router.DispatchType.FORWARD);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER);
@@ -29,8 +37,13 @@ public class GoClientOrdersCommand implements CustomCommand {
             Client client = (Client) user;
             long clientId = client.getClientId();
             try {
-                List<Order> clientOrders = orderService.findOrdersByClientId(clientId);
+                int startRecord = (page - 1) * recordsPerPage;
+                int numberOfRecords = orderService.countClientOrders(clientId);
+                int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
+                List<Order> clientOrders = orderService.findOrdersByClientId(clientId , startRecord, recordsPerPage);
                 request.setAttribute(ORDER_LIST, clientOrders);
+                request.setAttribute(PAGINATION_PAGE, page);
+                request.setAttribute(NUMBER_OF_PAGES, numberOfPages);
                 if (clientOrders.isEmpty()) {
                     request.setAttribute(EMPTY_LIST, true);
                 }

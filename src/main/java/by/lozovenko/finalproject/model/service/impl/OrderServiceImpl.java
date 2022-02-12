@@ -7,7 +7,6 @@ import by.lozovenko.finalproject.model.dao.UserDao;
 import by.lozovenko.finalproject.model.dao.impl.OrderDaoImpl;
 import by.lozovenko.finalproject.model.dao.impl.UserDaoImpl;
 import by.lozovenko.finalproject.model.entity.Equipment;
-import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.entity.Order;
 import by.lozovenko.finalproject.model.entity.OrderState;
 import by.lozovenko.finalproject.model.service.OrderPaymentCode;
@@ -46,9 +45,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findOrdersByClientId(long clientId) throws ServiceException {
+    public List<Order> findOrdersByClientId(long clientId, int offset, int recordsPerPge) throws ServiceException {
         try {
-            return orderDao.findAllOrdersByClientId(clientId);
+            return orderDao.findOrdersByClientId(clientId, offset, recordsPerPge);
         }catch (DaoException e){
             throw new ServiceException("Can't handle findOrdersByClientId method in OrderService. ", e);
         }
@@ -177,9 +176,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findOrdersByLaboratoryId(long laboratoryId) throws ServiceException {
+    public List<Order> findOrdersByLaboratoryId(long laboratoryId, int offset, int recordsPerPage) throws ServiceException {
         try {
-            return orderDao.findOrdersByLaboratoryId(laboratoryId);
+            return orderDao.findOrdersByLaboratoryId(laboratoryId, offset, recordsPerPage);
         }catch (DaoException e){
             throw new ServiceException("Can't handle findOrdersByLaboratoryId method in OrderService. ", e);
         }
@@ -203,6 +202,26 @@ public class OrderServiceImpl implements OrderService {
             return orderDao.findEntityById(orderId);
         }catch (DaoException e){
             throw new ServiceException("Can't handle findOrderById method in OrderService. ", e);
+        }
+    }
+
+    @Override
+    public int countClientOrders(long clientId) throws ServiceException {
+        try {
+            return orderDao.countClientOrders(clientId);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countClientOrders method in OrderService. ", e);
+
+        }
+    }
+
+    @Override
+    public int countLaboratoryOrders(long laboratoryId) throws ServiceException {
+        try {
+            return orderDao.countLaboratoryOrders(laboratoryId);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countLaboratoryOrders method in OrderService. ", e);
+
         }
     }
 }

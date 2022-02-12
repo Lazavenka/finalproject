@@ -22,6 +22,11 @@ public class EquipmentDaoImpl implements EquipmentDao {
     private static final String GET_ALL_EQUIPMENT = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state, equipment_photo_link FROM equipment ORDER BY equipment_name""";
+    private static final String GET_ALL_EQUIPMENT_LIMITED = """
+            SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
+            price_per_hour, average_research_time, is_need_assistant, equipment_state, equipment_photo_link 
+            FROM equipment ORDER BY equipment_name LIMIT ?, ?""";
+
     private static final String GET_EQUIPMENT_BY_ID = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
@@ -31,6 +36,11 @@ public class EquipmentDaoImpl implements EquipmentDao {
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
             price_per_hour, average_research_time, is_need_assistant, equipment_state,
             equipment_photo_link FROM equipment WHERE equipment_type_id = (?) ORDER BY equipment_name""";
+
+    private static final String GET_EQUIPMENT_BY_TYPE_LIMITED = """
+            SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
+            price_per_hour, average_research_time, is_need_assistant, equipment_state,
+            equipment_photo_link FROM equipment WHERE equipment_type_id = (?) ORDER BY equipment_name LIMIT ?, ?""";
 
     private static final String GET_EQUIPMENT_BY_LABORATORY_ID = """
             SELECT equipment_id, equipment_type_id, laboratory_id, equipment_name, equipment_description,
@@ -48,6 +58,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
             price_per_hour = ?, average_research_time = ?, is_need_assistant = ?, equipment_state = ?
             WHERE equipment_id = ?""";
     private static final String COUNT_EQUIPMENT = "SELECT count(equipment_id) from equipment";
+    private static final String COUNT_EQUIPMENT_BY_TYPE = "SELECT count(equipment_id) from equipment WHERE equipment_type_id = ?";
 
     private EquipmentDaoImpl() {
     }
@@ -163,14 +174,38 @@ public class EquipmentDaoImpl implements EquipmentDao {
     public boolean updateEquipmentStateById(Long id, EquipmentState state) throws DaoException {
         return false;
     }
-
     @Override
-    public List<Equipment> findEquipmentByType(EquipmentType type) throws DaoException {
+    public List<Equipment> findAllLimited(int offset, int recordsPerPage) throws DaoException {
         List<Equipment> equipmentList = new ArrayList<>();
         EquipmentMapper mapper = EquipmentMapper.getInstance();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_TYPE)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_EQUIPMENT_LIMITED)) {
+            preparedStatement.setLong(1, offset);
+            int maxRecord = offset + recordsPerPage;
+            preparedStatement.setLong(2, maxRecord);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Equipment equipment = new Equipment();
+                    Optional<Equipment> optionalEquipment = mapper.rowMap(equipment, resultSet);
+                    optionalEquipment.ifPresent(equipmentList::add);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("Error in findAllLimited method EquipmentDao class. Unable to get access to database.", e);
+        }
+        return equipmentList;
+    }
+    @Override
+    public List<Equipment> findEquipmentByType(EquipmentType type, int offset, int recordsPerPage) throws DaoException {
+        List<Equipment> equipmentList = new ArrayList<>();
+        EquipmentMapper mapper = EquipmentMapper.getInstance();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_EQUIPMENT_BY_TYPE_LIMITED)) {
             preparedStatement.setLong(1, type.getId());
+            preparedStatement.setLong(2, offset);
+            int maxRecord = offset + recordsPerPage;
+            preparedStatement.setLong(3, maxRecord);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Equipment equipment = new Equipment();
@@ -231,8 +266,8 @@ public class EquipmentDaoImpl implements EquipmentDao {
     }
 
     @Override
-    public long countEquipment() throws DaoException {
-        long count = 0;
+    public int countEquipment() throws DaoException {
+        int count = 0;
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(COUNT_EQUIPMENT)) {
             try(ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -245,4 +280,23 @@ public class EquipmentDaoImpl implements EquipmentDao {
         }
         return count;
     }
+
+    @Override
+    public int countEquipmentByType(EquipmentType equipmentType) throws DaoException {
+        int count = 0;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_EQUIPMENT_BY_TYPE)) {
+            preparedStatement.setLong(1, equipmentType.getId());
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in countEquipmentByType method EquipmentDao class. Unable to get access to database.", e);
+        }
+        return count;
+    }
+
+
 }

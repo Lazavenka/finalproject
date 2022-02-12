@@ -55,6 +55,8 @@ public class RequestAttribute {
     public static final String DEPARTMENT_LABORATORIES = "department_laboratories";
     public static final String DATE_TIME_NOW = "date_time_now";
     public static final String EMPTY_LIST = "empty_list";
+    public static final String PAGINATION_PAGE = "pagination_page";
+    public static final String NUMBER_OF_PAGES = "number_of_pages";
     public static final String EMPTY_ASSISTANT_LIST = "empty_assistant_list";
     public static final String INCORRECT_LOGIN_OR_PASSWORD = "incorrect_login_or_password";
     public static final String INVALID_LAST_NAME = "invalid_last_name";

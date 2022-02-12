@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface EquipmentDao extends BaseDao<Long, Equipment> {
     boolean updateEquipmentStateById(Long id, EquipmentState state) throws DaoException;
 
-    List<Equipment> findEquipmentByType(EquipmentType type) throws DaoException;
+    List<Equipment> findEquipmentByType(EquipmentType type, int offset, int recordsPerPage) throws DaoException;
 
     List<Equipment> findEquipmentByLaboratoryId(long laboratoryId) throws DaoException;
 
@@ -22,5 +22,9 @@ public interface EquipmentDao extends BaseDao<Long, Equipment> {
 
     int updateEquipmentPhoto(long id, String databasePath) throws DaoException;
 
-    long countEquipment() throws DaoException;
+    int countEquipment() throws DaoException;
+
+    int countEquipmentByType(EquipmentType equipmentType) throws DaoException;
+
+    List<Equipment> findAllLimited(int offset, int recordsPerPage) throws DaoException;
 }

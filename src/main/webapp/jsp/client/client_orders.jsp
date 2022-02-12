@@ -47,23 +47,23 @@
     </div>
 
     <div class="w-75 mx-auto">
-            <div style="margin-top: 10px; margin-bottom: 10px">
-                <figure class="text-center">
-                    <blockquote class="blockquote">
-                        <c:choose>
-                            <c:when test="${requestScope.error_message}">
-                                <p class="alert-warning">${error_message}</p>
-                            </c:when>
-                            <c:when test="${requestScope.lack_of_money}">
-                                <p class="alert-warning">${lack_of_money_message}</p>
-                            </c:when>
-                        </c:choose>
+        <div style="margin-top: 10px; margin-bottom: 10px">
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <c:choose>
+                        <c:when test="${requestScope.error_message}">
+                            <p class="alert-warning">${error_message}</p>
+                        </c:when>
+                        <c:when test="${requestScope.lack_of_money}">
+                            <p class="alert-warning">${lack_of_money_message}</p>
+                        </c:when>
+                    </c:choose>
 
 
-                    </blockquote>
-                </figure>
-            </div>
-        <table class="table table-striped">
+                </blockquote>
+            </figure>
+        </div>
+        <table class="table table-striped" style="margin-bottom: 10px">
             <thead>
             <tr>
                 <th scope="col">${date}</th>
@@ -84,25 +84,56 @@
                     <td>${order.rentEndTime.toLocalTime()}</td>
                     <td>${order.totalCost.toString()}</td>
                     <td>${order.state.name()}</td>
-                    <td><form action="${abs}/controller" method="post">
-                        <input type="hidden" name="command" value="pay_order_command">
-                        <input type="hidden" name="order_id" value="${order.id}">
-                        <button type="submit" class="btn btn-success"
-                                <c:if test="${order.state.name() != 'BOOKED'}">disabled</c:if> >${pay}</button>
-                    </form></td>
-                    <td><form action="${abs}/controller" method="post">
-                        <input type="hidden" name="command" value="cancel_order_command">
-                        <input type="hidden" name="order_id" value="${order.id}">
-                        <button type="submit" class="btn btn-danger"
-                                <c:if test="${order.state.name() != 'BOOKED'}">disabled</c:if> >${cancel}</button>
-                    </form></td>
-                    <td><a class="btn btn-secondary" role="button" href="${abs}/controller?command=go_order_details_page_command&order_id=${order.id}">${details}</a></td>
+                    <td>
+                        <form action="${abs}/controller" method="post">
+                            <input type="hidden" name="command" value="pay_order_command">
+                            <input type="hidden" name="order_id" value="${order.id}">
+                            <button type="submit" class="btn btn-success"
+                                    <c:if test="${order.state.name() != 'BOOKED'}">disabled</c:if> >${pay}</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="${abs}/controller" method="post">
+                            <input type="hidden" name="command" value="cancel_order_command">
+                            <input type="hidden" name="order_id" value="${order.id}">
+                            <button type="submit" class="btn btn-danger"
+                                    <c:if test="${order.state.name() != 'BOOKED'}">disabled</c:if> >${cancel}</button>
+                        </form>
+                    </td>
+                    <td><a class="btn btn-secondary" role="button"
+                           href="${abs}/controller?command=go_order_details_page_command&order_id=${order.id}">${details}</a>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+        <nav aria-label="Page navigation example" style="margin-bottom: 30px">
+            <ul class="pagination justify-content-center">
+                <li class="page-item  <c:if test="${requestScope.pagination_page eq 1}">disabled</c:if>">
+                    <a class="page-link" href="${abs}/controller?command=go_client_orders_page_command&page=${requestScope.pagination_page - 1}">Previous</a>
+                </li>
+                <c:forEach begin="1" end="${requestScope.number_of_pages}" var="i">
+                    <c:choose>
+                        <c:when test="${requestScope.pagination_page eq i}">
+                            <li class="page-item"><a class="page-link disabled" href="#">${i}</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link"
+                                                     href="${abs}/controller?command=go_client_orders_page_command&page=${i}">${i}</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+                <li class="page-item <c:if test="${requestScope.pagination_page eq requestScope.number_of_pages}">disabled</c:if>">
+                    <a class="page-link"  href="${abs}/controller?command=go_client_orders_page_command&page=${requestScope.pagination_page + 1}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
+
+
+
 <ctg:print-footer/>
 </body>
 </html>

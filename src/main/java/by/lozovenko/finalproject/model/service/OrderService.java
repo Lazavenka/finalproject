@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderService {
-    List<Order> findOrdersByClientId(long userId) throws ServiceException;
+    List<Order> findOrdersByClientId(long clientId, int offset, int recordsPerPge) throws ServiceException;
 
     List<Order> findOrdersByEquipmentIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws ServiceException;
 
@@ -24,9 +24,13 @@ public interface OrderService {
 
     boolean updateOrderStateById(String orderIdString, OrderState orderState) throws ServiceException;
 
-    List<Order> findOrdersByLaboratoryId(long laboratoryId) throws ServiceException;
+    List<Order> findOrdersByLaboratoryId(long laboratoryId, int offset, int recordsPerPage) throws ServiceException;
 
     Optional<Order> findOrderById(String orderIdString) throws ServiceException;
 
     Optional<Order> findOrderById(long orderId) throws ServiceException;
+
+    int countClientOrders(long clientId) throws ServiceException;
+
+    int countLaboratoryOrders(long laboratoryId) throws ServiceException;
 }

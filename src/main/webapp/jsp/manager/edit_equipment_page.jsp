@@ -67,7 +67,7 @@
 <jsp:include page="../header/header.jsp"/>
 
 <div class="container">
-    <div class="spaced">
+    <div style="margin-top: 20px; margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
@@ -84,7 +84,7 @@
         <div class="row">
             <div class="col-sm-2 justify-content-center">
                 <div class="btn-group-vertical">
-                    <div class="monospace">
+                    <div style="margin-bottom: 10px">
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#editEquipment"
                                 aria-expanded="false" aria-controls="editEquipment">
@@ -102,6 +102,7 @@
                 <div class="collapse" id="editEquipment">
                     <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
                         <input type="hidden" name="command" value="update_equipment_command">
+                        <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
                         <input type="hidden" name="laboratory_id" value="${requestScope.selected_equipment.laboratoryId}">
                         <input type="hidden" name="equipment_type_id" value="${requestScope.selected_equipment.equipmentTypeId}">
                         <div class="row mb-3">
@@ -203,7 +204,7 @@
                             <label class="form-check-label" for="flexSwitchCheckChecked">${necessary_assistant}</label>
                         </div>
                         <div class="col-sm-5">
-                            <div class="spaced">
+                            <div style="margin-top: 20px; margin-bottom: 20px" class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary">${update}</button>
                             </div>
                         </div>
@@ -218,10 +219,8 @@
                             <input type="file" class="form-control" id="inputGroupFile04" name="content"
                                    aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
                                    onchange="fileValidation()">
-                            <div class="spaced">
                                 <button class="btn btn-outline-secondary" type="submit"
                                         id="inputGroupFileAddon04">${upload}</button>
-                            </div>
                         </div>
                         <c:choose>
                             <c:when test="${requestScope.empty_image}">
@@ -234,7 +233,7 @@
                                 <div style="color: red">${wrong_file_extension}</div>
                             </c:when>
                         </c:choose>
-                        <div id="imagePreview" class="spaced"></div>
+                        <div id="imagePreview" class="d-flex justify-content-center" style="margin-top: 20px"></div>
                         <script>
                             function fileValidation() {
                                 const fileInput = document.getElementById('inputGroupFile04');
@@ -285,7 +284,7 @@
     }
 
     function populateMinutes() {
-        for (let i = 0; i <= 59; i++) {
+        for (let i = 0; i <= 55; i+=5) {
             const option = document.createElement('option');
             option.textContent = (i < 10) ? ("0" + i) : i;
             minuteSelect.appendChild(option);

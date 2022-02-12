@@ -1,5 +1,6 @@
 package by.lozovenko.finalproject.controller.command.impl;
 
+import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
@@ -17,6 +18,7 @@ import java.util.List;
 import static by.lozovenko.finalproject.controller.PagePath.EQUIPMENT_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
+import static by.lozovenko.finalproject.controller.RequestParameter.PAGE;
 
 public class GoEquipmentPageCommand implements CustomCommand {
 
@@ -25,13 +27,23 @@ public class GoEquipmentPageCommand implements CustomCommand {
         EquipmentTypeService equipmentTypeService = EquipmentTypeServiceImpl.getInstance();
         EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
         Router router = new Router(EQUIPMENT_PAGE, Router.DispatchType.FORWARD);
+        int page = PaginationConstants.START_PAGE;
+        int recordsPerPage = PaginationConstants.EQUIPMENT_PER_PAGE;
+        String pageParameter = request.getParameter(PAGE);
+        if (pageParameter != null ){
+            page = Integer.parseInt(pageParameter);
+        }
         try {
+            int startRecord = (page - 1) * recordsPerPage;
+            int numberOfRecords = equipmentService.countEquipment();
+            int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
             List<EquipmentType> equipmentTypeList = equipmentTypeService.findAll();
-            List<Equipment> equipmentList = equipmentService.findAll();
+            List<Equipment> equipmentList = equipmentService.findAll(startRecord, numberOfPages);
 
             request.setAttribute(EQUIPMENT_TYPE_LIST, equipmentTypeList);
             request.setAttribute(EQUIPMENT_LIST, equipmentList);
-
+            request.setAttribute(PAGINATION_PAGE, page);
+            request.setAttribute(NUMBER_OF_PAGES, numberOfPages);
             if (equipmentList.isEmpty()){
                 request.setAttribute(EMPTY_LIST, true);
             }

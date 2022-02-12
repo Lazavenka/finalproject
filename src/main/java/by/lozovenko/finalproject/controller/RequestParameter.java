@@ -23,6 +23,7 @@ public class RequestParameter {
     public static final String USER_STATE = "user_state";
     public static final String COMMAND = "command";
     public static final String LOCALE = "locale";
+    public static final String PAGE = "page";
     public static final String MANAGER_ID = "manager_id";
     public static final String EQUIPMENT_TYPE_ID ="equipment_type_id";
     public static final String CURRENT_EQUIPMENT_TYPE_ID ="current_equipment_type_id";

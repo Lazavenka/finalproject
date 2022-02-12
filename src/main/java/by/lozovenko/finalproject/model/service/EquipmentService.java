@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface EquipmentService {
-    List<Equipment> findAll() throws ServiceException;
+    List<Equipment> findAll(int offset, int recordsPerPage) throws ServiceException;
 
-    List<Equipment> findAllByType(EquipmentType equipmentType) throws ServiceException;
+    List<Equipment> findAllByType(EquipmentType equipmentType, int offset, int recordsPerPage) throws ServiceException;
 
     Optional<Equipment> findById(long equipmentId) throws ServiceException;
 
@@ -26,7 +26,9 @@ public interface EquipmentService {
 
     boolean updateEquipmentById(String equipmentToEditId, Map<String, String> equipmentData) throws ServiceException;
 
-    long countEquipment() throws ServiceException;
+    int countEquipment() throws ServiceException;
 
     Optional<EquipmentTimeTable> provideEquipmentTimeTable(String equipmentIdString, String date) throws ServiceException;
+
+    int countEquipmentByType(EquipmentType equipmentType) throws ServiceException;
 }

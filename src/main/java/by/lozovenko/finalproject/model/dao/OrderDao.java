@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface OrderDao extends BaseDao<Long, Order> {
     List<Order> findAllOrdersByClientId(long clientId) throws DaoException;
-    List<Order> findOrdersByLaboratoryId(long laboratoryId) throws DaoException;
+    List<Order> findAllOrdersByLaboratoryId(long laboratoryId) throws DaoException;
+    List<Order> findOrdersByLaboratoryId(long laboratoryId, int offset, int recordsPerPage) throws DaoException;
     List<Order> findOrderByStateAndAssistantId(OrderState orderState, Long assistantId) throws DaoException;
 
     List<Order> findOrdersByEquipmentIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws DaoException;
@@ -24,4 +25,10 @@ public interface OrderDao extends BaseDao<Long, Order> {
     int updateOrderState(long orderId, OrderState orderState) throws DaoException;
 
     List<Order> findOrdersByStateAndAssistantIdSince(OrderState orderState, long assistantId, LocalDateTime localDateTime) throws DaoException;
+
+    int countClientOrders(long clientId) throws DaoException;
+
+    List<Order> findOrdersByClientId(long clientId, int offset, int recordPerPage) throws DaoException;
+
+    int countLaboratoryOrders(long laboratoryId) throws DaoException;
 }

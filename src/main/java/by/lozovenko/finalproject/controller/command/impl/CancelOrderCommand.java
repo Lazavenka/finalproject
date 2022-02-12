@@ -1,5 +1,6 @@
 package by.lozovenko.finalproject.controller.command.impl;
 
+import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
@@ -16,6 +17,7 @@ import java.util.List;
 import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.ORDER_ID;
+import static by.lozovenko.finalproject.controller.RequestParameter.PAGE;
 
 public class CancelOrderCommand implements CustomCommand {
     @Override
@@ -31,11 +33,24 @@ public class CancelOrderCommand implements CustomCommand {
             }else {
                 HttpSession session = request.getSession();
                 long clientId = ((Client)session.getAttribute(USER)).getClientId();
-                List<Order> clientOrders = orderService.findOrdersByClientId(clientId);
-                request.setAttribute(ORDER_LIST, clientOrders);
+                int page = PaginationConstants.START_PAGE;
+                int recordsPerPage = PaginationConstants.ORDERS_PER_PAGE;
+                String pageParameter = request.getParameter(PAGE);
+                if (pageParameter != null ){
+                    page = Integer.parseInt(pageParameter);
+                }
+                int startRecord = (page - 1) * recordsPerPage;
+                int numberOfRecords = orderService.countClientOrders(clientId);
+                int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
+                List<Order> clientOrders = orderService.findOrdersByClientId(clientId , startRecord, recordsPerPage);
                 if (clientOrders.isEmpty()) {
                     request.setAttribute(EMPTY_LIST, true);
                 }
+                request.setAttribute(ORDER_LIST, clientOrders);
+                request.setAttribute(PAGINATION_PAGE, page);
+                request.setAttribute(NUMBER_OF_PAGES, numberOfPages);
+                request.setAttribute(SUCCESS_MESSAGE, true);
+                router.setPage(CLIENT_ORDERS_PAGE);
                 request.setAttribute(ERROR_MESSAGE, true);
                 router.setPage(CLIENT_ORDERS_PAGE);
             }

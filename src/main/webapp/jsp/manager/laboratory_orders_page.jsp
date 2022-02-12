@@ -86,8 +86,33 @@
             </c:forEach>
             </tbody>
         </table>
+        <nav aria-label="Page navigation example" style="margin-bottom: 30px">
+            <ul class="pagination justify-content-center">
+                <li class="page-item  <c:if test="${requestScope.pagination_page eq 1}">disabled</c:if>">
+                    <a class="page-link" href="${abs}/controller?command=go_laboratory_orders_command&page=${requestScope.pagination_page - 1}">Previous</a>
+                </li>
+                <c:forEach begin="1" end="${requestScope.number_of_pages}" var="i">
+                    <c:choose>
+                        <c:when test="${requestScope.pagination_page eq i}">
+                            <li class="page-item"><a class="page-link disabled" href="#">${i}</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link"
+                                                     href="${abs}/controller?command=go_laboratory_orders_command&page=${i}">${i}</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+                <li class="page-item <c:if test="${requestScope.pagination_page eq requestScope.number_of_pages}">disabled</c:if>">
+                    <a class="page-link"  href="${abs}/controller?command=go_laboratory_orders_command&page=${requestScope.pagination_page + 1}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
+
+
+
 <ctg:print-footer/>
 </body>
 </html>

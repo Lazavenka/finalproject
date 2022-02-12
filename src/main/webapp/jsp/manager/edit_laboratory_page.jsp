@@ -155,10 +155,8 @@
                             <input type="file" class="form-control" id="inputGroupFile04" name="content"
                                    aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
                                    onchange="fileValidation()">
-                            <div class="spaced">
                                 <button class="btn btn-outline-secondary" type="submit"
-                                        id="inputGroupFileAddon04" style="margin-top: 10px; position: center">${upload}</button>
-                            </div>
+                                        id="inputGroupFileAddon04">${upload}</button>
                         </div>
                         <c:choose>
                             <c:when test="${requestScope.empty_image}">

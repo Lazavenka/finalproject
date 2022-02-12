@@ -36,6 +36,7 @@ public class UpdateEquipmentCommand implements CustomCommand {
                 Optional<Equipment> optionalEquipment = equipmentService.findById(equipmentToEditId);
                 optionalEquipment.ifPresent(equipment -> request.setAttribute(SELECTED_EQUIPMENT, equipment));
                 request.setAttribute(EQUIPMENT_DATA, equipmentData);
+                request.setAttribute(ERROR_MESSAGE, true);
                 router.setPage(EDIT_EQUIPMENT_PAGE);
             }
         }catch (ServiceException e){

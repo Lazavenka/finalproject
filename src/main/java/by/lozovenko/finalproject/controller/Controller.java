@@ -50,12 +50,12 @@ public class Controller extends HttpServlet {
                     dispatcher.forward(request, response);
                 }
                 default -> {
-                    LOGGER.error("Invalid router dispath type : {}", router.getType());
+                    LOGGER.error("Invalid router dispatch type : {}", router.getType());
                     response.sendRedirect(PagePath.ERROR_404_PAGE);
                 }
             }
         }else {
-            request.getSession().setAttribute(EXCEPTION, "message.nullpage");
+            request.getSession().setAttribute(EXCEPTION, "message.nullpage"); //todo fix
             LOGGER.log(Level.WARN, "Command = {} not found", commandName);
             response.sendRedirect(PagePath.ERROR_404_PAGE);
         }

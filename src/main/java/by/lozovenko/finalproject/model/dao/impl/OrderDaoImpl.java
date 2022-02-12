@@ -27,11 +27,21 @@ public class OrderDaoImpl implements OrderDao {
             FROM orders WHERE order_state = ? AND order_assistant_id = ?""";
     private static final String GET_ORDERS_BY_CLIENT_ID = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id
-            FROM orders WHERE client_id = ? AND order_state = 'BOOKED' OR order_state = 'PAYED' ORDER BY order_rent_start""";
+            FROM orders WHERE client_id = ? AND (order_state = 'BOOKED' OR order_state = 'PAYED') ORDER BY order_rent_start""";
+
+    private static final String GET_ORDERS_BY_CLIENT_ID_LIMITED = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id
+                    FROM orders WHERE client_id = ? AND (order_state = 'BOOKED' OR order_state = 'PAYED')
+                    ORDER BY order_rent_start LIMIT ?, ?""";
+
     private static final String GET_ORDERS_BY_LABORATORY_ID = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
             order_assistant_id FROM orders
             JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ? ORDER BY order_rent_start""";
+    private static final String GET_ORDERS_BY_LABORATORY_ID_LIMITED = """
+            SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
+            order_assistant_id FROM orders
+            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ? ORDER BY order_rent_start LIMIT ?, ?""";
 
     private static final String GET_ORDERS_BY_EQUIPMENT_ID_AT_PERIOD = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
@@ -49,6 +59,11 @@ public class OrderDaoImpl implements OrderDao {
 
     private static final String UPDATE_USER_BALANCE_BY_ID = "UPDATE clients SET balance = ? WHERE user_id = ?";
     private static final String UPDATE_ORDER_STATE_BY_ID = "UPDATE orders SET order_state = ? WHERE order_id = ?";
+
+    private static final String COUNT_CLIENT_ORDERS = "SELECT count(order_id) FROM orders WHERE client_id = ?";
+    private static final String COUNT_LABORATORY_ORDERS = """
+            SELECT count(order_id) FROM orders
+            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ?""";
 
 
     private OrderDaoImpl() {
@@ -72,7 +87,7 @@ public class OrderDaoImpl implements OrderDao {
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDER_BY_ID)) {
             preparedStatement.setLong(1, id);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     Order order = new Order();
                     optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
@@ -127,11 +142,33 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> findOrdersByLaboratoryId(long laboratoryId) throws DaoException {
+    public List<Order> findAllOrdersByLaboratoryId(long laboratoryId) throws DaoException {
         List<Order> orderList = new ArrayList<>();
         try (Connection connection = CustomConnectionPool.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_LABORATORY_ID)) {
             preparedStatement.setLong(1, laboratoryId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in findOrdersByLaboratoryId method OrderDao class. Unable to get access to database.", e);
+        }
+        return orderList;
+    }
+
+    @Override
+    public List<Order> findOrdersByLaboratoryId(long laboratoryId, int offset, int recordsPerPage) throws DaoException {
+        List<Order> orderList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_LABORATORY_ID_LIMITED)) {
+            preparedStatement.setLong(1, laboratoryId);
+            preparedStatement.setLong(2, offset);
+            int maxRecord = offset + recordsPerPage;
+            preparedStatement.setLong(3, maxRecord);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Order order = new Order();
@@ -218,9 +255,9 @@ public class OrderDaoImpl implements OrderDao {
         try {
             connection = CustomConnectionPool.getInstance().getConnection();
             connection.setAutoCommit(false);
-            try (PreparedStatement createOrderStatement = connection.prepareStatement(CREATE_ORDER)){
-                for (Order order: orderList) {
-                    createOrderStatement.setLong(1,order.getClientId());
+            try (PreparedStatement createOrderStatement = connection.prepareStatement(CREATE_ORDER)) {
+                for (Order order : orderList) {
+                    createOrderStatement.setLong(1, order.getClientId());
                     createOrderStatement.setString(2, order.getState().name());
                     createOrderStatement.setBigDecimal(3, order.getTotalCost());
                     createOrderStatement.setLong(4, order.getEquipmentId());
@@ -231,14 +268,14 @@ public class OrderDaoImpl implements OrderDao {
                 }
                 updateCounts = createOrderStatement.executeBatch();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException throwables) {
                 LOGGER.log(Level.ERROR, "Change cancellation error in createOrders transaction:", throwables);
             }
             throw new DaoException(e);
-        }finally {
+        } finally {
             try {
                 if (connection != null) {
                     connection.setAutoCommit(true);
@@ -259,7 +296,7 @@ public class OrderDaoImpl implements OrderDao {
             connection = CustomConnectionPool.getInstance().getConnection();
             connection.setAutoCommit(false);
             try (PreparedStatement updateUserBalanceStatement = connection.prepareStatement(UPDATE_USER_BALANCE_BY_ID);
-                 PreparedStatement updateOrderStateStatement = connection.prepareStatement(UPDATE_ORDER_STATE_BY_ID)){
+                 PreparedStatement updateOrderStateStatement = connection.prepareStatement(UPDATE_ORDER_STATE_BY_ID)) {
                 updateUserBalanceStatement.setBigDecimal(1, newUserBalance);
                 updateUserBalanceStatement.setLong(2, userId);
                 int updateBalanceResult = updateUserBalanceStatement.executeUpdate();
@@ -271,14 +308,14 @@ public class OrderDaoImpl implements OrderDao {
                 result = updateBalanceResult != 0 && updateOrderStateResult != 0;
                 connection.commit();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException throwables) {
                 LOGGER.log(Level.ERROR, "Change cancellation error in payOrder transaction:", throwables);
             }
             throw new DaoException(e);
-        }finally {
+        } finally {
             try {
                 if (connection != null) {
                     connection.setAutoCommit(true);
@@ -293,12 +330,12 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public int updateOrderState(long orderId, OrderState orderState) throws DaoException {
-        try(Connection connection = CustomConnectionPool.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ORDER_STATE_BY_ID)) {
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ORDER_STATE_BY_ID)) {
             preparedStatement.setString(1, orderState.name());
             preparedStatement.setLong(2, orderId);
             return preparedStatement.executeUpdate();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("Error in updateOrderState method OrderDao class. Unable to get access to database.", e);
         }
     }
@@ -322,5 +359,61 @@ public class OrderDaoImpl implements OrderDao {
             throw new DaoException("Error in findOrdersByStateAndAssistantIdSince method OrderDao class. Unable to get access to database.", e);
         }
         return orderList;
+    }
+
+    @Override
+    public int countClientOrders(long clientId) throws DaoException {
+        int count = 0;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_CLIENT_ORDERS)) {
+            preparedStatement.setLong(1, clientId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in countClientOrders method OrderDao class. Unable to get access to database.", e);
+        }
+        return count;
+    }
+
+    @Override
+    public List<Order> findOrdersByClientId(long clientId, int offset, int recordPerPage) throws DaoException {
+        List<Order> orderList = new ArrayList<>();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ORDERS_BY_CLIENT_ID_LIMITED)) {
+            preparedStatement.setLong(1, clientId);
+            preparedStatement.setLong(2, offset);
+            int maxRecord = offset + recordPerPage;
+            preparedStatement.setLong(3, maxRecord);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Order order = new Order();
+                    Optional<Order> optionalOrder = OrderMapper.getInstance().rowMap(order, resultSet);
+                    optionalOrder.ifPresent(orderList::add);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in findOrdersByClientId method OrderDao class. Unable to get access to database.", e);
+        }
+        return orderList;
+    }
+
+    @Override
+    public int countLaboratoryOrders(long laboratoryId) throws DaoException {
+        int count = 0;
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(COUNT_LABORATORY_ORDERS)) {
+            preparedStatement.setLong(1, laboratoryId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in countLaboratoryOrders method OrderDao class. Unable to get access to database.", e);
+        }
+        return count;
     }
 }

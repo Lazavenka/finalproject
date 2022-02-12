@@ -1,9 +1,9 @@
 package by.lozovenko.finalproject.controller.command.impl;
 
+import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.entity.Client;
 import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.Order;
 import by.lozovenko.finalproject.model.entity.OrderState;
@@ -12,11 +12,13 @@ import by.lozovenko.finalproject.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.ORDER_ID;
+import static by.lozovenko.finalproject.controller.RequestParameter.PAGE;
 
 public class CompleteOrderCommand implements CustomCommand {
     @Override
@@ -31,14 +33,26 @@ public class CompleteOrderCommand implements CustomCommand {
                 router.setRedirect();
             }else {
                 HttpSession session = request.getSession();
+                int page = PaginationConstants.START_PAGE;
+                int recordsPerPage = PaginationConstants.ORDERS_PER_PAGE;
+                String pageParameter = request.getParameter(PAGE);
+                if (pageParameter != null ){
+                    page = Integer.parseInt(pageParameter);
+                }
                 long laboratoryId = ((Manager)session.getAttribute(USER)).getLaboratoryId();
-                List<Order> laboratoryOrders = orderService.findOrdersByLaboratoryId(laboratoryId);
+                int startRecord = (page - 1) * recordsPerPage;
+                int numberOfRecords = orderService.countLaboratoryOrders(laboratoryId);
+                int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
+                List<Order> laboratoryOrders = orderService.findOrdersByLaboratoryId(laboratoryId, startRecord, recordsPerPage);
                 request.setAttribute(ORDER_LIST, laboratoryOrders);
+                request.setAttribute(DATE_TIME_NOW, LocalDateTime.now());
+                request.setAttribute(PAGINATION_PAGE, page);
+                request.setAttribute(NUMBER_OF_PAGES, numberOfPages);
                 if (laboratoryOrders.isEmpty()) {
                     request.setAttribute(EMPTY_LIST, true);
                 }
                 request.setAttribute(ERROR_MESSAGE, true);
-                router.setPage(CLIENT_ORDERS_PAGE);
+                router.setPage(LABORATORY_ORDERS_PAGE);
             }
         }catch (ServiceException e){
             logger.error("Error at CancelOrderCommand", e);

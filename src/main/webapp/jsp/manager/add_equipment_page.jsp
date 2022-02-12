@@ -227,7 +227,7 @@
     }
 
     function populateMinutes() {
-        for (let i = 0; i <= 59; i++) {
+        for (let i = 0; i <= 55; i+=5) {
             const option = document.createElement('option');
             option.textContent = (i < 10) ? ("0" + i) : i;
             minuteSelect.appendChild(option);

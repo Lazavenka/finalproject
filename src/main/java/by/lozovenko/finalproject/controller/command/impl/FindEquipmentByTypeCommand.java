@@ -1,5 +1,6 @@
 package by.lozovenko.finalproject.controller.command.impl;
 
+import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
@@ -18,8 +19,7 @@ import java.util.Optional;
 import static by.lozovenko.finalproject.controller.PagePath.EQUIPMENT_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
-import static by.lozovenko.finalproject.controller.RequestParameter.CURRENT_EQUIPMENT_TYPE_ID;
-import static by.lozovenko.finalproject.controller.RequestParameter.EQUIPMENT_TYPE_ID;
+import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class FindEquipmentByTypeCommand implements CustomCommand {
     @Override
@@ -31,19 +31,37 @@ public class FindEquipmentByTypeCommand implements CustomCommand {
         if (equipmentTypeId == null) {
             equipmentTypeId = request.getParameter(CURRENT_EQUIPMENT_TYPE_ID);
         }
+
+        int page = PaginationConstants.START_PAGE;
+        int recordsPerPage = PaginationConstants.EQUIPMENT_PER_PAGE;
+        String pageParameter = request.getParameter(PAGE);
+        if (pageParameter != null ){
+            page = Integer.parseInt(pageParameter);
+        }
+
         try {
             Optional<EquipmentType> equipmentTypeOptional = equipmentTypeService.findById(equipmentTypeId);
             List<Equipment> equipmentList;
+            int startRecord;
+            int numberOfPages;
             if (equipmentTypeOptional.isPresent()) {
                 EquipmentType equipmentType = equipmentTypeOptional.get();
-                equipmentList = equipmentService.findAllByType(equipmentType);
+                startRecord = (page - 1) * recordsPerPage;
+                int numberOfRecords = equipmentService.countEquipmentByType(equipmentType);
+                numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
+                equipmentList = equipmentService.findAllByType(equipmentType, startRecord, recordsPerPage);
                 request.setAttribute(SELECTED_EQUIPMENT_TYPE, equipmentType);
             } else {
-                equipmentList = equipmentService.findAll();
+                startRecord = (page - 1) * recordsPerPage;
+                int numberOfRecords = equipmentService.countEquipment();
+                numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
+                equipmentList = equipmentService.findAll(startRecord, recordsPerPage);
             }
             List<EquipmentType> equipmentTypeList = equipmentTypeService.findAll();
             request.setAttribute(EQUIPMENT_TYPE_LIST, equipmentTypeList);
             request.setAttribute(EQUIPMENT_LIST, equipmentList);
+            request.setAttribute(PAGINATION_PAGE, page);
+            request.setAttribute(NUMBER_OF_PAGES, numberOfPages);
             if (equipmentList.isEmpty()) {
                 request.setAttribute(EMPTY_LIST, true);
             }

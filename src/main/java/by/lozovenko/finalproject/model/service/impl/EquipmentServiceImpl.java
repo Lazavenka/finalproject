@@ -49,19 +49,19 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public List<Equipment> findAll() throws ServiceException {
+    public List<Equipment> findAll(int offset, int recordsPerPage) throws ServiceException {
         try {
-            return equipmentDao.findAll();
+            return equipmentDao.findAllLimited(offset, recordsPerPage);
         }catch (DaoException e){
             throw new ServiceException("Can't handle findAllByType request at EquipmentService", e);
         }
     }
 
     @Override
-    public List<Equipment> findAllByType(EquipmentType type) throws ServiceException {
+    public List<Equipment> findAllByType(EquipmentType type, int offset, int recordsPerPage) throws ServiceException {
         List<Equipment> equipmentList;
         try {
-            equipmentList = equipmentDao.findEquipmentByType(type);
+            equipmentList = equipmentDao.findEquipmentByType(type, offset, recordsPerPage);
         }catch (DaoException e){
             throw new ServiceException("Can't handle findAllByType request at EquipmentService", e);
         }
@@ -108,6 +108,9 @@ public class EquipmentServiceImpl implements EquipmentService {
             if (!isValidData){
                 return false;
             }
+            if(equipmentData.get(RESEARCH_TIME_HOUR).equals("00") && equipmentData.get(RESEARCH_TIME_MINUTE).equals("00")){
+                return false;
+            }
             Equipment equipment = createEquipmentFromMapData(equipmentData);
             return equipmentDao.create(equipment) != 0;
         }catch (DaoException e){
@@ -134,6 +137,10 @@ public class EquipmentServiceImpl implements EquipmentService {
                 return false;
             }
             if (!inputFieldValidator.isCorrectId(equipmentToEditId)){
+                LOGGER.log(Level.DEBUG, "equipmentId not correct id={}",equipmentToEditId);
+                return false;
+            }
+            if(equipmentData.get(RESEARCH_TIME_HOUR).equals("00") && equipmentData.get(RESEARCH_TIME_MINUTE).equals("00")){
                 return false;
             }
             Equipment equipment = createEquipmentFromMapData(equipmentData);
@@ -146,8 +153,8 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public long countEquipment() throws ServiceException {
-        long equipmentCount;
+    public int countEquipment() throws ServiceException {
+        int equipmentCount;
         try {
             equipmentCount = equipmentDao.countEquipment();
         }catch (DaoException e){
@@ -193,6 +200,17 @@ public class EquipmentServiceImpl implements EquipmentService {
             LOGGER.log(Level.DEBUG, "Equipment with id={} not found", equipmentIdString);
         }
         return optionalEquipmentTimeTable;
+    }
+
+
+    @Override
+    public int countEquipmentByType(EquipmentType equipmentType) throws ServiceException {
+        try {
+            return equipmentDao.countEquipmentByType(equipmentType);
+        }catch (DaoException e){
+            throw new ServiceException("Can't handle countEquipmentByType method in OrderService. ", e);
+
+        }
     }
 
     private Equipment createEquipmentFromMapData(Map<String, String> equipmentData){

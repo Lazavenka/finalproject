@@ -29,6 +29,11 @@
 
 <c:set var="abs">${pageContext.request.contextPath}</c:set>
 
+
+<c:choose>
+    <c:when test="${requestScope.selected_equipment_type != null}"><c:set var="current_type_id" value="${requestScope.selected_equipment_type.id}"/></c:when>
+    <c:otherwise><c:set var="current_type_id" value='0'/></c:otherwise>
+</c:choose>
 <html>
 <head>
     <title>Equipment page. Research center.</title>
@@ -102,8 +107,32 @@
         <div style="margin-bottom: 10px; margin-top: 10px">
             <%@include file="fragment/equipment_table.jspf" %>
         </div>
+        <nav aria-label="Page navigation example" style="margin-bottom: 30px">
+            <ul class="pagination justify-content-center">
+                <li class="page-item  <c:if test="${requestScope.pagination_page eq 1}">disabled</c:if>">
+                    <a class="page-link" href="${abs}/controller?command=find_equipment_by_type_command&page=${requestScope.pagination_page - 1}&equipment_type_id=${current_type_id}">Previous</a>
+                </li>
+                <c:forEach begin="1" end="${requestScope.number_of_pages}" var="i">
+                    <c:choose>
+                        <c:when test="${requestScope.pagination_page eq i}">
+                            <li class="page-item"><a class="page-link disabled" href="#">${i}</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link"
+                                                     href="${abs}/controller?command=find_equipment_by_type_command&page=${i}&equipment_type_id=${current_type_id}">${i}</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+                <li class="page-item <c:if test="${requestScope.pagination_page eq requestScope.number_of_pages}">disabled</c:if>">
+                    <a class="page-link"  href="${abs}/controller?command=find_equipment_by_type_command&page=${requestScope.pagination_page + 1}&equipment_type_id=${current_type_id}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
+
+
 <ctg:print-footer/>
 </body>
 </html>
