@@ -79,7 +79,7 @@
                         <input type="hidden" name="command" value="complete_order_command">
                         <input type="hidden" name="order_id" value="${order.id}">
                         <button type="submit" class="btn btn-success"
-                                <c:if test="${order.state.name() != 'PAYED'}">disabled</c:if> >${complete}</button>
+                                <c:if test="${order.state.name() != 'PAYED' or order.rentEndTime.isAfter(requestScope.date_time_now)}">disabled</c:if> >${complete}</button>
                     </form></td>
                     <td><a class="btn btn-success" role="button" href="${abs}/controller?command=go_order_details_page_command&order_id=${order.id}">${details}</a></td>
                 </tr>

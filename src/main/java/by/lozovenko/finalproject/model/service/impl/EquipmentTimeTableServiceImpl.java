@@ -75,12 +75,14 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
             List<Order> currentOrders = currentAssistantOrders.getValue();
             Long currentAssistantId = currentAssistantOrders.getKey();
             for (Order assistantOrder : currentOrders) {
-                LocalDateTime orderStart = assistantOrder.getRentStartTime();
-                LocalDateTime orderEnd = assistantOrder.getRentEndTime();
-                EquipmentWorkTimePeriod assistantOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT, Collections.emptyList());
-                for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
-                    if (currentPeriod.crossPeriod(assistantOrderTimePeriod)) {
-                        currentPeriod.removeAssistantById(currentAssistantId);
+                if (assistantOrder.getState() != OrderState.CANCELLED) {
+                    LocalDateTime orderStart = assistantOrder.getRentStartTime();
+                    LocalDateTime orderEnd = assistantOrder.getRentEndTime();
+                    EquipmentWorkTimePeriod assistantOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.AVAILABLE_WITHOUT_ASSISTANT, Collections.emptyList());
+                    for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
+                        if (currentPeriod.crossPeriod(assistantOrderTimePeriod)) {
+                            currentPeriod.removeAssistantById(currentAssistantId);
+                        }
                     }
                 }
             }
@@ -91,12 +93,14 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
             }
         }
         for (Order equipmentOrder : equipmentOrders) {
-            LocalDateTime orderStart = equipmentOrder.getRentStartTime();
-            LocalDateTime orderEnd = equipmentOrder.getRentEndTime();
-            EquipmentWorkTimePeriod equipmentOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.BUSY, Collections.emptyList());
-            for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
-                if (currentPeriod.crossPeriod(equipmentOrderTimePeriod)) {
-                    currentPeriod.setAvailability(EquipmentAvailability.BUSY);
+            if(equipmentOrder.getState() != OrderState.CANCELLED) {
+                LocalDateTime orderStart = equipmentOrder.getRentStartTime();
+                LocalDateTime orderEnd = equipmentOrder.getRentEndTime();
+                EquipmentWorkTimePeriod equipmentOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.BUSY, Collections.emptyList());
+                for (EquipmentWorkTimePeriod currentPeriod : timeTable) {
+                    if (currentPeriod.crossPeriod(equipmentOrderTimePeriod)) {
+                        currentPeriod.setAvailability(EquipmentAvailability.BUSY);
+                    }
                 }
             }
         }

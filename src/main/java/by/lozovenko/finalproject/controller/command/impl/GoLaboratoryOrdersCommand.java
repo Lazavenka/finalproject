@@ -10,6 +10,7 @@ import by.lozovenko.finalproject.model.service.impl.OrderServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class GoLaboratoryOrdersCommand implements CustomCommand {
                 long laboratoryId = loggedManager.getLaboratoryId();
                 List<Order> orderList = orderService.findOrdersByLaboratoryId(laboratoryId);
                 request.setAttribute(ORDER_LIST, orderList);
-
+                request.setAttribute(DATE_TIME_NOW, LocalDateTime.now());
                 if (orderList.isEmpty()){
                     request.setAttribute(EMPTY_LIST, true);
                 }

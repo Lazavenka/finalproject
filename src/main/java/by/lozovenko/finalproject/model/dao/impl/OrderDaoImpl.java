@@ -27,7 +27,7 @@ public class OrderDaoImpl implements OrderDao {
             FROM orders WHERE order_state = ? AND order_assistant_id = ?""";
     private static final String GET_ORDERS_BY_CLIENT_ID = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id
-            FROM orders WHERE client_id = ? ORDER BY order_rent_start""";
+            FROM orders WHERE client_id = ? AND order_state = 'BOOKED' OR order_state = 'PAYED' ORDER BY order_rent_start""";
     private static final String GET_ORDERS_BY_LABORATORY_ID = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
             order_assistant_id FROM orders
