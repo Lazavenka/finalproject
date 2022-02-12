@@ -5,6 +5,7 @@ import by.lozovenko.finalproject.controller.command.CustomCommand;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentTimeTable;
+import by.lozovenko.finalproject.model.entity.EquipmentWorkTimePeriod;
 import by.lozovenko.finalproject.model.service.EquipmentService;
 import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,10 @@ public class ShowEquipmentTimeTableCommand implements CustomCommand {
             Optional<EquipmentTimeTable> optionalTimeTable = equipmentService.provideEquipmentTimeTable(equipmentIdString, dateString);
             if (optionalTimeTable.isPresent()){
                 EquipmentTimeTable timeTable = optionalTimeTable.get();
+                for (EquipmentWorkTimePeriod period: timeTable.getWorkTimePeriods()) {
+                    logger.log(Level.DEBUG,"period start - {} availability - {} assistants - {}", period.getStartOfPeriod(), period.getAvailability(), period.getAvailableAssistantsInPeriod());
+                }
+
                 Equipment selectedEquipment = timeTable.getEquipment();
                 request.setAttribute(EQUIPMENT_TIMETABLE, timeTable);
                 request.setAttribute(SELECTED_EQUIPMENT, selectedEquipment);
