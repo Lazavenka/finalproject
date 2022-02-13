@@ -276,7 +276,7 @@
                                         document.getElementById(
                                             'imagePreview').innerHTML =
                                             '<img src="' + e.target.result
-                                            + '"width="300" alt="Preview image"/>';
+                                            + '" width="300" alt="Preview image"/>';
                                     };
                                     reader.readAsDataURL(fileInput.files[0]);
                                 }

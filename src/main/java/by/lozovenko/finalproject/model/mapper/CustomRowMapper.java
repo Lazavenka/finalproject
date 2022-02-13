@@ -8,7 +8,8 @@ import org.apache.logging.log4j.Logger;
 import java.sql.ResultSet;
 import java.util.Optional;
 
-public interface CustomRowMapper <T extends CustomEntity> {
+public interface CustomRowMapper<T extends CustomEntity> {
     Logger LOGGER = LogManager.getLogger();
+
     Optional<T> rowMap(T entity, ResultSet resultSet) throws DaoException;
 }

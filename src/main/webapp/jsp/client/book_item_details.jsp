@@ -70,9 +70,9 @@
                         <dt class="col-sm-3">${equipment_avg_research_time}</dt>
                         <dd class="col-sm-9">${requestScope.selected_equipment.averageResearchTime.toString()}</dd>
 
-                        <dt class="col-sm-3">${assistant}</dt>
+                        <dt class="col-sm-3">${assistant_label}</dt>
                         <dd class="col-sm-9"><c:choose>
-                            <c:when test="${equipmentItem.needAssistant}"><div class="text-decoration-underline">${necessary}</div></c:when>
+                            <c:when test="${requestScope.selected_equipment.needAssistant}"><div class="text-decoration-underline">${necessary}</div></c:when>
                             <c:otherwise><div class="text-decoration-underline">${not_necessary}</div></c:otherwise>
                         </c:choose></dd>
 

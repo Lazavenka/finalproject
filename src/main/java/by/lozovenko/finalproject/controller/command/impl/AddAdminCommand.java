@@ -2,13 +2,12 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
@@ -23,7 +22,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.EMAIL;
 public class AddAdminCommand implements CustomCommand {
 
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         UserService userService = UserServiceImpl.getInstance();
         Router router = new Router();
         Map<String, String> adminData = new HashMap<>();
@@ -89,17 +88,7 @@ public class AddAdminCommand implements CustomCommand {
                 router.setPage(ADD_ADMIN_PAGE);
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Error in AddAdminCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            List<User> userList = null;
-            try {
-                userList = userService.findAllUsers();
-            } catch (ServiceException serviceException) {
-                logger.log(Level.ERROR, "Error in findAllUsers", serviceException);
-            }
-            request.setAttribute(USERS, userList);
-            request.setAttribute(ERROR_USER_MANAGEMENT, true);
-            router.setPage(USER_MANAGEMENT_PAGE);
+            throw new CommandException("Error in AddAdminCommand", e);
         }
         return router;
     }

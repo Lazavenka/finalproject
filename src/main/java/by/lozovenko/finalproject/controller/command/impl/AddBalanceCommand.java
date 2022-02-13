@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.UserService;
@@ -17,7 +18,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.BALANCE;
 public class AddBalanceCommand implements CustomCommand {
 
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         UserService userService = UserServiceImpl.getInstance();
         logger.log(Level.INFO, "AddBalanceCommand");
         Router router = new Router();
@@ -38,7 +39,7 @@ public class AddBalanceCommand implements CustomCommand {
                     router.setPage(CLIENT_BALANCE_PAGE);
                 }
             }catch (ServiceException e){
-                logger.log(Level.WARN, "AddBalanceCommand exception.", e);
+                throw new CommandException("Error in AddBalanceCommand", e);
             }
         }
         return router;

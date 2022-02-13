@@ -1,6 +1,6 @@
 package by.lozovenko.finalproject.model.entity;
 
-public class EquipmentType extends CustomEntity{
+public class EquipmentType extends CustomEntity {
     private String name;
     private String description;
 
@@ -9,6 +9,7 @@ public class EquipmentType extends CustomEntity{
         this.name = name;
         this.description = description;
     }
+
     public EquipmentType() {
     }
 

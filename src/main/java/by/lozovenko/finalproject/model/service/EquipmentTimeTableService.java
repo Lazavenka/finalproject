@@ -9,6 +9,8 @@ import java.util.Map;
 
 public interface EquipmentTimeTableService {
     void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable) throws ServiceException;
+
     void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable, LocalDate startDate, int daysCount) throws ServiceException;
-    void setAvailability(EquipmentTimeTable equipmentTimeTable, List<Order> equipmentOrders, Map<Long,List<Order>> assistantsOrders);
+
+    void setAvailability(EquipmentTimeTable equipmentTimeTable, List<Order> equipmentOrders, Map<Long, List<Order>> assistantsOrders);
 }

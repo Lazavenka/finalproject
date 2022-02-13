@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Department;
 import by.lozovenko.finalproject.model.entity.Laboratory;
@@ -13,7 +14,6 @@ import by.lozovenko.finalproject.model.service.impl.DepartmentServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.logging.log4j.Level;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import static by.lozovenko.finalproject.model.mapper.impl.LaboratoryMapper.LABOR
 
 public class GoEditLaboratoryPageCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         HttpSession session = request.getSession();
         String laboratoryId = request.getParameter(LABORATORY_ID);
@@ -46,10 +46,7 @@ public class GoEditLaboratoryPageCommand implements CustomCommand {
             }
             router.setPage(EDIT_LABORATORY_PAGE);
         }catch (ServiceException e){
-            logger.log(Level.ERROR, "Error in GoEditLaboratoryPageCommand");
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in GoEditLaboratoryPageCommand", e);
         }
         return router;
     }

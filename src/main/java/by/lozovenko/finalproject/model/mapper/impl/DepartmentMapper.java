@@ -26,6 +26,7 @@ public class DepartmentMapper implements CustomRowMapper<Department> {
         }
         return instance;
     }
+
     @Override
     public Optional<Department> rowMap(Department department, ResultSet resultSet) throws DaoException {
         Optional<Department> optionalDepartment;

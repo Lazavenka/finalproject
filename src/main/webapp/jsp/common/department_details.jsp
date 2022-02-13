@@ -79,7 +79,7 @@
         <c:choose>
             <c:when test="${requestScope.empty_list}">${not_found}</c:when>
             <c:otherwise>
-                <div class="justify-content-center">
+                <div class="d-flex justify-content-center">
                     <h4 class="h4">${laboratories}</h4>
                 </div>
                 <c:forEach var="laboratory" items="${requestScope.laboratories}">

@@ -19,12 +19,13 @@ public class ManagerMapper implements CustomRowMapper<User> {
 
     private static ManagerMapper instance;
 
-    public static ManagerMapper getInstance(){
-        if (instance == null){
+    public static ManagerMapper getInstance() {
+        if (instance == null) {
             instance = new ManagerMapper();
         }
         return instance;
     }
+
     @Override
     public Optional<User> rowMap(User entity, ResultSet resultSet) throws DaoException {
         Optional<User> optionalUser;
@@ -38,7 +39,7 @@ public class ManagerMapper implements CustomRowMapper<User> {
             manager.setLaboratoryId(resultSet.getLong(LaboratoryMapper.LABORATORY_ID));
             manager.setImageFilePath(resultSet.getString(AVATAR_LINK));
             optionalUser = Optional.of(manager);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.log(Level.ERROR, "Mapping error in ManagerMapper class!", e);
             optionalUser = Optional.empty();
         }

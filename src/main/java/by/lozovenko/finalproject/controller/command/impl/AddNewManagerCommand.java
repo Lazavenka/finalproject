@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.entity.User;
@@ -10,7 +11,6 @@ import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +24,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.EMAIL;
 
 public class AddNewManagerCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
 
         Router router = new Router();
         Map<String, String> managerData = new HashMap<>();
@@ -115,17 +115,7 @@ public class AddNewManagerCommand implements CustomCommand {
                 request.setAttribute(EXCEPTION, new ServiceException("Error due to selection of a non-existent lab. Or a manager has already been added to the selected laboratory"));
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Error in AddManagerCommand", e);
-            List<User> userList = null;
-            try {
-                userList = userService.findAllUsers();
-            } catch (ServiceException serviceException) {
-                logger.log(Level.ERROR, "Error in findAllUsers", serviceException);
-            }
-            request.setAttribute(EXCEPTION, e);
-            request.setAttribute(USERS, userList);
-            request.setAttribute(ERROR_USER_MANAGEMENT, true);
-            router.setPage(USER_MANAGEMENT_PAGE);
+            throw new CommandException("Error in AddManagerCommand", e);
         }
         return router;
     }

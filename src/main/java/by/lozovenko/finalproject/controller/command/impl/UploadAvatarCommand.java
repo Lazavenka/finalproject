@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
@@ -36,7 +37,7 @@ public class UploadAvatarCommand implements CustomCommand {
     private static final String ASSISTANT_DATABASE_FILEPATH = "static/images/assistants/";
 
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
 
         Router router = new Router();
         HttpSession session = request.getSession();
@@ -106,10 +107,7 @@ public class UploadAvatarCommand implements CustomCommand {
                 updatedUser.ifPresent(newSessionUser -> session.setAttribute(USER, newSessionUser));
                 request.setAttribute(SUCCESS_MESSAGE, true);
             } catch (IOException | ServiceException | ServletException e) {
-                logger.log(Level.ERROR, "Error in UploadAvatarCommand", e);
-                request.setAttribute(EXCEPTION, e);
-                router.setPage(ERROR_404_PAGE);
-                router.setRedirect();
+                throw new CommandException("Error in UploadAvatarCommand", e);
             } finally {
                 if (inputStream != null) {
                     try {

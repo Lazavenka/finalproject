@@ -23,7 +23,7 @@ public class CustomConnectionPool {
 
     private static final AtomicBoolean isCreated = new AtomicBoolean(false);
     private static final Lock createPoolLock = new ReentrantLock(true);
-    private static final int DEFAULT_POOL_SIZE = 8; //TODO read poll size from properties
+    private static final int DEFAULT_POOL_SIZE = 8;
     private static final int ADDITIONAL_CREATION_ATTEMPTS = 3;
 
     private final BlockingDeque<ProxyConnection> freeConnections;
@@ -43,7 +43,7 @@ public class CustomConnectionPool {
         int actualPoolSize = freeConnections.size();
         if (actualPoolSize == 0) {
             LOGGER.log(Level.FATAL, "No connection created!");
-            throw new RuntimeException("Unable to create any connection to database.");
+            throw new ExceptionInInitializerError("Unable to create any connection to database.");
         } else if (actualPoolSize < DEFAULT_POOL_SIZE) {
             for (int i = 0; i < ADDITIONAL_CREATION_ATTEMPTS; i++) {
                 actualPoolSize = freeConnections.size();

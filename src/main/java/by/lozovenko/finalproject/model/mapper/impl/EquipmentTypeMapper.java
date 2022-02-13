@@ -26,6 +26,7 @@ public class EquipmentTypeMapper implements CustomRowMapper<EquipmentType> {
         }
         return instance;
     }
+
     @Override
     public Optional<EquipmentType> rowMap(EquipmentType equipmentType, ResultSet resultSet) throws DaoException {
         Optional<EquipmentType> optionalEquipmentType;
@@ -34,7 +35,7 @@ public class EquipmentTypeMapper implements CustomRowMapper<EquipmentType> {
             equipmentType.setName(resultSet.getString(EQUIPMENT_TYPE_NAME));
             equipmentType.setDescription(resultSet.getString(EQUIPMENT_TYPE_DESCRIPTION));
             optionalEquipmentType = Optional.of(equipmentType);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.log(Level.WARN, "Mapping error in EquipmentTypeMapperClass ", e);
             optionalEquipmentType = Optional.empty();
         }

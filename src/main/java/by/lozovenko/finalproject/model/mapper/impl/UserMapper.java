@@ -28,8 +28,8 @@ public class UserMapper implements CustomRowMapper<User> {
 
     private static UserMapper instance;
 
-    public static UserMapper getInstance(){
-        if (instance == null){
+    public static UserMapper getInstance() {
+        if (instance == null) {
             instance = new UserMapper();
         }
         return instance;

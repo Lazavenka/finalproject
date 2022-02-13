@@ -1,6 +1,6 @@
 package by.lozovenko.finalproject.model.entity;
 
-public class Manager extends User{
+public class Manager extends User {
     private long managerId;
     private long departmentId;
     private String imageFilePath;
@@ -8,11 +8,13 @@ public class Manager extends User{
     private long laboratoryId;
     private ManagerDegree managerDegree;
 
-    public Manager(){
+    public Manager() {
     }
-    public Manager(User user){
+
+    public Manager(User user) {
         super(user);
     }
+
     public Manager(long id, String login, String password, String firstName, String lastName,
                    String email, String phone, UserRole role, UserState state, long departmentId,
                    String imageFilePath, String description, long laboratoryId, ManagerDegree managerDegree, long managerId) {

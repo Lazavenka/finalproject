@@ -5,14 +5,11 @@ import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.dao.DepartmentDao;
 import by.lozovenko.finalproject.model.dao.impl.DepartmentDaoImpl;
 import by.lozovenko.finalproject.model.entity.Department;
-import by.lozovenko.finalproject.model.entity.EquipmentType;
 import by.lozovenko.finalproject.model.service.DepartmentService;
-import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.validator.CustomFieldValidator;
 import by.lozovenko.finalproject.validator.CustomMapDataValidator;
 import by.lozovenko.finalproject.validator.impl.CustomFieldValidatorImpl;
 import by.lozovenko.finalproject.validator.impl.DepartmentMapDataValidator;
-import by.lozovenko.finalproject.validator.impl.EquipmentTypeMapDataValidator;
 
 import java.util.List;
 import java.util.Map;
@@ -29,21 +26,23 @@ public class DepartmentServiceImpl implements DepartmentService {
     private CustomMapDataValidator dataValidator = DepartmentMapDataValidator.getInstance();
 
 
-    private DepartmentServiceImpl(){
+    private DepartmentServiceImpl() {
     }
+
     public static DepartmentService getInstance() {
-        if(instance == null){
+        if (instance == null) {
             instance = new DepartmentServiceImpl();
         }
         return instance;
     }
+
     @Override
-    public Optional<String> findDepartmentNameById(String departmentId) throws ServiceException{
+    public Optional<String> findDepartmentNameById(String departmentId) throws ServiceException {
         Optional<String> optionalDepartmentName;
-        if (inputFieldValidator.isCorrectId(departmentId)){
+        if (inputFieldValidator.isCorrectId(departmentId)) {
             Long id = Long.parseLong(departmentId);
             optionalDepartmentName = findDepartmentNameById(id);
-        }else {
+        } else {
             optionalDepartmentName = Optional.empty();
         }
         return optionalDepartmentName;
@@ -53,7 +52,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Optional<String> findDepartmentNameById(Long id) throws ServiceException {
         try {
             return departmentDao.findDepartmentNameById(id);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findDepartmentNameById method in DepartmentService. ", e);
         }
     }
@@ -62,7 +61,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public List<Department> findAll() throws ServiceException {
         try {
             return departmentDao.findAll();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findAll method in DepartmentService. ", e);
         }
     }
@@ -70,10 +69,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Optional<Department> findDepartmentById(String departmentId) throws ServiceException {
         Optional<Department> optionalDepartment;
-        if (inputFieldValidator.isCorrectId(departmentId)){
+        if (inputFieldValidator.isCorrectId(departmentId)) {
             Long id = Long.parseLong(departmentId);
             optionalDepartment = findDepartmentById(id);
-        }else {
+        } else {
             optionalDepartment = Optional.empty();
         }
         return optionalDepartment;
@@ -83,16 +82,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Optional<Department> findDepartmentById(Long departmentId) throws ServiceException {
         try {
             return departmentDao.findEntityById(departmentId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findDepartmentById method in DepartmentService. ", e);
         }
     }
 
     @Override
     public boolean addNewDepartment(Map<String, String> departmentData) throws ServiceException {
-        try{
+        try {
             boolean isValidData = dataValidator.validateMapData(departmentData);
-            if (!isValidData){
+            if (!isValidData) {
                 return false;
             }
             String departmentName = departmentData.get(DEPARTMENT_NAME);
@@ -103,7 +102,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             department.setAddress(departmentAddress);
             department.setDescription(description);
             return departmentDao.create(department) != 0;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle addNewDepartment request at DepartmentService", e);
         }
     }
@@ -113,7 +112,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         long departmentsCount;
         try {
             departmentsCount = departmentDao.countDepartments();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle countDepartments request at DepartmentService", e);
         }
         return departmentsCount;

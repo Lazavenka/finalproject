@@ -22,8 +22,8 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px; margin-bottom: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${all_departments_page}</p>
@@ -32,7 +32,7 @@
     </div>
     <div class="w-75 mx-auto">
         <c:forEach var="department" items="${requestScope.departments}">
-            <div class="monospace">
+            <div style="margin-bottom: 20px">
                 <div class="d-flex position-relative">
                     <div>
                         <h5 class="mt-0">${department.name}</h5>

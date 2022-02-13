@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller;
 
 import by.lozovenko.finalproject.controller.command.CommandProvider;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
+import static by.lozovenko.finalproject.controller.PagePath.ERROR_500_PAGE;
 import static by.lozovenko.finalproject.controller.RequestParameter.COMMAND;
 
 @WebServlet(urlPatterns = {"/controller"})
@@ -40,24 +41,29 @@ public class Controller extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String commandName = request.getParameter(COMMAND);
         Optional<CustomCommand> optionalCustomCommand = CommandProvider.defineCommand(commandName);
-        if (optionalCustomCommand.isPresent()){
-            CustomCommand command = optionalCustomCommand.get();
-            Router router = command.execute(request);
-            switch (router.getType()) {
-                case REDIRECT -> response.sendRedirect(router.getPage());
-                case FORWARD -> {
-                    RequestDispatcher dispatcher = request.getRequestDispatcher(router.getPage());
-                    dispatcher.forward(request, response);
+        try {
+            if (optionalCustomCommand.isPresent()){
+                CustomCommand command = optionalCustomCommand.get();
+                Router router = command.execute(request);
+                switch (router.getType()) {
+                    case REDIRECT -> response.sendRedirect(router.getPage());
+                    case FORWARD -> {
+                        RequestDispatcher dispatcher = request.getRequestDispatcher(router.getPage());
+                        dispatcher.forward(request, response);
+                    }
+                    default -> {
+                        LOGGER.error("Invalid router dispatch type : {}", router.getType());
+                        response.sendRedirect(PagePath.ERROR_404_PAGE);
+                    }
                 }
-                default -> {
-                    LOGGER.error("Invalid router dispatch type : {}", router.getType());
-                    response.sendRedirect(PagePath.ERROR_404_PAGE);
-                }
+            }else {
+                LOGGER.log(Level.WARN, "Command = {} not found", commandName);
+                response.sendRedirect(ERROR_500_PAGE);
             }
-        }else {
-            request.getSession().setAttribute(EXCEPTION, "message.nullpage"); //todo fix
-            LOGGER.log(Level.WARN, "Command = {} not found", commandName);
-            response.sendRedirect(PagePath.ERROR_404_PAGE);
+        }catch (CommandException e){
+            LOGGER.log(Level.WARN, e.getMessage());
+            response.sendRedirect(ERROR_500_PAGE);
         }
+
     }
 }

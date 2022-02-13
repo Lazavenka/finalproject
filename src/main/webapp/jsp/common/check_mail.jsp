@@ -24,14 +24,14 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="spaced">
+<div style="margin-top: 30px">
     <figure class="text-center">
         <blockquote class="blockquote">
             <p>${check_mail}</p>
         </blockquote>
     </figure>
 </div>
-<div class="spaced align-self-center">
+<div class="d-flex justify-content-center" style="margin-bottom: 20px; margin-top: 20px">
     <a role="button" class="btn btn-primary"
        href="${abs}/controller?command=go_sign_in_page_command">${sign_in}</a>
 </div>

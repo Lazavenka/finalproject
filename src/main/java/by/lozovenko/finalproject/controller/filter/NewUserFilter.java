@@ -3,7 +3,6 @@ package by.lozovenko.finalproject.controller.filter;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.entity.UserRole;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;

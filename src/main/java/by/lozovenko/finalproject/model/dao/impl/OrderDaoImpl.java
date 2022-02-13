@@ -78,7 +78,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> findAll() throws DaoException {
-        return null;
+        throw new UnsupportedOperationException("findAll() method in OrderDao is not supported");
     }
 
     @Override
@@ -104,18 +104,15 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public boolean delete(Order order) throws DaoException {
-        return false;
-    }
+        throw new UnsupportedOperationException("delete(Order order) method in OrderDao is not supported");    }
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
-    }
+        throw new UnsupportedOperationException("deleteById(Long id) method in OrderDao is not supported");    }
 
     @Override
     public long create(Order order) throws DaoException {
-        return -1;
-    }
+        throw new UnsupportedOperationException("create(Order order) method in OrderDao is not supported");    }
 
     @Override
     public long update(Order order) throws DaoException {

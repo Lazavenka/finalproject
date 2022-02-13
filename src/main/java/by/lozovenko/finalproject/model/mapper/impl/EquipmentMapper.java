@@ -34,6 +34,7 @@ public class EquipmentMapper implements CustomRowMapper<Equipment> {
         }
         return instance;
     }
+
     @Override
     public Optional<Equipment> rowMap(Equipment equipment, ResultSet resultSet) throws DaoException {
         Optional<Equipment> optionalEquipment;

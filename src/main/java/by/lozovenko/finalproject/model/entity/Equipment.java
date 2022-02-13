@@ -3,7 +3,7 @@ package by.lozovenko.finalproject.model.entity;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
-public class Equipment extends CustomEntity{
+public class Equipment extends CustomEntity {
     private String name;
     private String description;
     private String imageFilePath;

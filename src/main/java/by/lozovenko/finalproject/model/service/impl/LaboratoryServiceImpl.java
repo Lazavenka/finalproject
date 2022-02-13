@@ -26,10 +26,11 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     private final CustomFieldValidator inputFieldValidator = CustomFieldValidatorImpl.getInstance();
     private final CustomMapDataValidator dataValidator = LaboratoryMapDataValidator.getInstance();
 
-    private LaboratoryServiceImpl(){
+    private LaboratoryServiceImpl() {
     }
+
     public static LaboratoryService getInstance() {
-        if(instance == null){
+        if (instance == null) {
             instance = new LaboratoryServiceImpl();
         }
         return instance;
@@ -39,7 +40,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     public Optional<String> findLaboratoryNameById(Long id) throws ServiceException {
         try {
             return laboratoryDao.findLaboratoryNameById(id);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findLaboratoryNameById request at LaboratoryService", e);
         }
     }
@@ -47,10 +48,10 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     @Override
     public List<Laboratory> findLaboratoriesByDepartmentId(String selectedDepartmentId) throws ServiceException {
         List<Laboratory> laboratoryList;
-        if (inputFieldValidator.isCorrectId(selectedDepartmentId)){
+        if (inputFieldValidator.isCorrectId(selectedDepartmentId)) {
             Long id = Long.parseLong(selectedDepartmentId);
             laboratoryList = findLaboratoriesByDepartmentId(id);
-        }else {
+        } else {
             laboratoryList = Collections.emptyList();
         }
         return laboratoryList;
@@ -61,7 +62,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         List<Laboratory> laboratoryList;
         try {
             laboratoryList = laboratoryDao.findAllByDepartmentId(selectedDepartmentId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findLaboratoriesByDepartmentId request at LaboratoryService", e);
         }
         return laboratoryList;
@@ -70,10 +71,10 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     @Override
     public Optional<Laboratory> findLaboratoryById(String laboratoryIdString) throws ServiceException {
         Optional<Laboratory> optionalLaboratory;
-        if (inputFieldValidator.isCorrectId(laboratoryIdString)){
+        if (inputFieldValidator.isCorrectId(laboratoryIdString)) {
             Long id = Long.parseLong(laboratoryIdString);
             optionalLaboratory = findLaboratoryById(id);
-        }else {
+        } else {
             optionalLaboratory = Optional.empty();
         }
         return optionalLaboratory;
@@ -83,16 +84,16 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     public Optional<Laboratory> findLaboratoryById(Long laboratoryId) throws ServiceException {
         try {
             return laboratoryDao.findEntityById(laboratoryId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findLaboratoryById method in LaboratoryService. ", e);
         }
     }
 
     @Override
     public boolean addNewLaboratory(Map<String, String> laboratoryData) throws ServiceException {
-        try{
+        try {
             boolean isValidData = dataValidator.validateMapData(laboratoryData);
-            if (!isValidData){
+            if (!isValidData) {
                 return false;
             }
             long departmentId = Long.parseLong(laboratoryData.get(DEPARTMENT_ID));
@@ -105,7 +106,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
             laboratory.setLocation(laboratoryLocation);
             laboratory.setDescription(description);
             return laboratoryDao.create(laboratory) != 0;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle addNewLaboratory request at LaboratoryService", e);
         }
     }
@@ -115,7 +116,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         List<Laboratory> laboratoryList;
         try {
             laboratoryList = laboratoryDao.findAll();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findAll request at LaboratoryService", e);
         }
         return laboratoryList;
@@ -125,7 +126,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
     public List<Laboratory> findLaboratoriesWithoutManager() throws ServiceException {
         try {
             return laboratoryDao.findLaboratoriesWithoutManager();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findAll request at LaboratoryService", e);
         }
     }
@@ -135,7 +136,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         long laboratoriesCount;
         try {
             laboratoriesCount = laboratoryDao.countLaboratories();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle countLaboratories request at LaboratoryService", e);
         }
         return laboratoriesCount;
@@ -148,7 +149,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
             if (!isValidData) {
                 return false;
             }
-            if (!inputFieldValidator.isCorrectId(laboratoryToEditId)){
+            if (!inputFieldValidator.isCorrectId(laboratoryToEditId)) {
                 return false;
             }
             long laboratoryId = Long.parseLong(laboratoryToEditId);
@@ -164,7 +165,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
             laboratory.setDescription(description);
 
             return laboratoryDao.update(laboratory) != 0;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle updateLaboratoryById request at LaboratoryService", e);
         }
     }
@@ -174,7 +175,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
         boolean result;
         try {
             result = laboratoryDao.updateLaboratoryPhoto(id, databasePath) != 0;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle updateImageByLaboratoryId request at LaboratoryService", e);
         }
         return result;

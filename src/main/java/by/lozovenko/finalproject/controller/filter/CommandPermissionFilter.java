@@ -4,7 +4,6 @@ import by.lozovenko.finalproject.controller.command.CommandType;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.entity.UserRole;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
+import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.USER;
 import static by.lozovenko.finalproject.controller.RequestParameter.COMMAND;
 
@@ -34,7 +34,10 @@ public class CommandPermissionFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
         String commandName = request.getParameter(COMMAND);
-
+        if (commandName == null){
+            request.getRequestDispatcher(ERROR_404_PAGE).forward(servletRequest, servletResponse);
+            return;
+        }
         try {
             CommandType commandType = CommandType.valueOf(commandName.toUpperCase());
             Optional<Object> optionalSessionUser = Optional.ofNullable(session.getAttribute(USER));
@@ -56,7 +59,8 @@ public class CommandPermissionFilter implements Filter {
             }
         }catch (IllegalArgumentException e){
             LOGGER.log(Level.WARN, "Command {} not found", commandName);
-            filterChain.doFilter(servletRequest, servletResponse);
+            request.getRequestDispatcher(ERROR_404_PAGE)
+                    .forward(servletRequest,servletResponse);
         }
     }
 

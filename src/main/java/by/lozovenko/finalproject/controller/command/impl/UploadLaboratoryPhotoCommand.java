@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.service.LaboratoryService;
@@ -33,8 +34,8 @@ public class UploadLaboratoryPhotoCommand implements CustomCommand {
     private static final String FILENAME_PART_LABORATORY_ID = "labId";
 
     @Override
-    public Router execute(HttpServletRequest request) {
-        Router router = new Router(EDIT_EQUIPMENT_PAGE, Router.DispatchType.FORWARD);
+    public Router execute(HttpServletRequest request) throws CommandException {
+        Router router = new Router(EDIT_LABORATORY_PAGE, Router.DispatchType.FORWARD);
         LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
         String currentLaboratoryId = request.getParameter(LABORATORY_ID);
         InputStream inputStream = null;
@@ -85,10 +86,7 @@ public class UploadLaboratoryPhotoCommand implements CustomCommand {
                 request.setAttribute(SUCCESS_MESSAGE, true);
             }
         } catch (IOException | ServiceException | ServletException e) {
-            logger.log(Level.ERROR, "Error in UploadLaboratoryPhotoCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in UploadLaboratoryPhotoCommand", e);
         } finally {
             if (inputStream != null) {
                 try {

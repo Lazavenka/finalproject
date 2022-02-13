@@ -53,8 +53,8 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px; margin-bottom: 20px">
+    <div style="margin-bottom: 20px" ">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
@@ -197,13 +197,13 @@
                            value="true">
                 </div>
                 <div class="col-sm-5">
-                    <div class="spaced">
+                    <div style="margin-top: 20px; margin-bottom: 20px">
                         <input type="submit" class="btn btn-primary" value="${add}"/>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="spaced">
+        <div style="margin-bottom: 30px">
             <div>
                 <a class="btn btn-primary" href="${abs}/controller?command=go_about_page_command"
                    role="button">${home}</a>

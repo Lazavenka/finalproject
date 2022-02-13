@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -39,15 +38,15 @@ class ConnectionFactory {
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.FATAL, "Properties file:{} not found! {}",
                     DATABASE_PROPERTIES, e.getMessage());
-            throw new RuntimeException(e); //throws ExceptionInInitializerError
+            throw new ExceptionInInitializerError(e);
         } catch (IOException e) {
             LOGGER.log(Level.FATAL, "Properties load exception in file:{}! {}",
                     DATABASE_PROPERTIES, e.getMessage());
-            throw new RuntimeException(e);
+            throw new ExceptionInInitializerError(e);
         } catch (ClassNotFoundException e) {
             LOGGER.log(Level.FATAL, "Cant find driver {}! Driver not loaded! {}",
                     properties.getProperty(PROPERTY_DRIVER), e.getMessage());
-            throw new RuntimeException(e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 
@@ -59,7 +58,7 @@ class ConnectionFactory {
             return DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
         } catch (SQLException e) {
             LOGGER.log(Level.ERROR, "Unable to create connection! {}", e.getMessage());
-            throw new ConnectionPoolException(e);
+            throw new ConnectionPoolException("Unable to create connection! {}", e);
         }
     }
 }

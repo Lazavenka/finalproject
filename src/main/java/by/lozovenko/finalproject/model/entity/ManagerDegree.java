@@ -9,13 +9,16 @@ public enum ManagerDegree {
     DOCTOR("Ph.D."),
     EMPTY("");
     private final String value;
-    ManagerDegree(String value){
+
+    ManagerDegree(String value) {
         this.value = value;
     }
-    public String getValue(){
+
+    public String getValue() {
         return this.value;
     }
-    public static ManagerDegree getDegreeByString(String degree){
+
+    public static ManagerDegree getDegreeByString(String degree) {
         Optional<ManagerDegree> managerDegree = Arrays.stream(ManagerDegree.values()).filter(d -> degree.equalsIgnoreCase(d.getValue())).findAny();
         return managerDegree.orElse(EMPTY);
     }

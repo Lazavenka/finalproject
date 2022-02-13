@@ -23,7 +23,7 @@
 <body>
 <jsp:include page="../header/header.jsp"/>
 <div class="container">
-    <div class="spaced">
+    <div style="margin-top: 30px; margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${registration_page}</p>
@@ -34,7 +34,7 @@
         <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
             <input type="hidden" name="command" value="registration_command">
             <%@ include file="fragment/register_form.jspf" %>
-            <div class="spaced align-self-center">
+            <div class="d-flex justify-content-center" style="margin-bottom: 20px; margin-top: 20px">
                 <button type="submit" class="btn btn-primary">${sign_up}</button>
             </div>
         </form>

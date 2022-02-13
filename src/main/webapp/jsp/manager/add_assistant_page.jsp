@@ -23,8 +23,8 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px; margin-bottom: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${add_assistant_page}</p>
@@ -35,7 +35,7 @@
         <form action="${abs}/controller" method="post" class="needs-validation" novalidate>
             <input type="hidden" name="command" value="add_assistant_command">
             <%@include file="../common/fragment/register_form.jspf" %>
-            <div class="spaced align-self-center">
+            <div class="d-flex justify-content-center" style="margin-bottom: 20px">
                 <button type="submit" class="btn btn-primary">${add}</button>
             </div>
         </form>

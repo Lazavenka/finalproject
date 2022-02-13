@@ -103,7 +103,7 @@
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
-                <li class="page-item <c:if test="${requestScope.pagination_page eq requestScope.number_of_pages}">disabled</c:if>">
+                <li class="page-item <c:if test="${requestScope.pagination_page >= requestScope.number_of_pages}">disabled</c:if>">
                     <a class="page-link"  href="${abs}/controller?command=go_laboratory_orders_command&page=${requestScope.pagination_page + 1}">Next</a>
                 </li>
             </ul>

@@ -2,13 +2,12 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.*;
-import by.lozovenko.finalproject.model.service.DepartmentService;
 import by.lozovenko.finalproject.model.service.EquipmentService;
 import by.lozovenko.finalproject.model.service.EquipmentTypeService;
 import by.lozovenko.finalproject.model.service.LaboratoryService;
-import by.lozovenko.finalproject.model.service.impl.DepartmentServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.EquipmentTypeServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
@@ -27,7 +26,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class AddNewEquipmentCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         HttpSession session = request.getSession();
 
@@ -66,10 +65,8 @@ public class AddNewEquipmentCommand implements CustomCommand {
                     router.setPage(ADD_EQUIPMENT_PAGE);
                 }
             }catch (ServiceException e){
-                logger.log(Level.ERROR, "Error in AddNewEquipmentCommand", e);
-                request.setAttribute(EXCEPTION, e);
-                router.setPage(ERROR_404_PAGE);
-                router.setRedirect();
+                throw new CommandException("Error in AddNewEquipmentCommand", e);
+
             }
         }else {
             router.setPage(LOGIN_PAGE);

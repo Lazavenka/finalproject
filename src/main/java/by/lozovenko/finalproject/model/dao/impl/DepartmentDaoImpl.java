@@ -73,12 +73,12 @@ public class DepartmentDaoImpl implements DepartmentDao {
 
     @Override
     public boolean delete(Department department) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("delete(Department department) method is not supported");
     }
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("deleteById(Long id) method is not supported");
     }
 
     @Override

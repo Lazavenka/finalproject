@@ -124,7 +124,7 @@
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
-                <li class="page-item <c:if test="${requestScope.pagination_page eq requestScope.number_of_pages}">disabled</c:if>">
+                <li class="page-item <c:if test="${requestScope.pagination_page >= requestScope.number_of_pages}">disabled</c:if>">
                     <a class="page-link"  href="${abs}/controller?command=find_equipment_by_type_command&page=${requestScope.pagination_page + 1}&equipment_type_id=${current_type_id}">Next</a>
                 </li>
             </ul>

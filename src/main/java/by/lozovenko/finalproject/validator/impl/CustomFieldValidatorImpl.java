@@ -141,7 +141,6 @@ public class CustomFieldValidatorImpl implements CustomFieldValidator {
     }
 
 
-
     @Override
     public boolean isCorrectEquipmentState(String equipmentState) {
         return notNullOrEmpty(equipmentState) && equipmentState.equals(EquipmentState.ACTIVE.name()) || equipmentState.equals(EquipmentState.INACTIVE.name());

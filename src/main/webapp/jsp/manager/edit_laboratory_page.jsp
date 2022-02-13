@@ -49,8 +49,8 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-top: 20px; margin-bottom: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
@@ -67,7 +67,7 @@
         <div class="row">
             <div class="col-sm-2 justify-content-center">
                 <div class="btn-group-vertical">
-                    <div class="monospace">
+                    <div style="margin-bottom: 10px">
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#editLaboratory"
                                 aria-expanded="false" aria-controls="editLaboratory">
@@ -124,7 +124,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="validationLocation" class="col-sm-2 col-form-label">${description}</label>
+                            <label for="validationLocation" class="col-sm-2 col-form-label">${lab_location}</label>
                             <div class="col-sm-10">
                                 <input type="text" name="lab_location" class="form-control"
                                        value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(location_param) != 'invalid_location' }">${laboratory_data.get(location_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.location}</c:otherwise></c:choose>"

@@ -8,10 +8,10 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.CONFIRMED_PASSWORD;
 
-public class AssistantMapDataValidator extends CustomMapDataValidator { //fixme А нужен ли?
+public class AssistantMapDataValidator extends CustomMapDataValidator {
     private static CustomMapDataValidator instance;
 
-    private AssistantMapDataValidator(){
+    private AssistantMapDataValidator() {
     }
 
     public static CustomMapDataValidator getInstance() {
@@ -20,6 +20,7 @@ public class AssistantMapDataValidator extends CustomMapDataValidator { //fixme 
         }
         return instance;
     }
+
     @Override
     public boolean validateMapData(Map<String, String> mapData) {
         boolean result = true;
@@ -32,31 +33,31 @@ public class AssistantMapDataValidator extends CustomMapDataValidator { //fixme 
         String phone = mapData.get(PHONE);
         String email = mapData.get(EMAIL);
 
-        if (!customFieldValidator.isCorrectLogin(login)){
+        if (!customFieldValidator.isCorrectLogin(login)) {
             mapData.put(LOGIN, INVALID_LOGIN);
             result = false;
         }
-        if (!customFieldValidator.isCorrectPassword(password)){
+        if (!customFieldValidator.isCorrectPassword(password)) {
             mapData.put(PASSWORD, INVALID_PASSWORD);
             result = false;
         }
-        if (!customFieldValidator.isCorrectName(firstName)){
+        if (!customFieldValidator.isCorrectName(firstName)) {
             mapData.put(FIRST_NAME, INVALID_FIRST_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectName(lastName)){
+        if (!customFieldValidator.isCorrectName(lastName)) {
             mapData.put(LAST_NAME, INVALID_LAST_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectPhone(phone)){
+        if (!customFieldValidator.isCorrectPhone(phone)) {
             mapData.put(PHONE, INVALID_PHONE);
             result = false;
         }
-        if (!customFieldValidator.isCorrectEmail(email)){
+        if (!customFieldValidator.isCorrectEmail(email)) {
             mapData.put(EMAIL, INVALID_EMAIL);
             result = false;
         }
-        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)){
+        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)) {
             mapData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
             result = false;
         }

@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.*;
@@ -11,14 +12,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.PagePath.ORDER_DETAILS_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.ORDER_ID;
 
 public class GoOrderDetailsPageCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router(ORDER_DETAILS_PAGE, Router.DispatchType.FORWARD);
         String orderIdString = request.getParameter(ORDER_ID);
         OrderService orderService = OrderServiceImpl.getInstance();
@@ -80,10 +80,7 @@ public class GoOrderDetailsPageCommand implements CustomCommand {
                 request.setAttribute(ORDER_NOT_FOUND, true);
             }
         } catch (ServiceException e) {
-            logger.error("Error at GoOrderDetailsPage", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in GoOrderDetailsPageCommand", e);
         }
         return router;
     }

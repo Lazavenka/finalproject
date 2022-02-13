@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.entity.User;
@@ -10,21 +11,18 @@ import by.lozovenko.finalproject.model.service.UserService;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.EDIT_PROFILE_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
-import static by.lozovenko.finalproject.controller.RequestAttribute.EXCEPTION;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class UpdateUserProfileCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router(EDIT_PROFILE_PAGE, Router.DispatchType.FORWARD);
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute(USER);
@@ -64,10 +62,7 @@ public class UpdateUserProfileCommand implements CustomCommand {
                 request.setAttribute(DESCRIPTION, ((Manager)sessionUser).getDescription());
             }
         }catch (ServiceException e){
-            logger.log(Level.ERROR, "Error in UpdateManagerDescriptionCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in UpdateUserProfileCommand", e);
         }
         return router;
     }

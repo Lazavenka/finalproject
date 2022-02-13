@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Department;
 import by.lozovenko.finalproject.model.service.DepartmentService;
@@ -22,7 +23,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class AddNewLaboratoryCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         DepartmentService departmentService = DepartmentServiceImpl.getInstance();
         LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
@@ -67,10 +68,8 @@ public class AddNewLaboratoryCommand implements CustomCommand {
                 router.setPage(ADD_LABORATORY_PAGE);
             }
         }catch (ServiceException e){
-            logger.log(Level.ERROR, "Error in AddNewLaboratoryCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in AddNewLaboratoryCommand", e);
+
         }
         return router;
     }

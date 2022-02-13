@@ -11,7 +11,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 public class EquipmentTypeMapDataValidator extends CustomMapDataValidator {
     private static CustomMapDataValidator instance;
 
-    private EquipmentTypeMapDataValidator(){
+    private EquipmentTypeMapDataValidator() {
     }
 
     public static CustomMapDataValidator getInstance() {
@@ -29,13 +29,12 @@ public class EquipmentTypeMapDataValidator extends CustomMapDataValidator {
         String description = mapData.get(EQUIPMENT_TYPE_DESCRIPTION);
 
 
-
-        if (!customFieldValidator.isCorrectEquipmentTypeName(name)){
+        if (!customFieldValidator.isCorrectEquipmentTypeName(name)) {
             mapData.put(EQUIPMENT_TYPE_NAME, INVALID_EQUIPMENT_TYPE_NAME);
             result = false;
         }
 
-        if (!customFieldValidator.isCorrectEquipmentTypeDescription(description)){
+        if (!customFieldValidator.isCorrectEquipmentTypeDescription(description)) {
             mapData.put(EQUIPMENT_TYPE_DESCRIPTION, INVALID_DESCRIPTION);
             result = false;
         }

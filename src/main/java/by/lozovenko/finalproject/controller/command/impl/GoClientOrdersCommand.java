@@ -3,6 +3,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Client;
 import by.lozovenko.finalproject.model.entity.Order;
@@ -16,13 +17,12 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 import static by.lozovenko.finalproject.controller.PagePath.CLIENT_ORDERS_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.PAGE;
 
 public class GoClientOrdersCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         int page = PaginationConstants.START_PAGE;
         int recordsPerPage = PaginationConstants.ORDERS_PER_PAGE;
         String pageParameter = request.getParameter(PAGE);
@@ -48,12 +48,8 @@ public class GoClientOrdersCommand implements CustomCommand {
                     request.setAttribute(EMPTY_LIST, true);
                 }
             } catch (ServiceException e) {
-                logger.error("Error at GoClientOrdersCommand", e);
-                request.setAttribute(EXCEPTION, e);
-                router.setPage(ERROR_404_PAGE);
-                router.setRedirect();
+                throw new CommandException("Error in GoClientOrdersCommand", e);
             }
-
         }
         return router;
     }

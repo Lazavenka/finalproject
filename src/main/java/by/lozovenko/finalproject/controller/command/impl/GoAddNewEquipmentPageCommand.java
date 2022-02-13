@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.EquipmentTypeService;
@@ -20,7 +21,7 @@ import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class GoAddNewEquipmentPageCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router();
         LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
         EquipmentTypeService equipmentTypeService = EquipmentTypeServiceImpl.getInstance();
@@ -50,9 +51,8 @@ public class GoAddNewEquipmentPageCommand implements CustomCommand {
                 }
             }catch (ServiceException e){
                 logger.log(Level.ERROR, "Error in GoAddNewEquipmentPageCommand", e);
-                request.setAttribute(EXCEPTION, e);
-                router.setPage(ERROR_404_PAGE);
-                router.setRedirect();
+                throw new CommandException("Error in GoAddManagerPageCommand", e);
+
             }
 
         }

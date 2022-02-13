@@ -24,19 +24,21 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="spaced">
-    <figure class="text-center">
-        <blockquote class="blockquote">
-            <c:choose>
-                <c:when test="${requestScope.confirm_failed}"><p>${not_success}</p></c:when>
-                <c:otherwise><p>${success}</p></c:otherwise>
-            </c:choose>
-        </blockquote>
-    </figure>
-</div>
+<div class="container">
+    <div style="margin-top: 30px; margin-bottom: 20px">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <c:choose>
+                    <c:when test="${requestScope.confirm_failed}"><p>${not_success}</p></c:when>
+                    <c:otherwise><p>${success}</p></c:otherwise>
+                </c:choose>
+            </blockquote>
+        </figure>
+    </div>
 
-<div class="spaced align-self-center">
-    <a role="button" class="btn btn-primary" href="${abs}/controller?command=go_sign_in_page_command">${sign_in}</a>
+    <div class="d-flex justify-content-center" style="margin-bottom: 20px">
+        <a role="button" class="btn btn-primary" href="${abs}/controller?command=go_sign_in_page_command">${sign_in}</a>
+    </div>
 </div>
 <ctg:print-footer/>
 </body>

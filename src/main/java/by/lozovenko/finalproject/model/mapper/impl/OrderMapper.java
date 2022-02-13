@@ -6,14 +6,11 @@ import by.lozovenko.finalproject.model.entity.OrderState;
 import by.lozovenko.finalproject.model.mapper.CustomRowMapper;
 import org.apache.logging.log4j.Level;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.model.mapper.impl.AssistantMapper.ASSISTANT_ID;
 import static by.lozovenko.finalproject.model.mapper.impl.ClientMapper.CLIENT_ID;
-import static by.lozovenko.finalproject.model.mapper.impl.EquipmentMapper.EQUIPMENT_ID;
 
 public class OrderMapper implements CustomRowMapper<Order> {
     public static final String ORDER_ID = "order_id";
@@ -27,12 +24,13 @@ public class OrderMapper implements CustomRowMapper<Order> {
 
     private static OrderMapper instance;
 
-    public static OrderMapper getInstance(){
-        if (instance == null){
+    public static OrderMapper getInstance() {
+        if (instance == null) {
             instance = new OrderMapper();
         }
         return instance;
     }
+
     @Override
     public Optional<Order> rowMap(Order order, ResultSet resultSet) throws DaoException {
         Optional<Order> optionalOrder;

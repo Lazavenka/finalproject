@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Manager;
 import by.lozovenko.finalproject.model.service.DepartmentService;
@@ -13,7 +14,6 @@ import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.Level;
 
-import java.util.List;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
@@ -23,7 +23,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.MANAGER_ID;
 public class FindManagerDetailsByIdCommand implements CustomCommand {
 
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         UserService userService = UserServiceImpl.getInstance();
         DepartmentService departmentService = DepartmentServiceImpl.getInstance();
         LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
@@ -54,10 +54,7 @@ public class FindManagerDetailsByIdCommand implements CustomCommand {
                 request.setAttribute(NO_MANAGERS_FOUND, true);
             }
         } catch (ServiceException e){
-            logger.log(Level.ERROR, "Error in FindAllManagersInCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in FindManagerDetailsByIdCommand", e);
         }
         return router;
     }

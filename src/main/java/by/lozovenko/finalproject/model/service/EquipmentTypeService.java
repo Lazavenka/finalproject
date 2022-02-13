@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface EquipmentTypeService {
     List<EquipmentType> findAll() throws ServiceException;
+
     Optional<EquipmentType> findById(String equipmentId) throws ServiceException;
 
     boolean addNewEquipmentType(Map<String, String> equipmentTypeData) throws ServiceException;

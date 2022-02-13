@@ -1,14 +1,17 @@
 package by.lozovenko.finalproject.model.entity;
 
-public class Assistant extends User{
+public class Assistant extends User {
     private String imageFilePath;
     private long laboratoryId;
     private long assistantId;
-    public Assistant(){
+
+    public Assistant() {
     }
-    public Assistant(User user){
+
+    public Assistant(User user) {
         super(user);
     }
+
     public Assistant(long id, String login, String password, String firstName, String lastName,
                      String email, String phone, UserRole role, UserState state,
                      String imageFilePath, long laboratoryId, long assistantId) {

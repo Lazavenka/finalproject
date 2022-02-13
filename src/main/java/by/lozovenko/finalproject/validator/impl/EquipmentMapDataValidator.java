@@ -10,7 +10,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 public class EquipmentMapDataValidator extends CustomMapDataValidator {
     private static CustomMapDataValidator instance;
 
-    private EquipmentMapDataValidator(){
+    private EquipmentMapDataValidator() {
     }
 
     public static CustomMapDataValidator getInstance() {
@@ -19,6 +19,7 @@ public class EquipmentMapDataValidator extends CustomMapDataValidator {
         }
         return instance;
     }
+
     @Override
     public boolean validateMapData(Map<String, String> mapData) {
         boolean result = true;
@@ -31,29 +32,29 @@ public class EquipmentMapDataValidator extends CustomMapDataValidator {
         String state = mapData.get(EQUIPMENT_STATE);
 
 
-        if (!customFieldValidator.isCorrectEquipmentName(name)){
+        if (!customFieldValidator.isCorrectEquipmentName(name)) {
             mapData.put(EQUIPMENT_NAME, INVALID_EQUIPMENT_NAME);
             result = false;
         }
 
-        if (!customFieldValidator.isCorrectEquipmentDescription(description)){
+        if (!customFieldValidator.isCorrectEquipmentDescription(description)) {
             mapData.put(DESCRIPTION, INVALID_DESCRIPTION);
             result = false;
         }
 
-        if (!customFieldValidator.isCorrectEquipmentPricePerHour(pricePerHour)){
+        if (!customFieldValidator.isCorrectEquipmentPricePerHour(pricePerHour)) {
             mapData.put(PRICE_PER_HOUR, INVALID_PRICE);
             result = false;
         }
-        if (!customFieldValidator.isCorrectHours(researchTimeHour)){
+        if (!customFieldValidator.isCorrectHours(researchTimeHour)) {
             mapData.put(RESEARCH_TIME_HOUR, INVALID_RESEARCH_TIME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectMinutes(researchTimeMinute)){
+        if (!customFieldValidator.isCorrectMinutes(researchTimeMinute)) {
             mapData.put(RESEARCH_TIME_MINUTE, INVALID_RESEARCH_TIME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectEquipmentState(state)){
+        if (!customFieldValidator.isCorrectEquipmentState(state)) {
             mapData.put(EQUIPMENT_STATE, INVALID_ENUM);
             result = false;
         }

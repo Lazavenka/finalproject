@@ -57,7 +57,7 @@
                        placeholder=${locale_password}>
                 <label for="floatingPassword">${locale_password}</label>
             </div>
-            <div class="justify-content-center" style="margin-top: 25px">
+            <div class="d-flex justify-content-center" style="margin-top: 25px">
                 <button class="btn btn-primary" type="submit">${sign_in}</button>
             </div>
         </form>

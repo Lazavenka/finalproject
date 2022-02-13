@@ -42,8 +42,8 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="container">
-    <div class="spaced">
+<div class="container" style="margin-bottom: 20px; margin-top: 20px">
+    <div style="margin-bottom: 20px">
         <figure class="text-center">
             <blockquote class="blockquote">
                 <p>${greetings} ${sessionScope.user.lastName} ${sessionScope.user.firstName}</p>
@@ -109,7 +109,7 @@
                             ${show_equipment}
                         </button>
                     </div>
-                    <div style="margin-bottom: 30px">
+                    <div style="margin-bottom: 40px">
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#show_assistants"
                                 aria-expanded="false" aria-controls="show_assistants">

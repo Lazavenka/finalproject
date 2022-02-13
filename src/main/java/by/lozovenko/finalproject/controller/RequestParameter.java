@@ -36,7 +36,6 @@ public class RequestParameter {
     public static final String DEPARTMENT_ADDRESS = "department_address";
     public static final String PRICE_PER_HOUR = "price_per_hour";
     public static final String IS_NEED_ASSISTANT = "is_need_assistant";
-    public static final String DATE_TIME_START = "date_time_start";
     public static final String ORDER_DATE_ASSISTANT = "order_date_assistant";
     public static final String ORDER_ID = "order_id";
     public static final String RESEARCH_TIME_HOUR = "research_time_h";

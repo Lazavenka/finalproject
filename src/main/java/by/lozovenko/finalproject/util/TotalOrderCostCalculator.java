@@ -5,7 +5,10 @@ import java.math.RoundingMode;
 import java.time.LocalTime;
 
 public class TotalOrderCostCalculator {
-    final static int MINUTES_IN_HOUR = 60;
+    private static final int MINUTES_IN_HOUR = 60;
+
+    private TotalOrderCostCalculator(){
+    }
 
     public static BigDecimal calculateTotalCost(BigDecimal pricePerHour, LocalTime researchTime) {
         int hours = researchTime.getHour();

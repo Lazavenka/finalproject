@@ -35,10 +35,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDao orderDao = OrderDaoImpl.getInstance();
     private final CustomFieldValidator inputFieldValidator = CustomFieldValidatorImpl.getInstance();
 
-    private OrderServiceImpl(){
+    private OrderServiceImpl() {
     }
+
     public static OrderService getInstance() {
-        if(instance == null){
+        if (instance == null) {
             instance = new OrderServiceImpl();
         }
         return instance;
@@ -48,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findOrdersByClientId(long clientId, int offset, int recordsPerPge) throws ServiceException {
         try {
             return orderDao.findOrdersByClientId(clientId, offset, recordsPerPge);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findOrdersByClientId method in OrderService. ", e);
         }
 
@@ -57,11 +58,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findOrdersByEquipmentIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws ServiceException {
         try {
-            if (startPeriod.isAfter(endPeriod)){
+            if (startPeriod.isAfter(endPeriod)) {
                 return Collections.emptyList();
             }
             return orderDao.findOrdersByEquipmentIdAtPeriod(equipmentId, startPeriod, endPeriod);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findOrdersByEquipmentIdAtPeriod method in OrderService. ", e);
         }
     }
@@ -69,11 +70,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findOrdersByAssistantIdAtPeriod(long equipmentId, LocalDate startPeriod, LocalDate endPeriod) throws ServiceException {
         try {
-            if (startPeriod.isAfter(endPeriod)){
+            if (startPeriod.isAfter(endPeriod)) {
                 return Collections.emptyList();
             }
             return orderDao.findOrdersByAssistantIdAtPeriod(equipmentId, startPeriod, endPeriod);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findOrdersByAssistantIdAtPeriod method in OrderService. ", e);
         }
     }
@@ -84,17 +85,16 @@ public class OrderServiceImpl implements OrderService {
             OrderState payed = OrderState.PAYED;
             LocalDateTime now = LocalDateTime.now();
             return orderDao.findOrdersByStateAndAssistantIdSince(payed, assistantId, now);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findPayedOrdersByAssistantIdFromNow method in OrderService. ", e);
         }
     }
 
     @Override
     public boolean createOrders(long clientId, String isNeedAssistant, String[] orderDateAssistant, Equipment selectedEquipment) throws ServiceException {
-        if (orderDateAssistant == null ){
+        if (orderDateAssistant == null) {
             return false;
         }
-        int ordersCount = orderDateAssistant.length;
         List<Order> orderList = new ArrayList<>();
         LocalTime researchTime = selectedEquipment.getAverageResearchTime();
         int researchTimeHours = researchTime.getHour();
@@ -103,10 +103,10 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal orderCost = TotalOrderCostCalculator.calculateTotalCost(pricePerHour, researchTime);
         boolean needAssistant = Boolean.parseBoolean(isNeedAssistant);
         long equipmentId = selectedEquipment.getId();
-        for (int i = 0; i < ordersCount; i++) {
+        for (String currentOrderBookParameters : orderDateAssistant) {
             Order order = new Order();
             order.setEquipmentId(equipmentId);
-            String[] currentOrderDateAssistant = orderDateAssistant[i].split("\\|");
+            String[] currentOrderDateAssistant = currentOrderBookParameters.split("\\|");
             String orderStartDateTimeString = currentOrderDateAssistant[0];
             String currentAssistantId = currentOrderDateAssistant[1];
             LocalDateTime orderStartDateTime = LocalDateTime.parse(orderStartDateTimeString);
@@ -122,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
         }
         try {
             return orderDao.createOrders(orderList) != null;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle createOrders method in OrderService. ", e);
         }
 
@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderPaymentCode payOrder(long userId, String orderIdString) throws ServiceException {
-        if (!inputFieldValidator.isCorrectId(orderIdString)){
+        if (!inputFieldValidator.isCorrectId(orderIdString)) {
             LOGGER.log(Level.DEBUG, "PayOrder - invalid data (userId={}, orderStringId={}", userId, orderIdString);
             return OrderPaymentCode.INVALID_DATA;
         }
@@ -140,23 +140,23 @@ public class OrderServiceImpl implements OrderService {
             Optional<BigDecimal> optionalClientBalance = userDao.checkUserBalanceByUserId(userId);
             long orderId = Long.parseLong(orderIdString);
             Optional<Order> optionalOrder = orderDao.findEntityById(orderId);
-            if (optionalClientBalance.isPresent() && optionalOrder.isPresent()){
+            if (optionalClientBalance.isPresent() && optionalOrder.isPresent()) {
                 BigDecimal clientBalance = optionalClientBalance.get();
                 BigDecimal orderTotalCost = optionalOrder.get().getTotalCost();
-                if (clientBalance.compareTo(orderTotalCost) > 0){
+                if (clientBalance.compareTo(orderTotalCost) > 0) {
                     BigDecimal newUserBalance = clientBalance.subtract(orderTotalCost);
                     OrderState newOrderState = OrderState.PAYED;
                     result = orderDao.payOrder(userId, newUserBalance, orderId, newOrderState) ? OrderPaymentCode.PAYED : OrderPaymentCode.ERROR;
-                }else {
-                    LOGGER.log(Level.DEBUG, "PayOrder - not enough money (userBalance = {}, totalCost={}",clientBalance, orderTotalCost);
+                } else {
+                    LOGGER.log(Level.DEBUG, "PayOrder - not enough money (userBalance = {}, totalCost={}", clientBalance, orderTotalCost);
                     result = OrderPaymentCode.NOT_ENOUGH_MONEY;
                 }
-            }else {
+            } else {
                 LOGGER.log(Level.DEBUG, "PayOrder - order orderId={} not found", orderIdString);
 
                 result = OrderPaymentCode.ORDER_NOT_EXIST;
             }
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle payOrder method in OrderService. ", e);
         }
         return result;
@@ -164,13 +164,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean updateOrderStateById(String orderIdString, OrderState orderState) throws ServiceException {
-        if (!inputFieldValidator.isCorrectId(orderIdString)){
+        if (!inputFieldValidator.isCorrectId(orderIdString)) {
             return false;
         }
         long orderId = Long.parseLong(orderIdString);
         try {
             return orderDao.updateOrderState(orderId, orderState) != 0;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle updateOrderStateById method in OrderService. ", e);
         }
     }
@@ -179,7 +179,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findOrdersByLaboratoryId(long laboratoryId, int offset, int recordsPerPage) throws ServiceException {
         try {
             return orderDao.findOrdersByLaboratoryId(laboratoryId, offset, recordsPerPage);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findOrdersByLaboratoryId method in OrderService. ", e);
         }
     }
@@ -187,10 +187,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<Order> findOrderById(String orderIdString) throws ServiceException {
         Optional<Order> optionalOrder;
-        if (inputFieldValidator.isCorrectId(orderIdString)){
+        if (inputFieldValidator.isCorrectId(orderIdString)) {
             long id = Long.parseLong(orderIdString);
             optionalOrder = findOrderById(id);
-        }else {
+        } else {
             optionalOrder = Optional.empty();
         }
         return optionalOrder;
@@ -200,7 +200,7 @@ public class OrderServiceImpl implements OrderService {
     public Optional<Order> findOrderById(long orderId) throws ServiceException {
         try {
             return orderDao.findEntityById(orderId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle findOrderById method in OrderService. ", e);
         }
     }
@@ -209,7 +209,7 @@ public class OrderServiceImpl implements OrderService {
     public int countClientOrders(long clientId) throws ServiceException {
         try {
             return orderDao.countClientOrders(clientId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle countClientOrders method in OrderService. ", e);
 
         }
@@ -219,7 +219,7 @@ public class OrderServiceImpl implements OrderService {
     public int countLaboratoryOrders(long laboratoryId) throws ServiceException {
         try {
             return orderDao.countLaboratoryOrders(laboratoryId);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             throw new ServiceException("Can't handle countLaboratoryOrders method in OrderService. ", e);
 
         }

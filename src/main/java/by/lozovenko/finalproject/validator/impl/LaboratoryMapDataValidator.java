@@ -11,7 +11,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 public class LaboratoryMapDataValidator extends CustomMapDataValidator {
     private static CustomMapDataValidator instance;
 
-    private LaboratoryMapDataValidator(){
+    private LaboratoryMapDataValidator() {
     }
 
     public static CustomMapDataValidator getInstance() {
@@ -30,16 +30,15 @@ public class LaboratoryMapDataValidator extends CustomMapDataValidator {
         String description = mapData.get(DESCRIPTION);
 
 
-
-        if (!customFieldValidator.isCorrectLaboratoryName(name)){
+        if (!customFieldValidator.isCorrectLaboratoryName(name)) {
             mapData.put(LABORATORY_NAME, INVALID_LABORATORY_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectLaboratoryLocation(location)){
+        if (!customFieldValidator.isCorrectLaboratoryLocation(location)) {
             mapData.put(LABORATORY_LOCATION, INVALID_LOCATION);
             result = false;
         }
-        if (!customFieldValidator.isCorrectLaboratoryDescription(description)){
+        if (!customFieldValidator.isCorrectLaboratoryDescription(description)) {
             mapData.put(DESCRIPTION, INVALID_DESCRIPTION);
             result = false;
         }

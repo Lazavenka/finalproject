@@ -13,7 +13,8 @@ public class ProxyConnection implements Connection {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private Connection connection;
-    ProxyConnection(Connection connection){
+
+    ProxyConnection(Connection connection) {
         this.connection = connection;
     }
 
@@ -58,11 +59,11 @@ public class ProxyConnection implements Connection {
     }
 
     @Override
-    public void close(){
+    public void close() {
         CustomConnectionPool.getInstance().releaseConnection(this);
     }
 
-    void reallyClose(){
+    void reallyClose() {
         try {
             connection.close();
         } catch (SQLException e) {

@@ -17,7 +17,7 @@ public class ChangeLocaleCommand implements CustomCommand {
         HttpSession session = request.getSession();
         String currentPage = (String) session.getAttribute(CURRENT_PAGE);
         String newLocale = request.getParameter(LOCALE);
-        logger.log(Level.INFO, "Get request parameter {}", newLocale);
+        logger.log(Level.DEBUG, "Get request parameter {}", newLocale);
         if (LocaleValidator.isLocaleExist(newLocale)) {
             logger.log(Level.DEBUG, "Set attribute to session - locale = {}", newLocale);
             session.setAttribute(LOCALE, newLocale);

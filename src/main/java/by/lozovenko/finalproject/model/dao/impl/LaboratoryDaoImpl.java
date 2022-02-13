@@ -98,12 +98,12 @@ public class LaboratoryDaoImpl implements LaboratoryDao {
 
     @Override
     public boolean delete(Laboratory laboratory) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("delete(Laboratory laboratory) method is not supported");
     }
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("deleteById(Long id) method is not supported");
     }
 
     @Override

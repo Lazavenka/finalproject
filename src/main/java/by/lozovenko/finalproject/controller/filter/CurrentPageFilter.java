@@ -1,7 +1,6 @@
 package by.lozovenko.finalproject.controller.filter;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
@@ -19,10 +18,6 @@ public class CurrentPageFilter implements Filter {
     private static final String INDEX_PAGE = "/index.jsp";
     private static final String LOCALE_COMMAND = "command=change_locale";
 
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -46,7 +41,4 @@ public class CurrentPageFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    @Override
-    public void destroy() {
-    }
 }

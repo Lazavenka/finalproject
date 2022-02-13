@@ -59,7 +59,7 @@
                         </c:forEach>
                     </select>
                 </div>
-                <div class="justify-content-center">
+                <div class="d-flex justify-content-center">
                     <input type="submit" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px" value="${search}"/>
                 </div>
 
@@ -122,7 +122,7 @@
             </dl>
         </div>
     </div>
-    <h4 class="h4 justify-content-center">${equipment_list}</h4>
+    <h4 class="h4 d-flex justify-content-center">${equipment_list}</h4>
     <div style="margin-bottom: 20px; margin-top: 20px">
     <%@include file="fragment/equipment_table.jspf" %>
     </div>

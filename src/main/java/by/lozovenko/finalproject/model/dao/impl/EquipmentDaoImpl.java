@@ -110,12 +110,12 @@ public class EquipmentDaoImpl implements EquipmentDao {
 
     @Override
     public boolean delete(Equipment equipment) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("delete(Equipment equipment) method is not supported");
     }
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("deleteById(Long id) method is not supported");
     }
 
     @Override
@@ -170,10 +170,7 @@ public class EquipmentDaoImpl implements EquipmentDao {
         return result;
     }
 
-    @Override
-    public boolean updateEquipmentStateById(Long id, EquipmentState state) throws DaoException {
-        return false;
-    }
+
     @Override
     public List<Equipment> findAllLimited(int offset, int recordsPerPage) throws DaoException {
         List<Equipment> equipmentList = new ArrayList<>();
@@ -239,16 +236,6 @@ public class EquipmentDaoImpl implements EquipmentDao {
             throw new DaoException("Error in findEquipmentByLaboratoryId method EquipmentDao class. Unable to get access to database.", e);
         }
         return equipmentList;
-    }
-
-    @Override
-    public Optional<Equipment> findEquipmentByName(String patternName) throws DaoException {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Equipment> findAllActiveEquipmentByLaboratory(Laboratory laboratory) throws DaoException {
-        return null;
     }
 
     @Override

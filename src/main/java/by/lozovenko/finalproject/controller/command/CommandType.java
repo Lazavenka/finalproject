@@ -34,7 +34,6 @@ public enum CommandType {
     UPDATE_USER_PROFILE_COMMAND(new UpdateUserProfileCommand(), EnumSet.of(ADMIN, MANAGER, ASSISTANT, CLIENT)),
 
     CHECK_BALANCE_COMMAND(new CheckBalanceCommand(), EnumSet.of(CLIENT)),
-    ADD_EQUIPMENT_TO_CART_COMMAND(new AddEquipmentToCartCommand(), EnumSet.of(CLIENT)),
     GO_BALANCE_PAGE_COMMAND(new GoBalancePageCommand(), EnumSet.of(CLIENT)),
     ADD_BALANCE_COMMAND(new AddBalanceCommand(), EnumSet.of(CLIENT)),
     GO_BOOK_EQUIPMENT_DETAILS_PAGE_COMMAND(new GoBookEquipmentDetailsPageCommand(), EnumSet.of(CLIENT)),

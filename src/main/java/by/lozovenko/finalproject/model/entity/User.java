@@ -1,6 +1,6 @@
 package by.lozovenko.finalproject.model.entity;
 
-public class User extends CustomEntity{
+public class User extends CustomEntity {
     private String login;
     private String password;
     private String firstName;
@@ -10,12 +10,14 @@ public class User extends CustomEntity{
     private UserRole role;
     private UserState state;
 
-    public User(){
+    public User() {
     }
-    public User(User user){
+
+    public User(User user) {
         this(user.getId(), user.login, user.password, user.firstName, user.lastName,
                 user.email, user.phone, user.role, user.state);
     }
+
     public User(long id, String login, String password, String firstName, String lastName,
                 String email, String phone, UserRole role, UserState state) {
         super(id);

@@ -2,6 +2,10 @@ package by.lozovenko.finalproject.util.mail;
 
 public class MailMessageBuilder {
     private static final String PATH = "http://localhost:8080/finalproject_war_exploded/controller?command=confirm_registration_command&token=";
+
+    private MailMessageBuilder(){
+    }
+
     public static String buildMessage(String token){
         StringBuilder builder = new StringBuilder();
         builder.append("\tGreetings dear customer of Research Center Project");

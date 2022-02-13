@@ -10,7 +10,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 public class UserMapDataValidator extends CustomMapDataValidator {
     private static CustomMapDataValidator instance;
 
-    private UserMapDataValidator(){
+    private UserMapDataValidator() {
     }
 
     public static CustomMapDataValidator getInstance() {
@@ -32,32 +32,32 @@ public class UserMapDataValidator extends CustomMapDataValidator {
         String phone = mapData.get(PHONE);
         String email = mapData.get(EMAIL);
 
-        if (!customFieldValidator.isCorrectLogin(login)){
+        if (!customFieldValidator.isCorrectLogin(login)) {
             mapData.put(LOGIN, INVALID_LOGIN);
             result = false;
         }
-        if (!customFieldValidator.isCorrectPassword(password)){
+        if (!customFieldValidator.isCorrectPassword(password)) {
             mapData.put(PASSWORD, INVALID_PASSWORD);
             result = false;
         }
-        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)){
+        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)) {
             mapData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
             result = false;
         }
 
-        if (!customFieldValidator.isCorrectName(lastName)){
+        if (!customFieldValidator.isCorrectName(lastName)) {
             mapData.put(LAST_NAME, INVALID_LAST_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectName(firstName)){
+        if (!customFieldValidator.isCorrectName(firstName)) {
             mapData.put(FIRST_NAME, INVALID_FIRST_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectPhone(phone)){
+        if (!customFieldValidator.isCorrectPhone(phone)) {
             mapData.put(PHONE, INVALID_PHONE);
             result = false;
         }
-        if (!customFieldValidator.isCorrectEmail(email)){
+        if (!customFieldValidator.isCorrectEmail(email)) {
             mapData.put(EMAIL, INVALID_EMAIL);
             result = false;
         }

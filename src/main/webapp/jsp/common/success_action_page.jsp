@@ -22,7 +22,7 @@
 </head>
 <body>
 <jsp:include page="../header/header.jsp"/>
-<div class="spaced">
+<div class="container" style="margin-top: 20px; margin-bottom: 20px">
 <figure class="text-center">
     <blockquote class="blockquote">
         <p>${success_message}</p>

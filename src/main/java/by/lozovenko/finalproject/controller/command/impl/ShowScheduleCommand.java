@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Assistant;
 import by.lozovenko.finalproject.model.entity.Order;
@@ -14,12 +15,11 @@ import org.apache.logging.log4j.Level;
 import java.util.List;
 
 import static by.lozovenko.finalproject.controller.PagePath.ASSISTANT_SCHEDULE_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class ShowScheduleCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router(ASSISTANT_SCHEDULE_PAGE, Router.DispatchType.FORWARD);
         HttpSession session = request.getSession();
         Assistant assistant = (Assistant) session.getAttribute(USER);
@@ -33,12 +33,8 @@ public class ShowScheduleCommand implements CustomCommand {
                 request.setAttribute(EMPTY_LIST, true);
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Error in ShowScheduleCommand");
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in ShowScheduleCommand", e);
         }
-
         return router;
     }
 }

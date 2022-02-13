@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 
-public class Mail{
+public class Mail {
     private static final String MAIL_PROPERTIES = "config/mail.properties";
 
     public static void sendMail(String destination, String subject, String body) throws IOException {

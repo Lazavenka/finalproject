@@ -14,14 +14,17 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
     public static final int ONE_DAY = 1;
 
     private static EquipmentTimeTableService instance;
-    private EquipmentTimeTableServiceImpl(){
+
+    private EquipmentTimeTableServiceImpl() {
     }
-    public static EquipmentTimeTableService getInstance(){
-        if (instance == null){
+
+    public static EquipmentTimeTableService getInstance() {
+        if (instance == null) {
             instance = new EquipmentTimeTableServiceImpl();
         }
         return instance;
     }
+
     @Override
     public void buildTimeTable(List<Assistant> laboratoryAssistants, EquipmentTimeTable equipmentTimeTable) throws ServiceException {
         if (equipmentTimeTable.getEquipment() == null) {
@@ -93,7 +96,7 @@ public class EquipmentTimeTableServiceImpl implements EquipmentTimeTableService 
             }
         }
         for (Order equipmentOrder : equipmentOrders) {
-            if(equipmentOrder.getState() != OrderState.CANCELLED) {
+            if (equipmentOrder.getState() != OrderState.CANCELLED) {
                 LocalDateTime orderStart = equipmentOrder.getRentStartTime();
                 LocalDateTime orderEnd = equipmentOrder.getRentEndTime();
                 EquipmentWorkTimePeriod equipmentOrderTimePeriod = new EquipmentWorkTimePeriod(orderStart, orderEnd, EquipmentAvailability.BUSY, Collections.emptyList());

@@ -155,7 +155,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean delete(User user) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("delete(User user) method is not supported");
     }
 
     @Override

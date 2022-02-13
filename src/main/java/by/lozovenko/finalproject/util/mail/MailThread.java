@@ -13,7 +13,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class MailThread extends Thread{
+public class MailThread extends Thread {
     private static final Logger logger = LogManager.getLogger();
     private MimeMessage message;
     private final String sendToEmail;
@@ -21,6 +21,7 @@ public class MailThread extends Thread{
     private final String mailText;
     private final Properties properties;
     private Session mailSession;
+
     public MailThread(String sendToEmail, String subject, String mailText, Properties properties) {
         this.sendToEmail = sendToEmail;
         this.mailSubject = subject;
@@ -28,7 +29,7 @@ public class MailThread extends Thread{
         this.properties = properties;
     }
 
-    private void init(){
+    private void init() {
         mailSession = (new SessionCreator(properties)).createSession();
         mailSession.setDebug(true);
         message = new MimeMessage(mailSession);
@@ -37,19 +38,19 @@ public class MailThread extends Thread{
             message.setContent(mailText, "text/html; charset=utf-8");
 
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(sendToEmail));
-        }catch (AddressException e){
+        } catch (AddressException e) {
             logger.log(Level.WARN, "Incorrect address \"{}\" - {}", sendToEmail, e);
-        }catch (MessagingException e){
+        } catch (MessagingException e) {
             logger.log(Level.WARN, "Message creation exception", e);
         }
     }
 
     @Override
-    public void run(){
+    public void run() {
         init();
         try {
             Transport.send(message, message.getRecipients(Message.RecipientType.TO));
-        }catch (MessagingException e){
+        } catch (MessagingException e) {
             logger.log(Level.WARN, "Message sending exception", e);
         }
     }

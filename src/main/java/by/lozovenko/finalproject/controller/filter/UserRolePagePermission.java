@@ -7,7 +7,6 @@ import static by.lozovenko.finalproject.controller.PagePath.*;
 public enum UserRolePagePermission {
     GUEST(Set.of(
             INDEX,
-            GUEST_PAGE,
             ABOUT,
             MANAGER_DETAILS_PAGE,
             ALL_DEPARTMENTS_PAGE,
@@ -85,7 +84,6 @@ public enum UserRolePagePermission {
     )),
     ADMIN(Set.of(
             INDEX,
-            ADMIN_PAGE,
             ABOUT,
             EDIT_PROFILE_PAGE,
             ADD_ADMIN_PAGE,

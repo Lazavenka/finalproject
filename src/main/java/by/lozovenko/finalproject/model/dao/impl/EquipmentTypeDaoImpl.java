@@ -74,12 +74,12 @@ public class EquipmentTypeDaoImpl implements EquipmentTypeDao {
 
     @Override
     public boolean delete(EquipmentType equipmentType) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("delete(EquipmentType equipmentType) method is not supported");
     }
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
+        throw new UnsupportedOperationException("delete(EquipmentType equipmentType) method is not supported");
     }
 
     @Override

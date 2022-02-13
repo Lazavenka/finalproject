@@ -2,25 +2,16 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
-import by.lozovenko.finalproject.model.entity.Assistant;
-import by.lozovenko.finalproject.model.entity.Equipment;
-import by.lozovenko.finalproject.model.entity.Laboratory;
 import by.lozovenko.finalproject.model.entity.Manager;
-import by.lozovenko.finalproject.model.service.EquipmentService;
-import by.lozovenko.finalproject.model.service.LaboratoryService;
 import by.lozovenko.finalproject.model.service.UserService;
-import by.lozovenko.finalproject.model.service.impl.EquipmentServiceImpl;
-import by.lozovenko.finalproject.model.service.impl.LaboratoryServiceImpl;
 import by.lozovenko.finalproject.model.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.logging.log4j.Level;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.*;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
@@ -29,7 +20,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.EMAIL;
 
 public class AddAssistantCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         Manager manager = (Manager)session.getAttribute(USER);
         UserService userService = UserServiceImpl.getInstance();
@@ -96,10 +87,7 @@ public class AddAssistantCommand implements CustomCommand {
                 router.setPage(ADD_ASSISTANT_PAGE);
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Error in RegistrationCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in AddAssistantCommand", e);
         }
         return router;
     }

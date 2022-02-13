@@ -11,7 +11,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.CONFIRMED_PA
 public class ManagerMapDataValidator extends CustomMapDataValidator {
     private static CustomMapDataValidator instance;
 
-    private ManagerMapDataValidator(){
+    private ManagerMapDataValidator() {
     }
 
     public static CustomMapDataValidator getInstance() {
@@ -36,40 +36,40 @@ public class ManagerMapDataValidator extends CustomMapDataValidator {
         String degree = mapData.get(MANAGER_DEGREE);
 
 
-        if (!customFieldValidator.isCorrectLogin(login)){
+        if (!customFieldValidator.isCorrectLogin(login)) {
             mapData.put(LOGIN, INVALID_LOGIN);
             result = false;
         }
-        if (!customFieldValidator.isCorrectPassword(password)){
+        if (!customFieldValidator.isCorrectPassword(password)) {
             mapData.put(PASSWORD, INVALID_PASSWORD);
             result = false;
         }
-        if (!customFieldValidator.isCorrectName(firstName)){
+        if (!customFieldValidator.isCorrectName(firstName)) {
             mapData.put(FIRST_NAME, INVALID_FIRST_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectName(lastName)){
+        if (!customFieldValidator.isCorrectName(lastName)) {
             mapData.put(LAST_NAME, INVALID_LAST_NAME);
             result = false;
         }
-        if (!customFieldValidator.isCorrectPhone(phone)){
+        if (!customFieldValidator.isCorrectPhone(phone)) {
             mapData.put(PHONE, INVALID_PHONE);
             result = false;
         }
-        if (!customFieldValidator.isCorrectEmail(email)){
+        if (!customFieldValidator.isCorrectEmail(email)) {
             mapData.put(EMAIL, INVALID_EMAIL);
             result = false;
         }
-        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)){
+        if (!customFieldValidator.isMatchesPasswords(password, confirmedPassword)) {
             mapData.put(CONFIRMED_PASSWORD, PASSWORDS_MISMATCH);
             result = false;
         }
 
-        if (!customFieldValidator.isCorrectManagerDescription(description)){
+        if (!customFieldValidator.isCorrectManagerDescription(description)) {
             mapData.put(DESCRIPTION, INVALID_DESCRIPTION);
             result = false;
         }
-        if (!customFieldValidator.isCorrectManagerDegree(degree)){
+        if (!customFieldValidator.isCorrectManagerDegree(degree)) {
             mapData.put(MANAGER_DEGREE, INVALID_ENUM);
             result = false;
         }

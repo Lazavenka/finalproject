@@ -3,6 +3,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 import by.lozovenko.finalproject.controller.PaginationConstants;
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Equipment;
 import by.lozovenko.finalproject.model.entity.EquipmentType;
@@ -17,13 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.EQUIPMENT_PAGE;
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class FindEquipmentByTypeCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router(EQUIPMENT_PAGE, Router.DispatchType.FORWARD);
         EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
         EquipmentTypeService equipmentTypeService = EquipmentTypeServiceImpl.getInstance();
@@ -66,12 +66,9 @@ public class FindEquipmentByTypeCommand implements CustomCommand {
                 request.setAttribute(EMPTY_LIST, true);
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR, "Error in FindEquipmentByTypeCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in FindEquipmentByTypeCommand", e);
         }
-        logger.log(Level.DEBUG, "FingEqyByType QUERY = {}",request.getQueryString() );
+        logger.log(Level.DEBUG, "FindEqyByType QUERY = {}",request.getQueryString() );
         logger.log(Level.DEBUG, "send page = {}",router.getPage());
 
         return router;

@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.Department;
 import by.lozovenko.finalproject.model.entity.Equipment;
@@ -27,7 +28,7 @@ import static by.lozovenko.finalproject.controller.RequestParameter.*;
 
 public class FindLaboratoryDetailsByIdCommand implements CustomCommand {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         Router router = new Router(LABORATORY_DETAILS_PAGE, Router.DispatchType.FORWARD);
         LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();
         DepartmentService departmentService = DepartmentServiceImpl.getInstance();
@@ -68,12 +69,8 @@ public class FindLaboratoryDetailsByIdCommand implements CustomCommand {
                 }
             }
         }catch (ServiceException e){
-            logger.log(Level.ERROR, "Error in FindLaboratoryDetailsByIdCommand", e);
-            request.setAttribute(EXCEPTION, e);
-            router.setPage(ERROR_404_PAGE);
-            router.setRedirect();
+            throw new CommandException("Error in FindLaboratoryDetailsByIdCommand", e);
         }
-
         return router;
     }
 }

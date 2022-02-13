@@ -2,6 +2,7 @@ package by.lozovenko.finalproject.controller.command.impl;
 
 import by.lozovenko.finalproject.controller.Router;
 import by.lozovenko.finalproject.controller.command.CustomCommand;
+import by.lozovenko.finalproject.exception.CommandException;
 import by.lozovenko.finalproject.exception.ServiceException;
 import by.lozovenko.finalproject.model.entity.User;
 import by.lozovenko.finalproject.model.service.UserService;
@@ -13,13 +14,12 @@ import org.apache.logging.log4j.Level;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static by.lozovenko.finalproject.controller.PagePath.ERROR_404_PAGE;
 import static by.lozovenko.finalproject.controller.RequestAttribute.*;
 
 public class CheckBalanceCommand implements CustomCommand {
 
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request) throws CommandException {
         UserService userService = UserServiceImpl.getInstance();
         Router router = new Router();
         HttpSession session = request.getSession();
@@ -32,12 +32,8 @@ public class CheckBalanceCommand implements CustomCommand {
                 optionalUserBalance.ifPresent(bigDecimal -> session.setAttribute(USER_BALANCE, bigDecimal));
                 router.setPage(currentPage);
             }catch (ServiceException e){
-                logger.log(Level.ERROR, "Error in CheckBalanceCommand", e);
-                request.setAttribute(EXCEPTION, e);
-                router.setPage(ERROR_404_PAGE);
-                router.setRedirect();
+                throw new CommandException("Error in CheckBalanceCommand", e);
             }
-
         }
         return router;
     }

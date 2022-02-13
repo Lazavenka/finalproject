@@ -11,9 +11,11 @@ public interface LaboratoryService {
     Optional<String> findLaboratoryNameById(Long id) throws ServiceException;
 
     List<Laboratory> findLaboratoriesByDepartmentId(String selectedDepartmentId) throws ServiceException;
+
     List<Laboratory> findLaboratoriesByDepartmentId(Long selectedDepartmentId) throws ServiceException;
 
     Optional<Laboratory> findLaboratoryById(String laboratoryIdString) throws ServiceException;
+
     Optional<Laboratory> findLaboratoryById(Long laboratoryId) throws ServiceException;
 
     boolean addNewLaboratory(Map<String, String> laboratoryData) throws ServiceException;
