@@ -84,7 +84,7 @@
 
                     <dt class="col-sm-3"></dt>
                     <dd class="col-sm-9">
-                        <a href="${abs}/controller?command=go_edit_laboratory_page_command&laboratory_id=${requestScope.selected_laboratory.id}"
+                        <a href="${abs}/controller?command=go_edit_laboratory_page_command"
                            class="btn btn-primary">${edit}</a>
                     </dd>
                 </dl>
