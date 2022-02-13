@@ -81,191 +81,210 @@
         </figure>
     </div>
     <div class="w-75 mx-auto">
-        <div class="row">
-            <div class="col-sm-2 justify-content-center">
-                <div class="btn-group-vertical">
-                    <div style="margin-bottom: 10px">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#editEquipment"
-                                aria-expanded="false" aria-controls="editEquipment">
-                            ${edit_equipment}
-                        </button>
+        <c:choose>
+            <c:when test="${requestScope.equipment_not_found}">
+                <div class="alert alert-danger">${not_found}</div>
+            </c:when>
+            <c:otherwise>
+                <div class="row">
+                    <div class="col-sm-2 justify-content-center">
+                        <div class="btn-group-vertical">
+                            <div style="margin-bottom: 10px">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#editEquipment"
+                                        aria-expanded="false" aria-controls="editEquipment">
+                                        ${edit_equipment}
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#uploadPhoto"
+                                    aria-expanded="false" aria-controls="uploadPhoto">
+                                    ${upload_photo}
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#uploadPhoto"
-                            aria-expanded="false" aria-controls="uploadPhoto">
-                        ${upload_photo}
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-10">
-                <div class="collapse" id="editEquipment">
-                    <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
-                        <input type="hidden" name="command" value="update_equipment_command">
-                        <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
-                        <input type="hidden" name="laboratory_id" value="${requestScope.selected_equipment.laboratoryId}">
-                        <input type="hidden" name="equipment_type_id" value="${requestScope.selected_equipment.equipmentTypeId}">
-                        <div class="row mb-3">
-                            <label for="validationLaboratoryName"
-                                   class="col-sm-2 col-form-label">${equipment_name}</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="equipment_name" class="form-control"
-                                       value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(equipment_name) != 'invalid_equipment_name' }">${equipment_data.get(equipment_name)}</c:when><c:otherwise>${requestScope.selected_equipment.name}</c:otherwise></c:choose>"
-                                       id="validationLaboratoryName" required pattern="[A-Za-zА-Яа-я0-9]{2,255}">
-                                <c:if test="${requestScope.invalid_equipment_name}">
-                                    <div style="color: red">${invalid_equipment_name}</div>
-                                </c:if>
-                                <div class="valid-feedback">
-                                    ${correct}
+                    <div class="col-sm-10">
+                        <div class="collapse" id="editEquipment">
+                            <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
+                                <input type="hidden" name="command" value="update_equipment_command">
+                                <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
+                                <input type="hidden" name="laboratory_id"
+                                       value="${requestScope.selected_equipment.laboratoryId}">
+                                <input type="hidden" name="equipment_type_id"
+                                       value="${requestScope.selected_equipment.equipmentTypeId}">
+                                <div class="row mb-3">
+                                    <label for="validationLaboratoryName"
+                                           class="col-sm-2 col-form-label">${equipment_name}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="equipment_name" class="form-control"
+                                               value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(equipment_name) != 'invalid_equipment_name' }">${equipment_data.get(equipment_name)}</c:when><c:otherwise>${requestScope.selected_equipment.name}</c:otherwise></c:choose>"
+                                               id="validationLaboratoryName" required
+                                               pattern="[A-Za-zА-Яа-я0-9]{2,255}">
+                                        <c:if test="${requestScope.invalid_equipment_name}">
+                                            <div style="color: red">${invalid_equipment_name}</div>
+                                        </c:if>
+                                        <div class="valid-feedback">
+                                                ${correct}
+                                        </div>
+                                        <div class="invalid-feedback">
+                                                ${invalid_equipment_name}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="invalid-feedback">
-                                    ${invalid_equipment_name}
+                                <div class="row mb-3">
+                                    <label for="validationDescription"
+                                           class="col-sm-2 col-form-label">${description}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="description" class="form-control" height="100"
+                                               value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(description_param)}</c:when><c:otherwise>${requestScope.selected_equipment.description}</c:otherwise></c:choose>"
+                                               id="validationDescription" required>
+                                        <c:if test="${requestScope.invalid_description}">
+                                            <div style="color: red">${invalid_description}</div>
+                                        </c:if>
+                                        <div class="valid-feedback">
+                                                ${correct}
+                                        </div>
+                                        <div class="invalid-feedback">
+                                                ${invalid_description}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="validationDescription" class="col-sm-2 col-form-label">${description}</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="description" class="form-control" height="100"
-                                       value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(description_param) != 'invalid_description' }">${equipment_data.get(description_param)}</c:when><c:otherwise>${requestScope.selected_equipment.description}</c:otherwise></c:choose>"
-                                       id="validationDescription" required>
-                                <c:if test="${requestScope.invalid_description}">
-                                    <div style="color: red">${invalid_description}</div>
-                                </c:if>
-                                <div class="valid-feedback">
-                                    ${correct}
+                                <div class="row mb-3">
+                                    <label for="validationPrice"
+                                           class="col-sm-2 col-form-label">${price_per_hour}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="price_per_hour" class="form-control"
+                                               value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(price_param) != 'invalid_description' }">${equipment_data.get(price_param)}</c:when><c:otherwise>${requestScope.selected_equipment.pricePerHour}</c:otherwise></c:choose>"
+                                               id="validationPrice" placeholder="1.00" required
+                                               pattern="^\d{1,4}(\.\d{0,2})?$">
+                                        <c:if test="${requestScope.invalid_price}">
+                                            <div style="color: red">${invalid_price}</div>
+                                        </c:if>
+                                        <div class="valid-feedback">
+                                                ${correct}
+                                        </div>
+                                        <div class="invalid-feedback">
+                                                ${invalid_price}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="invalid-feedback">
-                                    ${invalid_description}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="validationPrice" class="col-sm-2 col-form-label">${price_per_hour}</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="price_per_hour" class="form-control"
-                                       value="<c:choose><c:when test="${!empty equipment_data and equipment_data.get(price_param) != 'invalid_description' }">${equipment_data.get(price_param)}</c:when><c:otherwise>${requestScope.selected_equipment.pricePerHour}</c:otherwise></c:choose>"
-                                       id="validationPrice" placeholder="1.00" required pattern="^\d{1,4}(\.\d{0,2})?$">
-                                <c:if test="${requestScope.invalid_price}">
-                                    <div style="color: red">${invalid_price}</div>
-                                </c:if>
-                                <div class="valid-feedback">
-                                    ${correct}
-                                </div>
-                                <div class="invalid-feedback">
-                                    ${invalid_price}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="hstack gap-1" id="fallbackTimePicker">
-                                <div>
+                                <div class="row mb-3">
+                                    <div class="hstack gap-1" id="fallbackTimePicker">
+                                        <div>
                             <span>
                                 <label for="hour">${hour}</label>
                                 <select id="hour" name="research_time_h">
                                 </select>
                             </span>
-                                </div>
-                                <div>
+                                        </div>
+                                        <div>
                             <span>
                                 <label for="minute">${minute}</label>
                                 <select id="minute" name="research_time_m">
                                 </select>
                             </span>
+                                        </div>
+                                        <div>
+                                                ${old_research_time}
+                                            -> ${requestScope.selected_equipment.averageResearchTime}
+                                        </div>
+                                    </div>
+                                    <c:if test="${requestScope.invalid_research_time}">
+                                        <div style="color: red">${invalid_research_time}</div>
+                                    </c:if>
                                 </div>
-                                <div>
-                                    ${old_research_time} -> ${requestScope.selected_equipment.averageResearchTime}
+                                <div class="row mb-3">
+                                    <div class="select-form">
+                                        <label for="equipment_state">${equipment_state}</label>
+                                        <select id="equipment_state" name="equipment_state" class="form-control">
+                                            <option
+                                                    <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">selected</c:if>
+                                                    value="ACTIVE">${state_active}</option>
+                                            <option
+                                                    <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">selected</c:if>
+                                                    value="INACTIVE">${state_inactive}</option>
+                                        </select>
+                                        <c:if test="${requestScope.invalid_enum}">
+                                            <div class="alert alert-danger">${invalid_enum_message}</div>
+                                        </c:if>
+                                    </div>
                                 </div>
-                            </div>
-                            <c:if test="${requestScope.invalid_research_time}">
-                                <div style="color: red">${invalid_research_time}</div>
-                            </c:if>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="flexSwitchCheckChecked"
+                                           name="is_need_assistant" value="true"
+                                           <c:if test="${requestScope.selected_equipment.needAssistant}">checked</c:if> >
+                                    <label class="form-check-label"
+                                           for="flexSwitchCheckChecked">${necessary_assistant}</label>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div style="margin-top: 20px; margin-bottom: 20px"
+                                         class="d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-primary">${update}</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="row mb-3">
-                            <div class="select-form">
-                                <label for="equipment_state">${equipment_state}</label>
-                                <select id="equipment_state" name="equipment_state" class="form-control">
-                                    <option
-                                            <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">selected</c:if>
-                                            value="ACTIVE">${state_active}</option>
-                                    <option
-                                            <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">selected</c:if>
-                                            value="INACTIVE">${state_inactive}</option>
-                                </select>
-                                <c:if test="${requestScope.invalid_enum}">
-                                    <div class="alert alert-danger">${invalid_enum_message}</div>
-                                </c:if>
-                            </div>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                                   name="is_need_assistant" value="true"
-                                   <c:if test="${requestScope.selected_equipment.needAssistant}">checked</c:if> >
-                            <label class="form-check-label" for="flexSwitchCheckChecked">${necessary_assistant}</label>
-                        </div>
-                        <div class="col-sm-5">
-                            <div style="margin-top: 20px; margin-bottom: 20px" class="d-flex justify-content-center">
-                                <button type="submit" class="btn btn-primary">${update}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
 
-                <div class="collapse" id="uploadPhoto">
-                    <form method="post" action="${abs}/controller" enctype="multipart/form-data" id="fileForm">
-                        <input type="hidden" name="command" value="upload_equipment_photo_command">
-                        <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
-                        <div class="input-group">
-                            <input type="file" class="form-control" id="inputGroupFile04" name="content"
-                                   aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
-                                   onchange="fileValidation()">
-                                <button class="btn btn-outline-secondary" type="submit"
-                                        id="inputGroupFileAddon04">${upload}</button>
-                        </div>
-                        <c:choose>
-                            <c:when test="${requestScope.empty_image}">
-                                <div style="color: red">${empty_image_message}</div>
-                            </c:when>
-                            <c:when test="${requestScope.invalid_file_size}">
-                                <div style="color: red">${invalid_file_size}</div>
-                            </c:when>
-                            <c:when test="${requestScope.wrong_file_extension}">
-                                <div style="color: red">${wrong_file_extension}</div>
-                            </c:when>
-                        </c:choose>
-                        <div id="imagePreview" class="d-flex justify-content-center" style="margin-top: 20px"></div>
-                        <script>
-                            function fileValidation() {
-                                const fileInput = document.getElementById('inputGroupFile04');
+                        <div class="collapse" id="uploadPhoto">
+                            <form method="post" action="${abs}/controller" enctype="multipart/form-data" id="fileForm">
+                                <input type="hidden" name="command" value="upload_equipment_photo_command">
+                                <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="inputGroupFile04" name="content"
+                                           aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
+                                           onchange="fileValidation()">
+                                    <button class="btn btn-outline-secondary" type="submit"
+                                            id="inputGroupFileAddon04">${upload}</button>
+                                </div>
+                                <c:choose>
+                                    <c:when test="${requestScope.empty_image}">
+                                        <div style="color: red">${empty_image_message}</div>
+                                    </c:when>
+                                    <c:when test="${requestScope.invalid_file_size}">
+                                        <div style="color: red">${invalid_file_size}</div>
+                                    </c:when>
+                                    <c:when test="${requestScope.wrong_file_extension}">
+                                        <div style="color: red">${wrong_file_extension}</div>
+                                    </c:when>
+                                </c:choose>
+                                <div id="imagePreview" class="d-flex justify-content-center"
+                                     style="margin-top: 20px"></div>
+                                <script>
+                                    function fileValidation() {
+                                        const fileInput = document.getElementById('inputGroupFile04');
 
-                                const filePath = fileInput.value;
+                                        const filePath = fileInput.value;
 
-                                // Allowing file type
-                                const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp)$/i;
-                                const fileSize = fileInput.files.item(0).size;
-                                if (!allowedExtensions.exec(filePath) || fileSize > (1024 * 1024)) {
-                                    alert('Invalid file type or file size. Maximum size 1 Mb');
-                                    fileInput.value = '';
-                                    return false;
-                                } else {
-                                    // Image preview
-                                    if (fileInput.files && fileInput.files[0]) {
-                                        const reader = new FileReader();
-                                        reader.onload = function (e) {
-                                            document.getElementById(
-                                                'imagePreview').innerHTML =
-                                                '<img src="' + e.target.result
-                                                + '" width="300" alt="Preview image"/>';
-                                        };
-                                        reader.readAsDataURL(fileInput.files[0]);
+                                        // Allowing file type
+                                        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp)$/i;
+                                        const fileSize = fileInput.files.item(0).size;
+                                        if (!allowedExtensions.exec(filePath) || fileSize > (1024 * 1024)) {
+                                            alert('Invalid file type or file size. Maximum size 1 Mb');
+                                            fileInput.value = '';
+                                            return false;
+                                        } else {
+                                            // Image preview
+                                            if (fileInput.files && fileInput.files[0]) {
+                                                const reader = new FileReader();
+                                                reader.onload = function (e) {
+                                                    document.getElementById(
+                                                        'imagePreview').innerHTML =
+                                                        '<img src="' + e.target.result
+                                                        + '" width="300" alt="Preview image"/>';
+                                                };
+                                                reader.readAsDataURL(fileInput.files[0]);
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        </script>
-                    </form>
+                                </script>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </c:otherwise>
+        </c:choose>
+
     </div>
 </div>
 <script type="text/javascript">
@@ -284,7 +303,7 @@
     }
 
     function populateMinutes() {
-        for (let i = 0; i <= 55; i+=5) {
+        for (let i = 0; i <= 55; i += 5) {
             const option = document.createElement('option');
             option.textContent = (i < 10) ? ("0" + i) : i;
             minuteSelect.appendChild(option);

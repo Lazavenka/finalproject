@@ -64,144 +64,158 @@
         </figure>
     </div>
     <div class="w-75 mx-auto">
-        <div class="row">
-            <div class="col-sm-2 justify-content-center">
-                <div class="btn-group-vertical">
-                    <div style="margin-bottom: 10px">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#editLaboratory"
-                                aria-expanded="false" aria-controls="editLaboratory">
-                            ${edit_laboratory}
-                        </button>
+        <c:choose>
+            <c:when test="${requestScope.laboratory_not_found}">
+                <div class="alert alert-danger">${not_found}</div>
+            </c:when>
+            <c:otherwise>
+                <div class="row">
+                    <div class="col-sm-2 justify-content-center">
+                        <div class="btn-group-vertical">
+                            <div style="margin-bottom: 10px">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#editLaboratory"
+                                        aria-expanded="false" aria-controls="editLaboratory">
+                                        ${edit_laboratory}
+                                </button>
+                            </div>
+                            <br>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#uploadPhoto"
+                                    aria-expanded="false" aria-controls="uploadPhoto">
+                                    ${upload_photo}
+                            </button>
+                        </div>
                     </div>
-                    <br>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#uploadPhoto"
-                            aria-expanded="false" aria-controls="uploadPhoto">
-                        ${upload_photo}
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-10">
-                <div class="collapse" id="editLaboratory">
-                    <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
-                        <input type="hidden" name="command" value="update_laboratory_command">
-                        <input type="hidden" name="laboratory_id" value="${requestScope.selected_laboratory.id}">
-                        <input type="hidden" name="department_id" value="${requestScope.selected_laboratory.departmentId}">
-                        <div class="row mb-3">
-                            <label for="validationLaboratoryName"
-                                   class="col-sm-2 col-form-label">${laboratory_name}</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="laboratory_name" class="form-control"
-                                       value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(name_param) != 'invalid_laboratory_name' }">${laboratory_data.get(name_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.name}</c:otherwise></c:choose>"
-                                       id="validationLaboratoryName" required pattern="[A-Za-zА-Яа-я0-9]{2,255}">
-                                <c:if test="${requestScope.invalid_laboratory_name}">
-                                    <div style="color: red">${invalid_laboratory_name}</div>
-                                </c:if>
-                                <div class="valid-feedback">
-                                    ${correct}
+                    <div class="col-sm-10">
+                        <div class="collapse" id="editLaboratory">
+                            <form method="post" action="${abs}/controller" class="needs-validation" novalidate>
+                                <input type="hidden" name="command" value="update_laboratory_command">
+                                <input type="hidden" name="laboratory_id"
+                                       value="${requestScope.selected_laboratory.id}">
+                                <input type="hidden" name="department_id"
+                                       value="${requestScope.selected_laboratory.departmentId}">
+                                <div class="row mb-3">
+                                    <label for="validationLaboratoryName"
+                                           class="col-sm-2 col-form-label">${laboratory_name}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="laboratory_name" class="form-control"
+                                               value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(name_param) != 'invalid_laboratory_name' }">${laboratory_data.get(name_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.name}</c:otherwise></c:choose>"
+                                               id="validationLaboratoryName" required
+                                               pattern="[A-Za-zА-Яа-я0-9]{2,255}">
+                                        <c:if test="${requestScope.invalid_laboratory_name}">
+                                            <div style="color: red">${invalid_laboratory_name}</div>
+                                        </c:if>
+                                        <div class="valid-feedback">
+                                                ${correct}
+                                        </div>
+                                        <div class="invalid-feedback">
+                                                ${invalid_laboratory_name}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="invalid-feedback">
-                                    ${invalid_laboratory_name}
+                                <div class="row mb-3">
+                                    <label for="validationDescription"
+                                           class="col-sm-2 col-form-label">${description}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="description" class="form-control"
+                                               value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(description_param) != 'invalid_description' }">${laboratory_data.get(description_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.description}</c:otherwise></c:choose>"
+                                               id="validationDescription" required>
+                                        <c:if test="${requestScope.invalid_description}">
+                                            <div style="color: red">${invalid_description}</div>
+                                        </c:if>
+                                        <div class="valid-feedback">
+                                                ${correct}
+                                        </div>
+                                        <div class="invalid-feedback">
+                                                ${invalid_description}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="validationDescription" class="col-sm-2 col-form-label">${description}</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="description" class="form-control"
-                                       value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(description_param) != 'invalid_description' }">${laboratory_data.get(description_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.description}</c:otherwise></c:choose>"
-                                       id="validationDescription" required>
-                                <c:if test="${requestScope.invalid_description}">
-                                    <div style="color: red">${invalid_description}</div>
-                                </c:if>
-                                <div class="valid-feedback">
-                                    ${correct}
+                                <div class="row mb-3">
+                                    <label for="validationLocation"
+                                           class="col-sm-2 col-form-label">${lab_location}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="lab_location" class="form-control"
+                                               value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(location_param) != 'invalid_location' }">${laboratory_data.get(location_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.location}</c:otherwise></c:choose>"
+                                               id="validationLocation" required>
+                                        <c:if test="${requestScope.invalid_location}">
+                                            <div style="color: red">${invalid_laboratory_location}</div>
+                                        </c:if>
+                                        <div class="valid-feedback">
+                                                ${correct}
+                                        </div>
+                                        <div class="invalid-feedback">
+                                                ${invalid_laboratory_location}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="invalid-feedback">
-                                    ${invalid_description}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="validationLocation" class="col-sm-2 col-form-label">${lab_location}</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="lab_location" class="form-control"
-                                       value="<c:choose><c:when test="${!empty laboratory_data and laboratory_data.get(location_param) != 'invalid_location' }">${laboratory_data.get(location_param)}</c:when><c:otherwise>${requestScope.selected_laboratory.location}</c:otherwise></c:choose>"
-                                       id="validationLocation" required>
-                                <c:if test="${requestScope.invalid_location}">
-                                    <div style="color: red">${invalid_laboratory_location}</div>
-                                </c:if>
-                                <div class="valid-feedback">
-                                    ${correct}
-                                </div>
-                                <div class="invalid-feedback">
-                                    ${invalid_laboratory_location}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-5 justify-content-center">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 10px">${update}</button>
+                                <div class="col-sm-5 justify-content-center">
+                                    <button type="submit" class="btn btn-primary"
+                                            style="margin-top: 10px">${update}</button>
 
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
 
-                <div class="collapse" id="uploadPhoto">
-                    <form method="post" action="${abs}/controller" enctype="multipart/form-data" id="fileForm">
-                        <input type="hidden" name="command" value="update_laboratory_photo_command">
-                        <input type="hidden" name="laboratory_id" value="${requestScope.selected_laboratory.id}">
-                        <div class="input-group">
-                            <input type="file" class="form-control" id="inputGroupFile04" name="content"
-                                   aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
-                                   onchange="fileValidation()">
-                                <button class="btn btn-outline-secondary" type="submit"
-                                        id="inputGroupFileAddon04">${upload}</button>
-                        </div>
-                        <c:choose>
-                            <c:when test="${requestScope.empty_image}">
-                                <div style="color: red">${empty_image_message}</div>
-                            </c:when>
-                            <c:when test="${requestScope.invalid_file_size}">
-                                <div style="color: red">${invalid_file_size}</div>
-                            </c:when>
-                            <c:when test="${requestScope.wrong_file_extension}">
-                                <div style="color: red">${wrong_file_extension}</div>
-                            </c:when>
-                        </c:choose>
-                        <div id="imagePreview" style="margin-top: 10px; position: center"></div>
-                        <script>
-                            function fileValidation() {
-                                const fileInput = document.getElementById('inputGroupFile04');
+                        <div class="collapse" id="uploadPhoto">
+                            <form method="post" action="${abs}/controller" enctype="multipart/form-data" id="fileForm">
+                                <input type="hidden" name="command" value="update_laboratory_photo_command">
+                                <input type="hidden" name="laboratory_id"
+                                       value="${requestScope.selected_laboratory.id}">
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="inputGroupFile04" name="content"
+                                           aria-describedby="inputGroupFileAddon04" aria-label="${upload}"
+                                           onchange="fileValidation()">
+                                    <button class="btn btn-outline-secondary" type="submit"
+                                            id="inputGroupFileAddon04">${upload}</button>
+                                </div>
+                                <c:choose>
+                                    <c:when test="${requestScope.empty_image}">
+                                        <div style="color: red">${empty_image_message}</div>
+                                    </c:when>
+                                    <c:when test="${requestScope.invalid_file_size}">
+                                        <div style="color: red">${invalid_file_size}</div>
+                                    </c:when>
+                                    <c:when test="${requestScope.wrong_file_extension}">
+                                        <div style="color: red">${wrong_file_extension}</div>
+                                    </c:when>
+                                </c:choose>
+                                <div id="imagePreview" style="margin-top: 10px; position: center"></div>
+                                <script>
+                                    function fileValidation() {
+                                        const fileInput = document.getElementById('inputGroupFile04');
 
-                                const filePath = fileInput.value;
+                                        const filePath = fileInput.value;
 
-                                // Allowing file type
-                                const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp)$/i;
-                                const fileSize = fileInput.files.item(0).size;
-                                if (!allowedExtensions.exec(filePath) || fileSize > (1024 * 1024)) {
-                                    alert('Invalid file type or file size. Maximum size 1 Mb');
-                                    fileInput.value = '';
-                                    return false;
-                                } else {
-                                    // Image preview
-                                    if (fileInput.files && fileInput.files[0]) {
-                                        const reader = new FileReader();
-                                        reader.onload = function (e) {
-                                            document.getElementById(
-                                                'imagePreview').innerHTML =
-                                                '<img src="' + e.target.result
-                                                + '" width="300" class="rounded-start" alt="Preview image"/>';
-                                        };
-                                        reader.readAsDataURL(fileInput.files[0]);
+                                        // Allowing file type
+                                        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp)$/i;
+                                        const fileSize = fileInput.files.item(0).size;
+                                        if (!allowedExtensions.exec(filePath) || fileSize > (1024 * 1024)) {
+                                            alert('Invalid file type or file size. Maximum size 1 Mb');
+                                            fileInput.value = '';
+                                            return false;
+                                        } else {
+                                            // Image preview
+                                            if (fileInput.files && fileInput.files[0]) {
+                                                const reader = new FileReader();
+                                                reader.onload = function (e) {
+                                                    document.getElementById(
+                                                        'imagePreview').innerHTML =
+                                                        '<img src="' + e.target.result
+                                                        + '" width="300" class="rounded-start" alt="Preview image"/>';
+                                                };
+                                                reader.readAsDataURL(fileInput.files[0]);
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        </script>
-                    </form>
+                                </script>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </c:otherwise>
+        </c:choose>
     </div>
 </div>
 <ctg:print-footer/>

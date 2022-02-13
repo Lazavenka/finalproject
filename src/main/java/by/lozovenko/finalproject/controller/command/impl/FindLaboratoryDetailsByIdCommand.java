@@ -67,6 +67,8 @@ public class FindLaboratoryDetailsByIdCommand implements CustomCommand {
                 if (laboratoryEquipment.isEmpty()) {
                     request.setAttribute(EMPTY_LIST, true);
                 }
+            }else {
+                request.setAttribute(LABORATORY_NOT_FOUND, true);
             }
         }catch (ServiceException e){
             throw new CommandException("Error in FindLaboratoryDetailsByIdCommand", e);

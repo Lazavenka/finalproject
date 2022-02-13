@@ -29,6 +29,11 @@ public class GoOrderDetailsPageCommand implements CustomCommand {
             Optional<Order> optionalOrder = orderService.findOrderById(orderIdString);
             if (optionalOrder.isPresent()) {
                 Order selectedOrder = optionalOrder.get();
+                if (role == UserRole.CLIENT && selectedOrder.getClientId() != ((Client) user).getClientId()) {
+                    request.setAttribute(ORDER_NOT_FOUND, true);
+                    return router;
+                }
+
                 request.setAttribute(SELECTED_ORDER, selectedOrder);
                 long orderEquipmentId = selectedOrder.getEquipmentId();
                 EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
@@ -36,6 +41,10 @@ public class GoOrderDetailsPageCommand implements CustomCommand {
 
                 if (optionalEquipment.isPresent()) {
                     Equipment selectedEquipment = optionalEquipment.get();
+                    if (role == UserRole.MANAGER && selectedEquipment.getLaboratoryId() != ((Manager) user).getLaboratoryId()) {
+                        request.setAttribute(ORDER_NOT_FOUND, true);
+                        return router;
+                    }
                     request.setAttribute(SELECTED_EQUIPMENT, selectedEquipment);
                     long laboratoryId = selectedEquipment.getLaboratoryId();
                     LaboratoryService laboratoryService = LaboratoryServiceImpl.getInstance();

@@ -50,51 +50,68 @@
             </blockquote>
         </figure>
     </div>
-    <div class="w-75 mx-auto">
-        <div class="row g-0" style="margin-bottom: 10px">
-            <div class="col-sm-5">
-                <img src="${abs}/${requestScope.selected_equipment.imageFilePath}" width="300"
-                     class="img-fluid rounded-start"
-                     alt="${requestScope.selected_equipment.name}">
-            </div>
-            <div class="col-sm-7">
-                <div class="card-body">
-                    <h5 class="card-title">${requestScope.selected_equipment.name}</h5>
-                    <dl class="row">
-                        <dt class="col-sm-3">${description}</dt>
-                        <dd class="col-sm-9">${requestScope.selected_equipment.description}</dd>
+    <c:choose>
+        <c:when test="${requestScope.equipment_not_found}">
+            <div class="alert alert-danger">${not_found}</div>
+        </c:when>
+        <c:otherwise>
+            <div class="w-75 mx-auto">
+                <div class="row g-0" style="margin-bottom: 10px">
+                    <div class="col-sm-5">
+                        <img src="${abs}/${requestScope.selected_equipment.imageFilePath}" width="300"
+                             class="img-fluid rounded-start"
+                             alt="${requestScope.selected_equipment.name}">
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="card-body">
+                            <h5 class="card-title">${requestScope.selected_equipment.name}</h5>
+                            <dl class="row">
+                                <dt class="col-sm-3">${description}</dt>
+                                <dd class="col-sm-9">${requestScope.selected_equipment.description}</dd>
 
-                        <dt class="col-sm-3">${equipment_price}</dt>
-                        <dd class="col-sm-9">${requestScope.selected_equipment.pricePerHour.floatValue()} BYN</dd>
+                                <dt class="col-sm-3">${equipment_price}</dt>
+                                <dd class="col-sm-9">${requestScope.selected_equipment.pricePerHour.floatValue()} BYN
+                                </dd>
 
-                        <dt class="col-sm-3">${equipment_avg_research_time}</dt>
-                        <dd class="col-sm-9">${requestScope.selected_equipment.averageResearchTime.toString()}</dd>
+                                <dt class="col-sm-3">${equipment_avg_research_time}</dt>
+                                <dd class="col-sm-9">${requestScope.selected_equipment.averageResearchTime.toString()}</dd>
 
-                        <dt class="col-sm-3">${assistant_label}</dt>
-                        <dd class="col-sm-9"><c:choose>
-                            <c:when test="${requestScope.selected_equipment.needAssistant}"><div class="text-decoration-underline">${necessary}</div></c:when>
-                            <c:otherwise><div class="text-decoration-underline">${not_necessary}</div></c:otherwise>
-                        </c:choose></dd>
+                                <dt class="col-sm-3">${assistant_label}</dt>
+                                <dd class="col-sm-9"><c:choose>
+                                    <c:when test="${requestScope.selected_equipment.needAssistant}">
+                                        <div class="text-decoration-underline">${necessary}</div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="text-decoration-underline">${not_necessary}</div>
+                                    </c:otherwise>
+                                </c:choose></dd>
 
-                        <dt class="col-sm-3 <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipment_state}</dt>
-                        <dd class="col-sm-9 <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">text-warning</c:if>">${requestScope.selected_equipment.state.name()}</dd>
-                    </dl>
+                                <dt class="col-sm-3 <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">text-warning</c:if>">${equipment_state}</dt>
+                                <dd class="col-sm-9 <c:if test="${requestScope.selected_equipment.state.name() eq 'ACTIVE'}">text-success</c:if> <c:if test="${requestScope.selected_equipment.state.name() eq 'INACTIVE'}">text-warning</c:if>">${requestScope.selected_equipment.state.name()}</dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </c:otherwise>
+    </c:choose>
+
+
     <div style="margin-top: 10px; margin-bottom: 20px">
         <div class="row">
             <div class="col-sm-2">
-                <form action="${abs}/controller" method="get">
-                    <input type="hidden" name="command" value="show_equipment_timetable_command">
-                    <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
-                    <label for="bookingDate" class="col-sm-2 col-form-label">${choose_date}</label>
-                    <div class="col-sm-2">
-                        <input type="date" name="date" style="margin-top: 15px" id="bookingDate">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top: 10px">${show_timetable}</button>
-                </form>
+                <c:if test="${requestScope.selected_equipment != null}">
+                    <form action="${abs}/controller" method="get">
+                        <input type="hidden" name="command" value="show_equipment_timetable_command">
+                        <input type="hidden" name="equipment_id" value="${requestScope.selected_equipment.id}">
+                        <label for="bookingDate" class="col-sm-2 col-form-label">${choose_date}</label>
+                        <div class="col-sm-2">
+                            <input type="date" name="date" style="margin-top: 15px" id="bookingDate">
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                                style="margin-top: 10px">${show_timetable}</button>
+                    </form>
+                </c:if>
                 <div style="margin-bottom: 25px">
                     <a class="btn btn-primary" role="button"
                        href="${abs}/controller?command=find_equipment_by_type_command&equipment_type_id=0">${to_equipment}</a>

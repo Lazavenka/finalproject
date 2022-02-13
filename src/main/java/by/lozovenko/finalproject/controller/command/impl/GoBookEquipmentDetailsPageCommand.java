@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static by.lozovenko.finalproject.controller.PagePath.BOOK_ITEM_DETAILS_PAGE;
+import static by.lozovenko.finalproject.controller.RequestAttribute.EQUIPMENT_NOT_FOUND;
 import static by.lozovenko.finalproject.controller.RequestAttribute.SELECTED_EQUIPMENT;
 import static by.lozovenko.finalproject.controller.RequestParameter.EQUIPMENT_ID;
 
@@ -23,7 +24,12 @@ public class GoBookEquipmentDetailsPageCommand implements CustomCommand {
         String equipmentIdString = request.getParameter(EQUIPMENT_ID);
         try {
             Optional<Equipment> optionalEquipment = equipmentService.findById(equipmentIdString);
-            optionalEquipment.ifPresent(equipment -> request.setAttribute(SELECTED_EQUIPMENT, equipment));
+            if (optionalEquipment.isPresent()){
+                Equipment selectedEquipment = optionalEquipment.get();
+                request.setAttribute(SELECTED_EQUIPMENT, selectedEquipment);
+            }else {
+                request.setAttribute(EQUIPMENT_NOT_FOUND, true);
+            }
         }catch (ServiceException e){
             throw new CommandException("Error in GoBookEquipmentDetailsPageCommand", e);
         }

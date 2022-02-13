@@ -53,16 +53,16 @@ public class Controller extends HttpServlet {
                     }
                     default -> {
                         LOGGER.error("Invalid router dispatch type : {}", router.getType());
-                        response.sendRedirect(PagePath.ERROR_404_PAGE);
+                        response.sendError(500);
                     }
                 }
             }else {
                 LOGGER.log(Level.WARN, "Command = {} not found", commandName);
-                response.sendRedirect(ERROR_500_PAGE);
+                response.sendError(404);
             }
         }catch (CommandException e){
             LOGGER.log(Level.WARN, e.getMessage());
-            response.sendRedirect(ERROR_500_PAGE);
+            response.sendError(500);
         }
 
     }

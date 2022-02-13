@@ -59,8 +59,8 @@ public class CommandPermissionFilter implements Filter {
             }
         }catch (IllegalArgumentException e){
             LOGGER.log(Level.WARN, "Command {} not found", commandName);
-            request.getRequestDispatcher(ERROR_404_PAGE)
-                    .forward(servletRequest,servletResponse);
+            response.sendError(404);
+
         }
     }
 

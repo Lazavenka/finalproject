@@ -71,9 +71,7 @@
                 <div style="margin-top: 10px; margin-bottom: 10px">
                     <figure class="text-center">
                         <blockquote class="blockquote">
-                            <c:if test="${requestScope.error_message}">
-                                <p class="alert-warning">${error_message}</p>
-                            </c:if>
+                            <p class="alert-warning">${not_found}</p>
                         </blockquote>
                     </figure>
                 </div>
