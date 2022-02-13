@@ -41,7 +41,7 @@ public class OrderDaoImpl implements OrderDao {
     private static final String GET_ORDERS_BY_LABORATORY_ID_LIMITED = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
             order_assistant_id FROM orders
-            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ? ORDER BY order_rent_start LIMIT ?, ?""";
+            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ? AND NOT order_state = 'CANCELLED' ORDER BY order_rent_start LIMIT ?, ?""";
 
     private static final String GET_ORDERS_BY_EQUIPMENT_ID_AT_PERIOD = """
             SELECT order_id, client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end,
@@ -54,16 +54,16 @@ public class OrderDaoImpl implements OrderDao {
             order_assistant_id FROM orders WHERE order_state = ? AND order_assistant_id = ? AND order_rent_start > ? ORDER BY order_rent_start""";
 
     private static final String CREATE_ORDER = """
-            INSERT INTO orders (client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id) 
+            INSERT INTO orders (client_id, order_state, order_total_cost, order_equipment_id, order_rent_start, order_rent_end, order_assistant_id)
             VALUES (?,?,?,?,?,?,?)""";
 
     private static final String UPDATE_USER_BALANCE_BY_ID = "UPDATE clients SET balance = ? WHERE user_id = ?";
     private static final String UPDATE_ORDER_STATE_BY_ID = "UPDATE orders SET order_state = ? WHERE order_id = ?";
 
-    private static final String COUNT_CLIENT_ORDERS = "SELECT count(order_id) FROM orders WHERE client_id = ?";
+    private static final String COUNT_CLIENT_ORDERS = "SELECT count(order_id) FROM orders WHERE client_id = ? AND (order_state = 'BOOKED' OR order_state = 'PAYED')";
     private static final String COUNT_LABORATORY_ORDERS = """
             SELECT count(order_id) FROM orders
-            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ?""";
+            JOIN equipment ON orders.order_equipment_id = equipment.equipment_id WHERE equipment.laboratory_id = ? AND NOT order_state = 'CANCELLED'""";
 
 
     private OrderDaoImpl() {

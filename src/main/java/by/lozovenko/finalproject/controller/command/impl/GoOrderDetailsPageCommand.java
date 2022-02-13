@@ -7,6 +7,7 @@ import by.lozovenko.finalproject.model.entity.*;
 import by.lozovenko.finalproject.model.service.*;
 import by.lozovenko.finalproject.model.service.impl.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ public class GoOrderDetailsPageCommand implements CustomCommand {
         Router router = new Router(ORDER_DETAILS_PAGE, Router.DispatchType.FORWARD);
         String orderIdString = request.getParameter(ORDER_ID);
         OrderService orderService = OrderServiceImpl.getInstance();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(USER);
+        UserRole role = user.getRole();
         try {
             Optional<Order> optionalOrder = orderService.findOrderById(orderIdString);
             if (optionalOrder.isPresent()) {
@@ -29,6 +33,7 @@ public class GoOrderDetailsPageCommand implements CustomCommand {
                 long orderEquipmentId = selectedOrder.getEquipmentId();
                 EquipmentService equipmentService = EquipmentServiceImpl.getInstance();
                 Optional<Equipment> optionalEquipment = equipmentService.findById(orderEquipmentId);
+
                 if (optionalEquipment.isPresent()) {
                     Equipment selectedEquipment = optionalEquipment.get();
                     request.setAttribute(SELECTED_EQUIPMENT, selectedEquipment);
@@ -50,18 +55,26 @@ public class GoOrderDetailsPageCommand implements CustomCommand {
                     } else {
                         request.setAttribute(LABORATORY_NOT_FOUND, true);
                     }
-
-
                 } else {
                     request.setAttribute(EQUIPMENT_NOT_FOUND, true);
                 }
+
                 UserService userService = UserServiceImpl.getInstance();
                 Optional<Assistant> optionalAssistant = userService.findAssistantById(selectedOrder.getAssistantId());
-                if (optionalAssistant.isPresent()){
+                if (optionalAssistant.isPresent()) {
                     Assistant assistant = optionalAssistant.get();
                     request.setAttribute(SELECTED_ASSISTANT, assistant);
-                }else {
+                } else {
                     request.setAttribute(ASSISTANT_NOT_FOUND, true);
+                }
+                if (role == UserRole.MANAGER) {
+                    Optional<User> optionalClient = userService.findClientById(selectedOrder.getClientId());
+                    if (optionalClient.isPresent()) {
+                        User client = optionalClient.get();
+                        request.setAttribute(SELECTED_CLIENT, client);
+                    } else {
+                        request.setAttribute(CLIENT_NOT_FOUND, true);
+                    }
                 }
             } else {
                 request.setAttribute(ORDER_NOT_FOUND, true);

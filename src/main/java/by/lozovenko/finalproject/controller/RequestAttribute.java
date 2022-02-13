@@ -22,6 +22,7 @@ public class RequestAttribute {
     public static final String ORDER_NOT_FOUND = "order_not_found";
     public static final String EQUIPMENT_NOT_FOUND = "equipment_not_found";
     public static final String ASSISTANT_NOT_FOUND = "assistant_not_found";
+    public static final String CLIENT_NOT_FOUND = "client_not_found";
     public static final String NO_MANAGERS_FOUND = "no_managers";
     public static final String USER_ROLE = "role";
     public static final String UPLOAD_SUCCESS = "upload_success";
@@ -52,6 +53,7 @@ public class RequestAttribute {
     public static final String SELECTED_EQUIPMENT = "selected_equipment";
     public static final String SELECTED_ORDER = "selected_order";
     public static final String SELECTED_ASSISTANT = "selected_assistant";
+    public static final String SELECTED_CLIENT = "selected_client";
     public static final String DEPARTMENT_LABORATORIES = "department_laboratories";
     public static final String DATE_TIME_NOW = "date_time_now";
     public static final String EMPTY_LIST = "empty_list";

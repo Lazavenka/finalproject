@@ -460,6 +460,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public Optional<User> findClientById(long clientId) throws ServiceException {
+        try {
+            return userDao.findClientById(clientId);
+        } catch (DaoException e) {
+            throw new ServiceException("Can't handle findClientById request at UserService", e);
+        }
+    }
+
     private User createUserFromMapData(Map<String, String> userData) {
         User user = new User();
         String hashedPassword = PasswordEncryptor.encryptMd5Apache(userData.get(PASSWORD));

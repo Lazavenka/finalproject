@@ -32,13 +32,18 @@
 <fmt:message var="address_details_title" key="order.address_details_title"/>
 <fmt:message var="equipment_details_title" key="order.equipment_details_title"/>
 <fmt:message var="assistant_details_title" key="order.assistant_details_title"/>
-
+<fmt:message var="client_details_title" key="order.client_details_title"/>
+<fmt:message var="contacts" key="common.manager_details.contacts"/>
+<fmt:message var="phone" key="common.manager_details.phone"/>
+<fmt:message var="email" key="common.manager_details.email"/>
+<fmt:message var="client_label" key="details.client"/>
 
 <c:set var="order" value="${requestScope.selected_order}"/>
 <c:set var="department" value="${requestScope.selected_department}"/>
 <c:set var="laboratory" value="${requestScope.selected_laboratory}"/>
 <c:set var="equipment" value="${requestScope.selected_equipment}"/>
 <c:set var="assistant" value="${requestScope.selected_assistant}"/>
+<c:set var="client" value="${requestScope.selected_client}"/>
 
 <html>
 <head>
@@ -84,6 +89,9 @@
                         <th scope="col">${address}</th>
                         <th scope="col">${equipment_label}</th>
                         <th scope="col">${assistant_label}</th>
+                        <c:if test="${sessionScope.user.role eq 'MANAGER'}">
+                            <th scope="col">${client_label}</th>
+                        </c:if>
                         <th scope="col">${state}</th>
                     </tr>
                     </thead>
@@ -117,6 +125,16 @@
                                         ${assistant_label}</button>
                             </c:otherwise>
                         </c:choose></td>
+                        <c:if test="${sessionScope.user.role eq 'MANAGER'}">
+                            <td><c:choose>
+                                <c:when test="${requestScope.client_not_found}">${not_found}</c:when>
+                                <c:otherwise>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#clientDetails">
+                                            ${client_label}</button>
+                                </c:otherwise>
+                            </c:choose></td>
+                        </c:if>
                         <td>${order.state.name()}</td>
                     </tr>
                     </tbody>
@@ -235,6 +253,36 @@
     </div>
 </div>
 
-
+<div class="modal fade" id="clientDetails" tabindex="-1" aria-labelledby="clientLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clientLabel">${client_details_title}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <h5 class="card-title">${client.lastName} ${client.firstName}</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">${contacts}</dt>
+                        <dd class="col-sm-9">
+                            <dl class="row">
+                                <dt class="col-sm-4">${phone}</dt>
+                                <dd class="col-sm-8">${client.phone}</dd>
+                            </dl>
+                            <dl class="row">
+                                <dt class="col-sm-4">${email}</dt>
+                                <dd class="col-sm-8">${client.email}</dd>
+                            </dl>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${close}</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

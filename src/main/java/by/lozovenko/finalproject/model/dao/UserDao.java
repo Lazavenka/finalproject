@@ -51,4 +51,6 @@ public interface UserDao extends BaseDao<Long, User> {
     long createAssistant(Assistant assistant) throws DaoException;
 
     long countManagersByDegree(ManagerDegree degree) throws DaoException;
+
+    Optional<User> findClientById(long clientId) throws DaoException;
 }

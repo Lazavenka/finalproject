@@ -66,6 +66,10 @@ public class UserDaoImpl implements UserDao {
             SELECT u.user_id, u.first_name, u.last_name, u.login, u.password, u.email, u.phone_number, u.user_role,
             u.user_state, a.assistant_id, a.laboratory_id, a.avatar_link FROM users u JOIN assistants a on u.user_id = a.user_id WHERE assistant_id = ?""";
 
+    private static final String GET_CLIENT_BY_ID = """
+            SELECT u.user_id, first_name, last_name, login, password, email, phone_number, user_role,
+            user_state FROM users u JOIN clients c on u.user_id = c.user_id WHERE client_id = ?""";
+
     private static final String GET_ASSISTANTS_BY_LABORATORY_ID = """
             SELECT u.user_id, login, password, first_name, last_name, email, phone_number, user_role,
             user_state, a.avatar_link, a.laboratory_id, a.assistant_id FROM users AS u
@@ -666,6 +670,24 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("Error in countDepartments method DepartmentDao class. Unable to get access to database.", e);
         }
         return count;
+    }
+
+    @Override
+    public Optional<User> findClientById(long clientId) throws DaoException {
+        Optional<User> optionalUser = Optional.empty();
+        try (Connection connection = CustomConnectionPool.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BY_ID)) {
+            preparedStatement.setLong(1, clientId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    optionalUser = UserMapper.getInstance().rowMap(user, resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error in findClientById method. Can't find Manager by managerId. Database access error.", e);
+        }
+        return optionalUser;
     }
 
     @Override

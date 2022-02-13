@@ -58,4 +58,6 @@ public interface UserService {
     boolean updateUserStateById(String userStateString, String userId) throws ServiceException;
 
     Optional<Assistant> findAssistantById(long assistantId) throws ServiceException;
+
+    Optional<User> findClientById(long clientId) throws ServiceException;
 }
