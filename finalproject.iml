@@ -54,6 +54,5 @@
     <orderEntry type="library" name="bundle.jquery" level="application" />
     <orderEntry type="library" name="jquery.inputmask" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
-    <orderEntry type="library" name="inputmask" level="application" />
   </component>
 </module>
