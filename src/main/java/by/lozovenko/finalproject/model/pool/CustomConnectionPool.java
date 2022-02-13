@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -19,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CustomConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static CustomConnectionPool INSTANCE;
+    private static CustomConnectionPool instance;
 
     private static final AtomicBoolean isCreated = new AtomicBoolean(false);
     private static final Lock createPoolLock = new ReentrantLock(true);
@@ -31,7 +30,7 @@ public class CustomConnectionPool {
 
     private CustomConnectionPool() {
         freeConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);
-        givenAwayConnections = new ArrayDeque<>(DEFAULT_POOL_SIZE);
+        givenAwayConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);
         for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
             try {
                 ProxyConnection connection = new ProxyConnection(ConnectionFactory.createConnection());
@@ -64,14 +63,14 @@ public class CustomConnectionPool {
         if (!isCreated.get()) {
             try {
                 createPoolLock.lock();
-                if (INSTANCE == null) {
-                    INSTANCE = new CustomConnectionPool();
+                if (instance == null) {
+                    instance = new CustomConnectionPool();
                 }
             } finally {
                 createPoolLock.unlock();
             }
         }
-        return INSTANCE;
+        return instance;
     }
 
     public Connection getConnection() {
