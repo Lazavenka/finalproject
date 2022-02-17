@@ -65,6 +65,7 @@ public class CustomConnectionPool {
                 createPoolLock.lock();
                 if (instance == null) {
                     instance = new CustomConnectionPool();
+                    isCreated.getAndSet(true);
                 }
             } finally {
                 createPoolLock.unlock();
